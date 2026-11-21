@@ -86,17 +86,16 @@ func TestTerraformAliasLifecycle(t *testing.T) {
 	config := fmt.Sprintf(`
 terraform {
   required_providers {
-    pfsense-nexus = { source = "geo-gaussian/pfsense-nexus" }
+    pfsense = { source = "geo-gaussian/pfsense-nexus" }
   }
 }
-provider "pfsense-nexus" {
+provider "pfsense" {
   url = %q
   username = "test-user"
   password = %q
   insecure = true
 }
-resource "pfsense_nexus_firewall_alias" "test" {
-  provider = pfsense-nexus
+resource "pfsense_firewall_alias" "test" {
   name = "example"
   type = "host"
   targets = [{ name = "example.test" }]
@@ -127,8 +126,8 @@ resource "pfsense_nexus_firewall_alias" "test" {
 	}
 	run("apply", "-auto-approve", "-input=false", "-no-color")
 	run("plan", "-detailed-exitcode", "-input=false", "-no-color")
-	run("state", "rm", "pfsense_nexus_firewall_alias.test")
-	run("import", "-input=false", "-no-color", "pfsense_nexus_firewall_alias.test", "example")
+	run("state", "rm", "pfsense_firewall_alias.test")
+	run("import", "-input=false", "-no-color", "pfsense_firewall_alias.test", "example")
 	run("plan", "-detailed-exitcode", "-input=false", "-no-color")
 	run("destroy", "-auto-approve", "-input=false", "-no-color")
 	mu.Lock()
@@ -146,7 +145,7 @@ resource "pfsense_nexus_firewall_alias" "test" {
 	if err == nil || !strings.Contains(string(output), "Alias created but firewall reload failed") {
 		t.Fatalf("expected a reload failure after creation: %v\n%s", err, output)
 	}
-	run("state", "show", "-no-color", "pfsense_nexus_firewall_alias.test")
+	run("state", "show", "-no-color", "pfsense_firewall_alias.test")
 	run("apply", "-auto-approve", "-input=false", "-no-color")
 	run("destroy", "-auto-approve", "-input=false", "-no-color")
 }

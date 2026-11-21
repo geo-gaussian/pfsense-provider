@@ -1,5 +1,5 @@
 provider:
-  name: pfsense_nexus
+  name: pfsense
 resources:
   firewall_alias:
     create:

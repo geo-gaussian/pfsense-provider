@@ -30,7 +30,7 @@ func New() provider.Provider {
 }
 
 func (p *pfsenseProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "pfsense_nexus"
+	resp.TypeName = "pfsense"
 	resp.Version = "0.1.0"
 }
 

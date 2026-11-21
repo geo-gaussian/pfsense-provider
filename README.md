@@ -51,7 +51,7 @@ overrides do not require `terraform init`.
 ```hcl
 terraform {
   required_providers {
-    pfsense-nexus = {
+    pfsense = {
       source = "geo-gaussian/pfsense-nexus"
     }
   }
@@ -64,23 +64,21 @@ variable "nexus_password" {
   sensitive = true
 }
 
-provider "pfsense-nexus" {
+provider "pfsense" {
   url      = var.nexus_url
   username = var.nexus_username
   password = var.nexus_password
 }
 
-resource "pfsense_nexus_firewall_alias" "example" {
-  provider = pfsense-nexus
+resource "pfsense_firewall_alias" "example" {
   name     = "example"
   type     = "host"
   targets  = [{ name = "host.example.test" }]
 }
 ```
 
-The explicit resource `provider` selection is needed because the provider
-source name contains a dash while the resource type uses `pfsense_nexus`.
-Pass credentials through a secure mechanism, such as Terraform's environment
+The local provider name `pfsense` maps to the `geo-gaussian/pfsense-nexus`
+source. Pass credentials through a secure mechanism, such as Terraform's environment
 variables, rather than committing them. TLS certificates are verified by
 default; `insecure = true` disables verification and is for isolated testing
 only. Terraform state can contain sensitive configuration; protect it.
@@ -88,8 +86,13 @@ only. Terraform state can contain sensitive configuration; protect it.
 Import an existing alias by name:
 
 ```sh
-terraform import pfsense_nexus_firewall_alias.example example
+terraform import pfsense_firewall_alias.example example
 ```
+
+The former `pfsense_nexus_firewall_alias` resource type is no longer supported.
+If you have state from the earlier experimental version, back it up, remove
+the old resource addresses from state (not from the firewall), and import the
+existing aliases under the new resource type. Review the plan before applying.
 
 ## API specification and generation
 
