@@ -15,6 +15,103 @@ import (
 	"github.com/geo-gaussian/pfsense-provider/internal/api"
 )
 
+func TestTerraformFirewallAliasesDataSource(t *testing.T) {
+	terraform, err := exec.LookPath("terraform")
+	if err != nil {
+		t.Skip("Terraform CLI is not installed")
+	}
+	dir := t.TempDir()
+	providerDir := filepath.Join(dir, "provider")
+	if err := os.Mkdir(providerDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	build := exec.Command("go", "build", "-o", filepath.Join(providerDir, "terraform-provider-pfsense-nexus"), ".")
+	if output, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("build provider: %v\n%s", err, output)
+	}
+
+	var mu sync.Mutex
+	var loginCount, readCount int
+	var rejectLogin bool
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		mu.Lock()
+		defer mu.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case req.Method == http.MethodPost && req.URL.Path == "/api/login":
+			loginCount++
+			if rejectLogin {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			_, _ = fmt.Fprint(w, `{"token":"test-token"}`)
+		case req.Method == http.MethodGet && req.URL.Path == "/api/device/pfsense/localhost/api/aliases":
+			readCount++
+			if req.Header.Get("Authorization") != "Bearer test-token" {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			_, _ = fmt.Fprint(w, `{"aliases":[{"name":"example","type":"host","truncated":true}]}`)
+		default:
+			t.Errorf("unexpected request: %s %s", req.Method, req.URL.Path)
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	}))
+	defer server.Close()
+
+	config := fmt.Sprintf(`
+	terraform {
+	  required_providers {
+	    pfsense = { source = "geo-gaussian/pfsense-nexus" }
+	  }
+	}
+	provider "pfsense" {
+	  url = %q
+	  username = "test-user"
+	  password = %q
+	  insecure = true
+	}
+	data "pfsense_firewall_aliases" "test" {}
+	output "alias_names" {
+	  value = [for alias in data.pfsense_firewall_aliases.test.aliases : alias.name]
+	}
+	`, server.URL, strings.Repeat("x", 12))
+	if err := os.WriteFile(filepath.Join(dir, "main.tf"), []byte(config), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	cliConfig := fmt.Sprintf("provider_installation {\n  dev_overrides { \"geo-gaussian/pfsense-nexus\" = %q }\n  direct {}\n}\n", providerDir)
+	cliConfigPath := filepath.Join(dir, "terraform.rc")
+	if err := os.WriteFile(cliConfigPath, []byte(cliConfig), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	plan := func() ([]byte, error) {
+		cmd := exec.Command(terraform, "plan", "-input=false", "-no-color")
+		cmd.Dir = dir
+		cmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+cliConfigPath, "TF_IN_AUTOMATION=1", "CHECKPOINT_DISABLE=1")
+		return cmd.CombinedOutput()
+	}
+	output, err := plan()
+	if err != nil || !strings.Contains(string(output), `"example"`) {
+		t.Fatalf("terraform plan did not return the alias: %v\n%s", err, output)
+	}
+	mu.Lock()
+	if loginCount != 1 || readCount != 1 {
+		mu.Unlock()
+		t.Fatalf("login requests = %d, alias reads = %d", loginCount, readCount)
+	}
+	rejectLogin = true
+	mu.Unlock()
+	output, err = plan()
+	if err == nil || !strings.Contains(string(output), "Nexus authentication failed") {
+		t.Fatalf("expected authentication error: %v\n%s", err, output)
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	if loginCount != 2 || readCount != 1 {
+		t.Fatalf("login requests = %d, alias reads = %d", loginCount, readCount)
+	}
+}
+
 func TestTerraformAliasLifecycle(t *testing.T) {
 	terraform, err := exec.LookPath("terraform")
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/geo-gaussian/pfsense-provider/internal/api"
 	"github.com/geo-gaussian/pfsense-provider/internal/client"
+	"github.com/geo-gaussian/pfsense-provider/internal/provider/data_firewall_aliases"
 	"github.com/geo-gaussian/pfsense-provider/internal/provider/resource_firewall_alias"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -67,6 +68,7 @@ func (p *pfsenseProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 	resp.ResourceData = apiClient
+	resp.DataSourceData = apiClient
 }
 
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
@@ -74,5 +76,5 @@ func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource 
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
-	return nil
+	return []func() datasource.DataSource{data_firewall_aliases.New}
 }

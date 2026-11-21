@@ -83,6 +83,54 @@ variables, rather than committing them. TLS certificates are verified by
 default; `insecure = true` disables verification and is for isolated testing
 only. Terraform state can contain sensitive configuration; protect it.
 
+## Read-only alias lookup
+
+To test authentication and read alias metadata without managing an alias, use a
+separate Terraform directory with only this configuration:
+
+```hcl
+terraform {
+  required_providers {
+    pfsense = {
+      source = "geo-gaussian/pfsense-nexus"
+    }
+  }
+}
+
+variable "nexus_url" { type = string }
+variable "nexus_username" { type = string }
+variable "nexus_password" {
+  type      = string
+  sensitive = true
+}
+
+provider "pfsense" {
+  url      = var.nexus_url
+  username = var.nexus_username
+  password = var.nexus_password
+}
+
+data "pfsense_firewall_aliases" "current" {}
+
+output "firewall_aliases" {
+  value = data.pfsense_firewall_aliases.current.aliases
+}
+```
+
+With the development override configured, run `terraform plan`. This data
+source authenticates and requests the local firewall's alias list; it does not
+create, update, delete, or reload aliases. Login may create a session or audit
+record. A successful read verifies the login and list request, but the routing
+assumption above still needs testing on a real appliance.
+
+The output contains the name, type, description (`descr`), and `truncated` flag
+for user-defined aliases, not system aliases or alias contents. Fields omitted
+by the API are null. If the API omits the alias list, the output is null and a
+warning is shown; an empty list means the API returned an empty list. Saved
+plans and state can contain alias metadata and other sensitive information.
+
+## Importing aliases
+
 Import an existing alias by name:
 
 ```sh
