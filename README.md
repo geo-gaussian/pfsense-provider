@@ -175,9 +175,10 @@ and Makefile recipes use tabs.
 
 ## 📦 Preparing a release
 
-The Registry release workflow runs on a pushed version tag, runs lint and tests,
-and creates a signed **draft** GitHub release. It does not publish the draft
-automatically. Before tagging:
+The build and deploy workflow runs lint and tests on pushes and pull requests.
+For a pushed version tag, it creates a signed **draft** GitHub release only
+after validation succeeds. It does not publish the draft automatically. Before
+tagging:
 
 1. Register the GPG signing public key in the Terraform Registry. Configure
    the GitHub Actions secrets `GPG_PRIVATE_KEY` and `PASSPHRASE`; never commit
