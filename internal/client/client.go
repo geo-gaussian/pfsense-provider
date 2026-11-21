@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/geo-gaussian/pfsense-provider/internal/api"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 )
 
 // NexusClient serializes requests and maintains the controller session.

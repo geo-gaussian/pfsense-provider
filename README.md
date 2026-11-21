@@ -4,15 +4,16 @@ This experimental provider manages a firewall alias on a local pfSense
 firewall through the Nexus controller. It uses Netgate's OpenAPI specification
 and HashiCorp's Terraform Plugin Framework.
 
-**Status:** The implementation has only been tested against mock servers, not a
-real pfSense instance. Do not use it on a production firewall. Verify API
-behaviour, compatibility, and recovery in an isolated environment first.
+**Status:** Login and alias listing have been tested on one real appliance.
+Alias writes and reloads have only been tested against mock servers. Do not use
+the resource on a production firewall. Verify API behaviour, compatibility,
+and recovery in an isolated environment first.
 
 The provider routes firewall operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
-is registered as `localhost`; that assumption has not yet been verified on an
-actual appliance. Firewall writes initiate a filter reload, but do not establish
-that the resulting rules are active. A mutex serializes requests within one
+is registered as `localhost`; alias listing worked on one appliance, but other
+installations have not been verified. Firewall writes initiate a filter reload,
+but do not establish that the resulting rules are active. A mutex serializes requests within one
 provider process; it does not coordinate separate Terraform processes.
 If a write or reload fails, check the firewall configuration and initiate a
 reload manually before retrying: Terraform refresh may observe the changed
@@ -121,7 +122,7 @@ With the development override configured, run `terraform plan`. This data
 source authenticates and requests the local firewall's alias list; it does not
 create, update, delete, or reload aliases. Login may create a session or audit
 record. A successful read verifies the login and list request, but the routing
-assumption above still needs testing on a real appliance.
+assumption above may not hold for other installations.
 
 The output contains the name, type, description (`descr`), and `truncated` flag
 for user-defined aliases, not system aliases or alias contents. Fields omitted
@@ -167,7 +168,37 @@ pnpm run test
 The tests use mock HTTP servers; when the Terraform CLI is available they also
 exercise create, update, import, refresh, and destroy through the actual
 provider protocol. They do not replace live acceptance tests. The Git hook and
-CI run the same lint and race-test commands.
+CI run the same lint and race-test commands, with CI running them in parallel.
+
+Future acceptance tests can run as a separate workflow job against an isolated,
+disposable pfSense instance with test-only credentials. If they become a release
+requirement, add that job to the release job's dependencies and ensure it runs
+on version tags; a skipped dependency would otherwise prevent the release. Do
+not expose test credentials or an appliance to untrusted pull request code.
 
 The repository uses two-space indentation by default. Go source follows `gofmt`
 and Makefile recipes use tabs.
+
+## 📦 Preparing a release
+
+The build and deploy workflow runs lint and tests on pushes and pull requests.
+For a pushed version tag, it creates a signed **draft** GitHub release only
+after validation succeeds. It does not publish the draft automatically. Before
+tagging:
+
+1. Register the GPG signing public key in the Terraform Registry. Configure
+   the GitHub Actions secrets `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE`; never commit
+   or share the private key or passphrase.
+2. Verify the release documentation and experimental warnings, and ensure the
+   intended commit has passed checks. The workflow builds Linux, macOS, Windows,
+   and FreeBSD packages for AMD64 and ARM64.
+3. Push a version tag such as `v0.1.0`. Review the draft release and its
+   signed checksums before publishing it. Do not replace assets of an already
+   published release.
+4. Register the repository in the Terraform Registry, or let its webhook ingest
+   later published releases. After ingestion, test `terraform init` in a fresh
+   directory without development overrides.
+
+The workflow embeds the tag version in the provider binary. Local builds report
+`dev`. Signing and publishing require repository and Registry permissions; the
+workflow alone does not configure those permissions or register the provider.

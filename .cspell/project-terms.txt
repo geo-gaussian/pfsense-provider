@@ -13,7 +13,11 @@ JIT
 QEMU
 KVM
 gofmt
+goarch
+goos
 gomod
+ghaction
+ldflags
 goroutines
 tfplugingen
 resp

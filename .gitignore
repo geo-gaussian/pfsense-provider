@@ -33,6 +33,7 @@ go.work.sum
 node_modules/
 pnpm-debug.log*
 /bin/
+/dist/
 /provider_code_spec.json
 
 # Editor/IDE
