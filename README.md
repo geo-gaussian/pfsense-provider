@@ -168,7 +168,13 @@ pnpm run test
 The tests use mock HTTP servers; when the Terraform CLI is available they also
 exercise create, update, import, refresh, and destroy through the actual
 provider protocol. They do not replace live acceptance tests. The Git hook and
-CI run the same lint and race-test commands.
+CI run the same lint and race-test commands, with CI running them in parallel.
+
+Future acceptance tests can run as a separate workflow job against an isolated,
+disposable pfSense instance with test-only credentials. If they become a release
+requirement, add that job to the release job's dependencies and ensure it runs
+on version tags; a skipped dependency would otherwise prevent the release. Do
+not expose test credentials or an appliance to untrusted pull request code.
 
 The repository uses two-space indentation by default. Go source follows `gofmt`
 and Makefile recipes use tabs.
@@ -181,7 +187,7 @@ after validation succeeds. It does not publish the draft automatically. Before
 tagging:
 
 1. Register the GPG signing public key in the Terraform Registry. Configure
-   the GitHub Actions secrets `GPG_PRIVATE_KEY` and `PASSPHRASE`; never commit
+   the GitHub Actions secrets `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE`; never commit
    or share the private key or passphrase.
 2. Verify the release documentation and experimental warnings, and ensure the
    intended commit has passed checks. The workflow builds Linux, macOS, Windows,
