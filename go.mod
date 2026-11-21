@@ -1,4 +1,4 @@
-module github.com/geo-gaussian/pfsense-provider
+module github.com/geo-gaussian/terraform-provider-pfsense-nexus
 
 go 1.25.0
 

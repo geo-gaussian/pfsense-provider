@@ -12,7 +12,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/geo-gaussian/pfsense-provider/internal/api"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 )
 
 func TestTerraformFirewallAliasesDataSource(t *testing.T) {

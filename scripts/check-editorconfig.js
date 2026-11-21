@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
-const ignored = new Set([".git", "node_modules", "vendor", "provider_code_spec.json"]);
+const ignored = new Set([".git", "dist", "node_modules", "vendor", "provider_code_spec.json"]);
 const checkExtensions = new Set([
   ".json",
   ".md",

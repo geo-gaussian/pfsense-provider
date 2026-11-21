@@ -4,10 +4,10 @@ import (
 	"context"
 	"strings"
 
-	"github.com/geo-gaussian/pfsense-provider/internal/api"
-	"github.com/geo-gaussian/pfsense-provider/internal/client"
-	"github.com/geo-gaussian/pfsense-provider/internal/provider/data_firewall_aliases"
-	"github.com/geo-gaussian/pfsense-provider/internal/provider/resource_firewall_alias"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/client"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_firewall_aliases"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -17,7 +17,9 @@ import (
 
 var _ provider.Provider = &pfsenseProvider{}
 
-type pfsenseProvider struct{}
+type pfsenseProvider struct {
+	version string
+}
 
 type providerModel struct {
 	URL      types.String `tfsdk:"url"`
@@ -26,13 +28,15 @@ type providerModel struct {
 	Insecure types.Bool   `tfsdk:"insecure"`
 }
 
-func New() provider.Provider {
-	return &pfsenseProvider{}
+func New(version string) func() provider.Provider {
+	return func() provider.Provider {
+		return &pfsenseProvider{version: version}
+	}
 }
 
 func (p *pfsenseProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "pfsense"
-	resp.Version = "0.1.0"
+	resp.Version = p.version
 }
 
 func (p *pfsenseProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
