@@ -32,6 +32,8 @@ go.work.sum
 # Node.js
 node_modules/
 pnpm-debug.log*
+/bin/
+/provider_code_spec.json
 
 # Editor/IDE
 .vscode/*

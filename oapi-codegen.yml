@@ -1,0 +1,16 @@
+package: api
+generate:
+  client: true
+  models: true
+output-options:
+  response-type-suffix: APIResponse
+  include-operation-ids:
+    - Login
+    - RefreshAccessToken
+    - FirewallGetAliases
+    - FirewallGetAlias
+    - FirewallAddAlias
+    - FirewallUpdateAlias
+    - FirewallDeleteAlias
+    - DoFilterReload
+    - GetFilterReloadStatus

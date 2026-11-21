@@ -1,2 +1,30 @@
 provider:
   name: pfsense_nexus
+resources:
+  firewall_alias:
+    create:
+      path: /aliases
+      method: PUT
+    read:
+      path: /aliases/{id}
+      method: GET
+    update:
+      path: /aliases/{id}
+      method: POST
+    delete:
+      path: /aliases/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - id
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - msg
+        - result
+        - sb
+        - status
+        - display_values
+        - truncated

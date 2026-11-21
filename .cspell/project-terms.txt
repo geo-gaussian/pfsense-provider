@@ -23,3 +23,9 @@ virtio
 gopkg
 favor
 terraformrc
+alrt
+alrtclr
+alrtoln
+descr
+tfsdk
+oapi

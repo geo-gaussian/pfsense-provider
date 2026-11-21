@@ -9,6 +9,8 @@ ignorePaths:
   - "**/pnpm-lock.yaml"
   - "**/*.png"
   - pnpm-lock.yaml
+  - docs/nexus.openapi.yaml
+  - "**/*_gen.go"
 
 files:
   - "**/*.go"
