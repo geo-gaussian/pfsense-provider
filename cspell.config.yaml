@@ -3,15 +3,22 @@ language: en-GB
 
 ignorePaths:
   - .git
+  - node_modules
+  - "**/go.sum"
+  - "**/go.mod"
+  - "**/pnpm-lock.yaml"
   - "**/*.png"
+  - pnpm-lock.yaml
 
 files:
-  - "**/*.py"
+  - "**/*.go"
   - "**/*.json"
+  - "**/*.md"
+  - "**/*.sh"
+  - "**/*.tf"
+  - "**/*.txt"
   - "**/*.yaml"
   - "**/*.yml"
-  - "**/*.md"
-  - "**/*.txt"
 
 dictionaryDefinitions:
   - name: project-terms

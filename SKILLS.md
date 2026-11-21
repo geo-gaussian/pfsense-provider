@@ -25,7 +25,7 @@ Every resource must implement `resource.ResourceWithImportState` so `terraform p
 
 ```go
 func (r *exampleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+  resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 ```
 
@@ -37,7 +37,7 @@ When Netgate's API omits write-only secrets (like WireGuard `privatekey`) from `
 
 ```go
 if apiResp.PrivateKey != "" {
-	state.PrivateKey = types.StringValue(apiResp.PrivateKey)
+  state.PrivateKey = types.StringValue(apiResp.PrivateKey)
 }
 // Otherwise keep state.PrivateKey untouched from req.State.Get(ctx, &state)
 ```
@@ -48,12 +48,12 @@ Always test JSON serialization, Bearer headers, and HTTP error handling without 
 
 ```go
 server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/api/v1/login" {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"token":"mock-jwt-token"}`))
-		return
-	}
-	w.WriteHeader(http.StatusOK)
+  if r.URL.Path == "/api/v1/login" {
+    w.WriteHeader(http.StatusOK)
+    _, _ = w.Write([]byte(`{"token":"mock-jwt-token"}`))
+    return
+  }
+  w.WriteHeader(http.StatusOK)
 }))
 defer server.Close()
 ```

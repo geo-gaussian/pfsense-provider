@@ -98,3 +98,27 @@ go test -v -race ./...
 # Run live acceptance tests against an isolated test router/VM
 TF_ACC=1 PFSENSE_URL="https://127.0.0.1:8443" PFSENSE_USERNAME="terraform-api" PFSENSE_PASSWORD="..." go test -v ./internal/provider/...
 ```
+
+## 🔧 Repository Setup
+
+Install JavaScript tooling, then explicitly install Git hooks:
+
+```bash
+pnpm install --ignore-scripts
+pnpm run setup-hooks
+```
+
+Dependency lifecycle scripts are disabled for package installation via
+`.npmrc`. `pnpm run setup-hooks` is a separate, explicit command that configures
+the local Git hooks.
+
+Run the complete local lint suite and race tests:
+
+```bash
+pnpm run lint
+pnpm run test
+```
+
+The repository uses `.editorconfig` with 2-space indentation for configuration,
+Markdown, Terraform, shell, and YAML files. Go files are formatted with `gofmt`,
+and cspell validates project documentation and source text.

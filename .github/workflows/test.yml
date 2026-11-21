@@ -1,0 +1,44 @@
+name: Test and lint
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.21.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install JavaScript dependencies without running install scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run lint checks
+        run: pnpm run lint
+
+      - name: Run race tests
+        run: pnpm run test

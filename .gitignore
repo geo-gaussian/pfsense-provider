@@ -29,6 +29,10 @@ go.work.sum
 # env file
 .env
 
+# Node.js
+node_modules/
+pnpm-debug.log*
+
 # Editor/IDE
-# .idea/
-# .vscode/
+.vscode/*
+!.vscode/settings.json
