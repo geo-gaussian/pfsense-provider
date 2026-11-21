@@ -1,0 +1,53 @@
+version: "0.2"
+language: en-GB
+
+ignorePaths:
+  - .git
+  - "**/*.png"
+
+files:
+  - "**/*.py"
+  - "**/*.json"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - "**/*.md"
+  - "**/*.txt"
+
+dictionaryDefinitions:
+  - name: project-terms
+    path: .cspell/project-terms.txt
+    addWords: true
+
+dictionaries:
+  - project-terms
+  - go
+  - softwareTerms
+  - filetypes
+  - en_GB
+
+words:
+  - Terraform
+  - parametric
+  - recompute
+  - STEP
+  - JSON
+  - YAML
+  - precommit
+  - repo
+  - repos
+  - linting
+  - lint
+  - CLI
+
+ignoreWords:
+  - todo
+  - FIXME
+
+overrides:
+  - filename: "**/.gitignore"
+    includeRegExpList:
+      - "/#.*/"
+
+allowCompoundWords: true
+useGitignore: true
+enableGlobDot: true

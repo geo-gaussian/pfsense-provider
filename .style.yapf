@@ -1,0 +1,23 @@
+[style]
+based_on_style = facebook
+
+# Imports
+blank_lines_between_top_level_imports_and_variables = 0
+
+# Indentation / width
+indent_width = 2
+column_limit = 120
+
+# Vertical function calls
+split_before_first_argument = true
+split_before_named_assigns = true
+
+# Boolean expressions
+split_before_logical_operator = true
+
+# Top-level spacing
+blank_lines_around_top_level_definition = 1
+
+# Brackets / alignment
+align_closing_bracket_with_visual_indent = false
+dedent_closing_brackets = true
