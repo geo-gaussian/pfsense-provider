@@ -1,124 +1,125 @@
-# 🛡️ Terraform Provider for pfSense Nexus (`pfsense-nexus`)
+# Terraform Provider for pfSense Nexus
 
-A custom Terraform provider built on HashiCorp's `terraform-plugin-framework` and generated from Netgate's official OpenAPI specification (`nexus.openapi.yaml`) to manage **pfSense Plus (26.07+)** and **pfSense (26.10+)** via the native Go-based REST API.
+This experimental provider manages a firewall alias on a local pfSense
+firewall through the Nexus controller. It uses Netgate's OpenAPI specification
+and HashiCorp's Terraform Plugin Framework.
 
-## ✨ Key Features
+**Status:** The implementation has only been tested against mock servers, not a
+real pfSense instance. Do not use it on a production firewall. Verify API
+behaviour, compatibility, and recovery in an isolated environment first.
 
-- **Native Go API Integration:** Communicates directly with the built-in Nexus REST API (`:8443`) using Bearer JWT authentication—no HTML scraping or legacy PHP packages required.
-- **OpenAPI-Driven Scaffolding:** Resource schemas and models are generated directly from Netgate's official `nexus.openapi.yaml` via `tfplugingen-openapi`.
-- **Thread-Safe Router Commits:** Built-in `sync.Mutex` serializes API writes so parallel Terraform graph execution never triggers configuration lock collisions on pfSense.
-- **Brownfield Code Generation:** Supports `import` blocks and `terraform plan -generate-config-out` to export existing firewall rules, aliases, VLANs, and WireGuard tunnels into HCL.
+The provider routes firewall operations through
+`/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
+is registered as `localhost`; that assumption has not yet been verified on an
+actual appliance. Firewall writes initiate a filter reload, but do not establish
+that the resulting rules are active. A mutex serializes requests within one
+provider process; it does not coordinate separate Terraform processes.
+If a write or reload fails, check the firewall configuration and initiate a
+reload manually before retrying: Terraform refresh may observe the changed
+configuration without retrying the failed reload. A failed create with an
+uncertain API response may also require importing the existing alias.
 
-## 🛠️ Prerequisites
+## Requirements
 
-- **Go** `1.23+`
-- **Terraform** `1.8+` (or OpenTofu `1.8+`)
-- **pfSense** `26.07+` (supported Netgate/cloud hardware) or `26.10+` (any `amd64` hardware/VM) with the Nexus service enabled on port `8443`.
-- HashiCorp code generators:
-  ```sh
-  go install ://github.com
-  go install ://github.com
-  ```
+- Go 1.25 or newer to build
+- Terraform 1.8 or newer
+- Node.js and pnpm for repository lint checks
+- A Nexus controller with a local firewall registered as described above
 
-## 🚀 Generating & Building the Provider
+## Build and configure Terraform
 
-1. **Fetch the latest Netgate OpenAPI specification:**
+```sh
+mkdir -p bin
+go build -o bin/terraform-provider-pfsense-nexus .
+```
 
-   ```sh
-   curl -o docs/nexus.openapi.yaml https://githubusercontent.com
-   ```
-
-2. **Generate Terraform Plugin Framework Go code:**
-
-   ```sh
-   tfplugingen-openapi generate \
-     --config generator_config.yml \
-     --output provider_code_spec.json \
-     docs/nexus.openapi.yaml
-
-   tfplugingen-framework generate all \
-     --input provider_code_spec.json \
-     --output internal/provider
-   ```
-
-3. **Compile the binary:**
-   ```sh
-   go mod tidy
-   go build -o pfsense-provider
-   ```
-
-## 💻 Local Development Setup (`~/.terraformrc`)
-
-Configure Terraform to use your locally compiled binary without publishing to the public registry:
+In a development-only Terraform CLI configuration, set the override to the
+**directory** containing that binary:
 
 ```hcl
 provider_installation {
   dev_overrides {
-    "local/pfsense-nexus" = "/absolute/path/to/pfsense-provider"
+    "geo-gaussian/pfsense-nexus" = "/absolute/path/to/bin"
   }
   direct {}
 }
 ```
 
-_(Skip `terraform init` when `dev_overrides` is active and run `terraform plan` directly.)_
-
-## 📝 Example Configuration
+Set `TF_CLI_CONFIG_FILE` to that configuration file. Terraform development
+overrides do not require `terraform init`.
 
 ```hcl
 terraform {
   required_providers {
-    pfsense-nexus = {
-      source = "local/pfsense-nexus"
+    pfsense = {
+      source = "geo-gaussian/pfsense-nexus"
     }
   }
 }
 
-provider "pfsense-nexus" {
-  url      = "https://192.168.1.1:8443"
-  username = "terraform-api"
-  password = var.pfsense_password
-  insecure = true
+variable "nexus_url" { type = string }
+variable "nexus_username" { type = string }
+variable "nexus_password" {
+  type      = string
+  sensitive = true
 }
 
-resource "pfsense_wireguard_tunnel" "wg0" {
-  name        = "tun_wg0"
-  description = "Site-to-Site WireGuard"
-  listen_port = 51820
-  private_key = var.wg0_private_key
-  enabled     = true
+provider "pfsense" {
+  url      = var.nexus_url
+  username = var.nexus_username
+  password = var.nexus_password
+}
+
+resource "pfsense_firewall_alias" "example" {
+  name     = "example"
+  type     = "host"
+  targets  = [{ name = "host.example.test" }]
 }
 ```
 
-## 🧪 Running Tests
+The local provider name `pfsense` maps to the `geo-gaussian/pfsense-nexus`
+source. Pass credentials through a secure mechanism, such as Terraform's environment
+variables, rather than committing them. TLS certificates are verified by
+default; `insecure = true` disables verification and is for isolated testing
+only. Terraform state can contain sensitive configuration; protect it.
+
+Import an existing alias by name:
 
 ```sh
-# Run offline unit tests (uses httptest mock server)
-go test -v -race ./...
-
-# Run live acceptance tests against an isolated test router/VM
-TF_ACC=1 PFSENSE_URL="https://127.0.0.1:8443" PFSENSE_USERNAME="terraform-api" PFSENSE_PASSWORD="..." go test -v ./internal/provider/...
+terraform import pfsense_firewall_alias.example example
 ```
 
-## 🔧 Repository Setup
+The former `pfsense_nexus_firewall_alias` resource type is no longer supported.
+If you have state from the earlier experimental version, back it up, remove
+the old resource addresses from state (not from the firewall), and import the
+existing aliases under the new resource type. Review the plan before applying.
 
-Install JavaScript tooling, then explicitly install Git hooks:
+## API specification and generation
 
-```bash
+[docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) corresponds to
+Netgate's [pfapi_openapi.yml](https://github.com/Netgate/pfsense-api/blob/b4acd7ca21dbca739a530403a1f62a7440f7726f/pfapi_openapi.yml)
+at commit `b4acd7ca21dbca739a530403a1f62a7440f7726f`, with whitespace
+changes. The upstream project is Apache-2.0 licensed; see the included
+[license](docs/NETGATE-LICENSE).
+
+Run `make generate` to regenerate the Terraform alias schema and the Go HTTP
+client using pinned generator versions. The generated `*_gen.go` files are not
+hand-edited. Terraform CRUD, session management, request serialization, and
+reload handling remain custom code.
+
+## Development
+
+```sh
 pnpm install --ignore-scripts
 pnpm run setup-hooks
-```
-
-Dependency lifecycle scripts are disabled for package installation via
-`.npmrc`. `pnpm run setup-hooks` is a separate, explicit command that configures
-the local Git hooks.
-
-Run the complete local lint suite and race tests:
-
-```bash
 pnpm run lint
 pnpm run test
 ```
 
-The repository uses `.editorconfig` with 2-space indentation for configuration,
-Markdown, Terraform, shell, and YAML files. Go files are formatted with `gofmt`,
-and cspell validates project documentation and source text.
+The tests use mock HTTP servers; when the Terraform CLI is available they also
+exercise create, update, import, refresh, and destroy through the actual
+provider protocol. They do not replace live acceptance tests. The Git hook and
+CI run the same lint and race-test commands.
+
+The repository uses two-space indentation by default. Go source follows `gofmt`
+and Makefile recipes use tabs.

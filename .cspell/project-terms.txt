@@ -13,6 +13,7 @@ JIT
 QEMU
 KVM
 gofmt
+gomod
 goroutines
 tfplugingen
 resp
@@ -23,3 +24,9 @@ virtio
 gopkg
 favor
 terraformrc
+alrt
+alrtclr
+alrtoln
+descr
+tfsdk
+oapi
