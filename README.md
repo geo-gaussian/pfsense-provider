@@ -1,5 +1,9 @@
 # 🌐 Terraform Provider for pfSense Nexus
 
+[![Unit coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Funit.json)](https://app.codecov.io/gh/geo-gaussian/terraform-provider-pfsense-nexus)
+[![Live acceptance coverage unavailable](https://img.shields.io/badge/acceptance-unavailable-lightgrey)](#-coverage)
+[![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
+
 This experimental provider manages a firewall alias on a local pfSense
 firewall through the Nexus controller. It uses Netgate's OpenAPI specification
 and HashiCorp's Terraform Plugin Framework.
@@ -185,8 +189,61 @@ they run a pinned YAPF version through `uvx`.
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
 through the actual provider protocol. They do not replace live acceptance tests.
-The Git hook and CI run the same lint and test commands, with CI running them
-in parallel.
+The Git hook and CI run the same lint and tests, with CI running lint and tests
+in parallel. CI also produces coverage reports.
+
+## 📊 Coverage
+
+Run `pnpm run coverage` to run Go race tests and produce the following files
+under `coverage-report/`:
+
+- `unit.out`: Go statement coverage for project Go code, excluding files
+  marked as generated and the coverage reporting tool itself. Inspect it with
+  `go tool cover -func=coverage-report/unit.out` or
+  `go tool cover -html=coverage-report/unit.out`.
+- `api-report.md`: every HTTP method and path in the bundled OpenAPI
+  specification, with implementation and mock-test evidence where supported.
+  The percentage is implemented operations divided by all documented
+  operations, not the percentage of API fields or behaviours implemented.
+- `badges/`: Shields endpoint JSON for unit and API coverage, plus an
+  unavailable acceptance badge.
+
+Unit coverage includes in-process mock tests. The Terraform protocol tests use
+mock HTTP servers and spawn a separate, uninstrumented provider process; they
+are neither live acceptance tests nor a measurement of that process's
+coverage. Manually observed API operations are identified separately in the
+API report and do not imply live acceptance coverage. Live acceptance coverage
+remains unavailable until real appliance tests and child-process coverage
+collection are implemented. A future live job must build an instrumented
+provider with `go build -cover`, collect its data using `GOCOVERDIR`, convert
+it with `go tool covdata textfmt`, and upload that separate profile with an
+`acceptance` Codecov flag. It must not reuse the unit profile.
+
+CI uploads the filtered profile to Codecov with the `unit` flag and publishes
+the reports as a workflow artifact. Connect the repository to Codecov and add
+its upload token as the GitHub Actions secret `CODECOV_TOKEN`; protected
+branches normally require it. Fork and Dependabot workflows may not receive
+repository secrets, so uploads can be unavailable. Upload errors do not block
+CI; inspect the upload step and Codecov to confirm delivery. Do not share the
+token in issues, logs, or configuration files.
+
+To publish the unit and API badges, enable GitHub Pages in repository settings
+and select **GitHub Actions** as the source. After lint and tests pass on a
+push to `main`, the workflow deploys badge data to Pages. Until the first
+successful deployment, those badges may show an error. Badges reflect the
+latest successful main-branch deployment, not pull requests. Shields and Pages
+caches can delay updates. The badge colours are green at 95% or above,
+yellow-green at 80%, yellow at 70%, orange at 50%, and red below 50%;
+unavailable is grey.
+Percentages are truncated to two decimal places for display; colour thresholds
+use the unrounded percentage.
+
+When adding provider support, update the explicit operation evidence in
+`tools/coverage/main.go` with the matching method, path, provider call, and
+mock-test file. The report checks mappings against the specification and
+checks that the provider call exists; maintainers must verify that the
+referenced tests actually exercise each operation. Generated client methods
+alone do not count as support.
 
 Future acceptance tests can run as a separate workflow job against an isolated,
 disposable pfSense instance with test-only credentials. If they become a release
