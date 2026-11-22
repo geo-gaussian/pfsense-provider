@@ -34,6 +34,7 @@ uncertain API response may also require importing the existing alias.
 - Terraform 1.8 or newer
 - Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
   repository lint checks
+- jq for the Pages deployment guard and its offline tests
 - A Nexus controller with a local firewall registered as described above
 
 ## 📥 Install from the Terraform Registry
@@ -187,6 +188,9 @@ pnpm run test
 The lint and format commands require [uv](https://docs.astral.sh/uv/);
 they run a pinned YAPF version through `uvx`. Node runs the TypeScript
 tooling directly; lint also checks its types without emitting build files.
+The lint checks include a targeted inline-program safeguard, described in
+[DEVELOPMENT.md](DEVELOPMENT.md). Spec Kit-managed scripts under
+`.specify/scripts/` are exempt from the no-inline-program rule.
 
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy

@@ -80,8 +80,8 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Run formatting tests
-        run: node --test scripts/check-format.test.ts
+      - name: Run tooling tests
+        run: node --test scripts/*.test.ts
 
       - name: Run race tests and produce coverage reports
         run: pnpm run coverage
@@ -123,17 +123,16 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
       - name: Check that the commit is still current
         id: current
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          current=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
-          if [ "$current" = "$GITHUB_SHA" ]; then
-            echo "deploy=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "Skipping an outdated main-branch deployment."
-          fi
+        run: sh scripts/check-current-commit.sh
 
       - name: Deploy coverage badges
         id: deployment

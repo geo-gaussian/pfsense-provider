@@ -7,17 +7,18 @@
 		"node": "^22.18.0 || >=23.6.0"
 	},
 	"scripts": {
-		"lint": "pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:types && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
+		"lint": "pnpm run lint:inline && pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:types && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
+		"lint:inline": "node scripts/check-inline-programs.ts",
 		"lint:editorconfig": "node scripts/check-editorconfig.ts",
 		"lint:format": "prettier --check '**/*.{js,ts,json,sh}' .githooks/pre-commit",
 		"lint:types": "tsc --noEmit",
 		"lint:python": "node scripts/format-python.ts --check",
 		"lint:cspell": "cspell --config cspell.config.yaml --no-progress --no-must-find-files \"**/*\"",
-		"lint:go": "gofmt -l . | awk 'NF { print } END { exit NR ? 1 : 0 }' && go vet ./...",
+		"lint:go": "sh scripts/check-go-format.sh && go vet ./...",
 		"format": "pnpm run format:prettier && pnpm run format:python",
 		"format:prettier": "prettier --write '**/*.{js,ts,json,sh}' .githooks/pre-commit",
 		"format:python": "node scripts/format-python.ts --write",
-		"test": "node --test scripts/check-format.test.ts && go test -race ./...",
+		"test": "node --test scripts/*.test.ts && go test -race ./...",
 		"coverage": "go test -race -coverprofile=coverage.raw.out ./... && go run ./tools/coverage coverage.raw.out coverage-report",
 		"setup-hooks": "node scripts/install-hooks.ts"
 	},

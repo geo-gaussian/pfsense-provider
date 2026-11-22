@@ -10,6 +10,8 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const prettier = require.resolve("prettier/bin/prettier.cjs");
 const root = fileURLToPath(new URL("..", import.meta.url));
+const fixture = (name: string) =>
+	fs.readFileSync(path.join(root, "testdata", "format", name), "utf8");
 
 function runPrettier(filename: string, input: string, check = true) {
 	const args = [prettier, "--stdin-filepath", filename];
@@ -23,28 +25,22 @@ function runPrettier(filename: string, input: string, check = true) {
 	return result;
 }
 
-for (const [filename, tabbed, spaced] of [
-	["fixture.js", "if (true) {\n\tfoo();\n}\n", "if (true) {\n  foo();\n}\n"],
-	["fixture.ts", "if (true) {\n\tfoo();\n}\n", "if (true) {\n  foo();\n}\n"],
-	["fixture.json", '{\n\t"value": 1\n}\n', '{\n  "value": 1\n}\n'],
-	[
-		"fixture.sh",
-		"if true; then\n\techo ok\nfi\n",
-		"if true; then\n  echo ok\nfi\n",
-	],
+for (const [filename, fixtureName] of [
+	["fixture.js", "fixture.ts"],
+	["fixture.ts", "fixture.ts"],
+	["fixture.json", "fixture.json"],
+	["fixture.sh", "fixture.sh"],
 ]) {
 	test(`${filename} requires tabs for indentation`, () => {
+		const tabbed = fixture(fixtureName);
+		const spaced = tabbed.replaceAll("\t", "  ");
 		assert.equal(runPrettier(filename, tabbed).status, 0);
 		assert.equal(runPrettier(filename, spaced).status, 1);
 	});
 }
 
 test("shell formatting preserves here-document content", () => {
-	const result = runPrettier(
-		"fixture.sh",
-		"if true; then\n\tcat <<EOF\n  keep spaces\nEOF\nfi\n",
-		false,
-	);
+	const result = runPrettier("fixture.sh", fixture("here-document.sh"), false);
 	assert.equal(result.status, 0);
 	assert.match(result.stdout, /\n  keep spaces\n/);
 });
@@ -59,22 +55,26 @@ test("whitespace checker includes TypeScript files", (t) => {
 		checker,
 	);
 	fs.writeFileSync(path.join(dir, "package.json"), '{"type":"module"}\n');
-	const fixture = path.join(dir, "fixture.ts");
-	fs.writeFileSync(fixture, "\tconst value = 1;\n");
+	const fixturePath = path.join(dir, "fixture.ts");
+	const source = fixture("fixture.ts");
+	fs.writeFileSync(fixturePath, source);
 	const check = () =>
 		spawnSync(process.execPath, [checker], { encoding: "utf8" });
 	assert.equal(check().status, 0);
-	fs.writeFileSync(fixture, "const value = 1; \n");
+	fs.writeFileSync(fixturePath, source.replace("\n", " \n"));
 	const invalid = check();
 	assert.equal(invalid.status, 1);
 	assert.match(invalid.stderr, /fixture\.ts:1: trailing whitespace/);
 });
 
-for (const [filename, spaced] of [
-	[".specify/integrations/fixture.json", '{\n  "value": 1\n}\n'],
-	[".specify/scripts/bash/fixture.sh", "if true; then\n  echo ok\nfi\n"],
+for (const [filename, fixtureName] of [
+	[".specify/integrations/fixture.json", "fixture.json"],
+	[".specify/scripts/bash/fixture.sh", "fixture.sh"],
 ]) {
 	test(`${filename} is not excluded from formatting`, () => {
-		assert.equal(runPrettier(filename, spaced).status, 1);
+		assert.equal(
+			runPrettier(filename, fixture(fixtureName).replaceAll("\t", "  ")).status,
+			1,
+		);
 	});
 }

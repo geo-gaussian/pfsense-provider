@@ -3,6 +3,26 @@
 These project playbooks supplement [AGENTS.md](AGENTS.md); they are not Spec
 Kit agent skills. Spec Kit's installed skills live in `.github/skills/`.
 
+## 🧩 Keeping programs in standalone files
+
+Put programs in files written in their own language, including Terraform test
+fixtures. Supply changing values through arguments, environment variables, or
+the language's configuration variables instead of building source strings.
+Use standalone files for interpreter, AWK, sed, and jq programs; the same rule
+applies to agent terminal commands and workflow automation. Ordinary commands
+and their arguments remain inline. See [AGENTS.md](AGENTS.md) for the approved
+Spec Kit script exemption and the approval requirement for any other exception.
+
+`pnpm run lint:inline` checks common interpreter and filter invocations in
+shell scripts, package scripts, Makefiles, and workflows; multiline workflow
+blocks; and Terraform configuration in Go raw strings. It skips the existing
+Spec Kit-managed shell scripts explicitly listed in the checker, documentation,
+and generated Go files. Update that list when managed scripts change; do not
+add project-owned scripts to it. This is a targeted safeguard,
+not a parser for every language or a guarantee that all embedded programs are
+detected. Review changes manually, including other string forms and subprocess
+argument lists.
+
 ## 🔌 Adding a New Resource via `tfplugingen-openapi`
 
 1. Locate the target operations and methods in `docs/nexus.openapi.yaml`.
