@@ -1,6 +1,6 @@
-## 📝 Description
+## 📝 Summary
 
-<!-- Describe the changes, why they are needed, and link related issues. -->
+<!-- Sumarise the changes, why they are needed, and link related issues. -->
 
 ## 🧪 Testing
 
