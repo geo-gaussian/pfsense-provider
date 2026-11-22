@@ -1,9 +1,18 @@
 {
-  "editor.formatOnSave": true,
-  "editor.insertSpaces": true,
-  "editor.tabSize": 2,
-  "editor.detectIndentation": false,
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "cSpell.configFile": "cspell.config.yaml"
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.tabSize": 2,
+	"editor.detectIndentation": false,
+	"files.trimTrailingWhitespace": true,
+	"files.insertFinalNewline": true,
+	"cSpell.configFile": "cspell.config.yaml",
+	"[yaml]": {
+		"editor.insertSpaces": true
+	},
+	"[terraform]": {
+		"editor.insertSpaces": true
+	},
+	"[markdown]": {
+		"editor.insertSpaces": true
+	}
 }

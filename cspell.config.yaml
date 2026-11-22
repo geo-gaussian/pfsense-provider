@@ -41,6 +41,7 @@ words:
   - STEP
   - JSON
   - YAML
+  - YAPF
   - precommit
   - repo
   - repos
@@ -56,6 +57,45 @@ overrides:
   - filename: "**/.gitignore"
     includeRegExpList:
       - "/#.*/"
+  - filename:
+      - ".github/skills/speckit-*/**"
+      - ".specify/scripts/**"
+      - ".specify/templates/*"
+      - ".specify/workflows/speckit/**"
+    language: "en-GB,en-US"
+    words:
+      # cspell:disable
+      - TKTK
+      - Measurability
+      - tradeoffs
+      - pycache
+      - venv
+      - rlib
+      - autom
+      - swiftpm
+      - Rproj
+      - Ruserdata
+      - renv
+      - tfstate
+      - tfvars
+      - kubeconfig
+      - parallelizable
+      - unparseable
+      - isinstance
+      - RSTART
+      - RLENGTH
+      - lexists
+      - TMPL
+      - runpy
+      - strat
+      - uncollapsed
+      - isalpha
+      - isdecimal
+      - shlex
+      - pytest
+      - TXXX
+      - alquimia
+      # cspell:enable
 
 allowCompoundWords: true
 useGitignore: true

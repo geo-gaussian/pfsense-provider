@@ -31,6 +31,9 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
       - name: Install JavaScript dependencies without running install scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
 
@@ -67,6 +70,9 @@ jobs:
         with:
           terraform_version: 1.11.4
           terraform_wrapper: false
+
+      - name: Install JavaScript dependencies without running install scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Install Go dependencies
         run: go mod download

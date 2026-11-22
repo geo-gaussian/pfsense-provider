@@ -1,4 +1,4 @@
-# pfSense Nexus Provider
+# 🌐 pfSense Nexus Provider
 
 The experimental pfSense Nexus provider manages firewall aliases and reads
 alias metadata through the Nexus controller's local firewall API.
@@ -13,7 +13,7 @@ terraform {
   required_providers {
     pfsense = {
       source  = "geo-gaussian/pfsense-nexus"
-      version = "0.1.0"
+      version = ">= 0.1.1"
     }
   }
 }

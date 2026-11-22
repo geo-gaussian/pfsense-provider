@@ -1,0 +1,5 @@
+.terraform/
+provider_code_spec.json
+node_modules/
+dist/
+bin/

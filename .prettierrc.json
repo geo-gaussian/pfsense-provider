@@ -1,0 +1,13 @@
+{
+	"useTabs": true,
+	"tabWidth": 2,
+	"plugins": ["prettier-plugin-sh"],
+	"overrides": [
+		{
+			"files": ".githooks/pre-commit",
+			"options": {
+				"parser": "sh"
+			}
+		}
+	]
+}

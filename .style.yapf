@@ -6,6 +6,7 @@ blank_lines_between_top_level_imports_and_variables = 0
 
 # Indentation / width
 indent_width = 2
+use_tabs = true
 column_limit = 120
 
 # Vertical function calls
