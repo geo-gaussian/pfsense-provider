@@ -10,12 +10,16 @@ import (
 
 var version = "dev"
 
+// These dependencies can be replaced to test startup without exiting the test process.
+var serveProvider = frameworkprovider.Serve
+var fatal = log.Fatal
+
 func main() {
 	ctx := context.Background()
-	err := frameworkprovider.Serve(ctx, provider.New(version), frameworkprovider.ServeOpts{
+	err := serveProvider(ctx, provider.New(version), frameworkprovider.ServeOpts{
 		Address: "registry.terraform.io/geo-gaussian/pfsense-nexus",
 	})
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 }

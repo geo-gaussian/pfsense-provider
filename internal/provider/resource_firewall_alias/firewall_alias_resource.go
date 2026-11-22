@@ -10,12 +10,14 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 var _ resource.Resource = &aliasResource{}
@@ -106,6 +108,10 @@ func (m *FirewallAliasModel) recoveryState(ctx context.Context) FirewallAliasMod
 }
 
 func (m *FirewallAliasModel) fromAPI(ctx context.Context, value *api.FWAlias) error {
+	return m.fromAPIWithFactories(ctx, value, NewTargetsValue, types.ListValue)
+}
+
+func (m *FirewallAliasModel) fromAPIWithFactories(ctx context.Context, value *api.FWAlias, newTarget func(map[string]attr.Type, map[string]attr.Value) (TargetsValue, diag.Diagnostics), newList func(attr.Type, []attr.Value) (basetypes.ListValue, diag.Diagnostics)) error {
 	if value.Truncated != nil && *value.Truncated {
 		return fmt.Errorf("API returned a truncated alias; refusing to store incomplete state")
 	}
@@ -127,7 +133,7 @@ func (m *FirewallAliasModel) fromAPI(ctx context.Context, value *api.FWAlias) er
 	if value.Targets != nil {
 		targets := make([]attr.Value, 0, len(*value.Targets))
 		for _, v := range *value.Targets {
-			target, diags := NewTargetsValue(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
+			target, diags := newTarget(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
 				"name": types.StringValue(v.Name), "descr": stringValue(v.Descr), "updatefreq": stringValue(v.Updatefreq),
 			})
 			if diags.HasError() {
@@ -135,7 +141,7 @@ func (m *FirewallAliasModel) fromAPI(ctx context.Context, value *api.FWAlias) er
 			}
 			targets = append(targets, target)
 		}
-		list, listDiags := types.ListValue(targetType, targets)
+		list, listDiags := newList(targetType, targets)
 		if listDiags.HasError() {
 			return fmt.Errorf("invalid target list returned by API: %s", listDiags.Errors()[0].Detail())
 		}

@@ -147,3 +147,49 @@ func TestAuthenticationFailureStopsRequest(t *testing.T) {
 		t.Fatalf("sent %d requests after authentication failure", requests.Load())
 	}
 }
+
+func TestSessionFailures(t *testing.T) {
+	tests := []struct {
+		name    string
+		refresh bool
+		status  int
+		body    string
+		cancel  bool
+		want    string
+	}{
+		{name: "missing login token", status: http.StatusOK, body: `{}`, want: "authentication failed"},
+		{name: "login transport failure", cancel: true, want: "authenticate with Nexus"},
+		{name: "missing refresh token", refresh: true, status: http.StatusOK, body: `{}`, want: "session refresh failed"},
+		{name: "rejected refresh", refresh: true, status: http.StatusUnauthorized, body: `{}`, want: "session refresh failed"},
+		{name: "refresh transport failure", refresh: true, cancel: true, want: "refresh Nexus session"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.status)
+				_, _ = w.Write([]byte(tt.body))
+			}))
+			defer server.Close()
+			c, err := New(server.URL, "test-user", strings.Repeat("x", 12), true)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if tt.refresh {
+				c.token = "existing"
+			}
+			ctx := context.Background()
+			if tt.cancel {
+				var cancel context.CancelFunc
+				ctx, cancel = context.WithCancel(ctx)
+				cancel()
+			}
+			if err := c.ensureSession(ctx); err == nil || !strings.Contains(err.Error(), tt.want) {
+				t.Fatalf("error = %v, want %q", err, tt.want)
+			}
+		})
+	}
+	if _, err := New("https://example.test", "", "x", false); err == nil {
+		t.Fatal("accepted empty username")
+	}
+}

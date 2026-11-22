@@ -52,6 +52,10 @@ func (p *pfsenseProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 }
 
 func (p *pfsenseProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	p.configure(ctx, req, resp, api.NewClientWithResponses)
+}
+
+func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse, newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) {
 	var config providerModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	if resp.Diagnostics.HasError() {
@@ -66,7 +70,7 @@ func (p *pfsenseProvider) Configure(ctx context.Context, req provider.ConfigureR
 		resp.Diagnostics.AddError("Invalid provider configuration", err.Error())
 		return
 	}
-	apiClient, err := api.NewClientWithResponses(strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api", api.WithHTTPClient(nexus))
+	apiClient, err := newAPI(strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api", api.WithHTTPClient(nexus))
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to configure API client", err.Error())
 		return

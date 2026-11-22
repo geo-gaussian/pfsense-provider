@@ -218,6 +218,9 @@ collection are implemented. A future live job must build an instrumented
 provider with `go build -cover`, collect its data using `GOCOVERDIR`, convert
 it with `go tool covdata textfmt`, and upload that separate profile with an
 `acceptance` Codecov flag. It must not reuse the unit profile.
+Unit tests simulate some dependency failures that current implementations
+cannot produce. Full statement coverage does not guarantee every branch is
+tested or replace live acceptance testing.
 
 CI uploads the filtered profile to Codecov with the `unit` flag and publishes
 the reports as a workflow artifact. Connect the repository to Codecov and add

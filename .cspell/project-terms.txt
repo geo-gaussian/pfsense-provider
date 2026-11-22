@@ -35,5 +35,7 @@ alrt
 alrtclr
 alrtoln
 descr
+diag
 tfsdk
+tftypes
 oapi
