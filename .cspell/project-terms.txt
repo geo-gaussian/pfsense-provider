@@ -13,6 +13,9 @@ JIT
 QEMU
 KVM
 gofmt
+GOCOVERDIR
+covdata
+textfmt
 goarch
 goos
 gomod

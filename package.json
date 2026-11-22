@@ -13,6 +13,7 @@
 		"format:prettier": "prettier --write '**/*.{js,json,sh}' .githooks/pre-commit",
 		"format:python": "node scripts/format-python.js --write",
 		"test": "node --test scripts/check-format.test.js && go test -race ./...",
+		"coverage": "go test -race -coverprofile=coverage.raw.out ./... && go run ./tools/coverage coverage.raw.out coverage-report",
 		"setup-hooks": "node scripts/install-hooks.js"
 	},
 	"devDependencies": {
