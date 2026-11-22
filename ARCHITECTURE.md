@@ -73,8 +73,9 @@ requires replacement. The resource uses `PUT /aliases` to create,
 `DELETE /aliases/{id}` to delete.
 
 After a successful write, the provider initiates a filter reload with
-`POST /system/filterreload/reload` and verifies the alias through a read. It
-does **not** wait for reload completion or prove that the rules are active.
+`POST /system/filterreload/reload` and reads the alias to verify its state, or
+its absence after deletion. It does **not** wait for reload completion or
+prove that the rules are active.
 If a write or reload fails, inspect the firewall and reload manually before
 retrying; state refresh may observe the change without retrying the reload.
 An uncertain create response may require importing the existing alias.

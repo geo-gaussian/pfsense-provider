@@ -1,6 +1,9 @@
-# 🧠 SKILLS.md — Technical Patterns & Playbooks
+# 🧠 Development Playbooks
 
-## 🔌 Skill 1: Adding a New Resource via `tfplugingen-openapi`
+These project playbooks supplement [AGENTS.md](AGENTS.md); they are not Spec
+Kit agent skills. Spec Kit's installed skills live in `.github/skills/`.
+
+## 🔌 Adding a New Resource via `tfplugingen-openapi`
 
 1. Locate the target operations and methods in `docs/nexus.openapi.yaml`.
 2. Add the mapping under `resources:` in `generator_config.yml`, and include
@@ -12,7 +15,7 @@
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.
 
-## 📥 Skill 2: Implementing `ImportState` for Brownfield HCL Generation
+## 📥 Implementing `ImportState` for Brownfield HCL Generation
 
 Every resource must implement `resource.ResourceWithImportState`. An import
 block and `terraform plan -generate-config-out=...` can help generate
@@ -27,7 +30,7 @@ func (r *exampleResource) ImportState(ctx context.Context, req resource.ImportSt
 Replace `"id"` with the actual state attribute used as the import identifier.
 For example, the alias resource imports by `name`.
 
-## 🔒 Skill 3: Preventing Secret Wipeouts on `Read()`
+## 🔒 Preventing Secret Wipeouts on `Read()`
 
 When Netgate's API omits write-only secrets (like WireGuard `privatekey`) from `GET` responses, preserve prior state:
 
@@ -38,13 +41,13 @@ if apiResp.PrivateKey != "" {
 // Otherwise keep state.PrivateKey untouched from req.State.Get(ctx, &state)
 ```
 
-## 🧪 Skill 4: Offline HTTP Unit Testing with `httptest`
+## 🧪 Offline HTTP Unit Testing with `httptest`
 
 Test JSON serialization, authentication, and HTTP errors without needing a live
 router. See `internal/client/client_test.go` and the existing resource and data
 source tests for the current request paths and mock-server patterns.
 
-## 🖥️ Skill 5: Planning live acceptance tests
+## 🖥️ Planning live acceptance tests
 
 Live acceptance tests and an appliance provisioning workflow are not yet
 implemented. Use an isolated, disposable pfSense environment and test-only

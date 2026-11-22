@@ -19,6 +19,17 @@ write operations and compatibility with other versions remain unverified.
    - If a `GET` endpoint masks or omits a secret value, `Read()` MUST retain the existing `state` value rather than overwriting it with an empty string.
 5. **Graceful 404 Handling in `Read()`:**
    - When the Nexus API returns `HTTP 404 Not Found` during `Read()`, call `resp.State.RemoveResource(ctx)` and return without adding an error diagnostic so Terraform detects out-of-band deletion cleanly.
+6. **POSIX Shell Scripts:**
+   - Project-owned shell scripts MUST use POSIX shell syntax and `#!/bin/sh`. Spec Kit-managed scripts are temporarily exempt.
+
+## 📝 Documentation Rules
+
+- Markdown headings at levels 1, 2, and 3 MUST include a relevant emoji.
+- Use two-space indentation in Markdown and preserve rendered list and code
+  block structure.
+- Follow the repository's cspell configuration and update documentation when
+  behaviour or development workflows change.
+- Keep examples free of credentials and other sensitive information.
 
 ## 🔄 Standard Development Workflow
 

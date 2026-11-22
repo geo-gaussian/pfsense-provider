@@ -6,13 +6,13 @@ labels: ""
 assignees: ""
 ---
 
-## Problem or use case
+## 🎯 Problem or use case
 
-## Proposed solution
+## 💡 Proposed solution
 
 <!-- Include an example Terraform configuration and relevant Nexus API
 endpoint or documentation, if known. Do not include sensitive information. -->
 
-## Alternatives considered
+## ⚖️ Alternatives considered
 
-## Additional context
+## 📋 Additional context

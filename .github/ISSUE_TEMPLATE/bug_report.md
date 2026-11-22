@@ -6,17 +6,17 @@ labels: ""
 assignees: ""
 ---
 
-## Description
+## 📝 Description
 
 <!-- Describe the problem and its impact. -->
 
-## Steps to reproduce
+## 🔁 Steps to reproduce
 
 <!-- Include a minimal Terraform configuration and commands, if possible. -->
 
-## Expected and actual behaviour
+## ⚖️ Expected and actual behaviour
 
-## Environment
+## 💻 Environment
 
 - Provider version or commit:
 - Terraform version:
@@ -25,7 +25,7 @@ assignees: ""
 - Operating system:
 - Mock server or isolated appliance:
 
-## Logs and additional context
+## 📋 Logs and additional context
 
 <!-- Redact credentials, tokens, keys, IP addresses, configuration, state, and
 other sensitive information before sharing logs or examples. -->

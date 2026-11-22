@@ -169,6 +169,9 @@ reload handling remain custom code.
 
 ## 💻 Development
 
+See [DEVELOPMENT.md](DEVELOPMENT.md) for implementation and testing playbooks
+and [AGENTS.md](AGENTS.md) for mandatory project rules.
+
 ```sh
 pnpm install --ignore-scripts
 pnpm run setup-hooks
@@ -195,7 +198,11 @@ The repository prefers tabs displayed at two columns for project-owned code
 and JSON. YAML, Terraform, and Markdown use two-space indentation; Go follows
 `gofmt` and Makefile recipes use tabs. Lint uses YAPF for Python and Prettier
 for JavaScript, JSON, and shell, including Spec Kit's managed files. Spaces
-are allowed for alignment and content where needed.
+are allowed for alignment and content where needed. Markdown and YAML are not
+automatically formatted; the whitespace check catches some issues but does not
+enforce all indentation. Project-owned shell scripts use POSIX shell and
+`#!/bin/sh`; Spec Kit-managed scripts are temporarily exempt. POSIX shell
+compatibility is not currently checked by lint.
 
 Run `pnpm run format` to reformat those files after generating or updating
 Spec Kit. Review the changes before committing. Formatting changes to managed
