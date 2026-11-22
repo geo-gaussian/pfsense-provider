@@ -176,6 +176,9 @@ pnpm run lint
 pnpm run test
 ```
 
+The lint and format commands require [uv](https://docs.astral.sh/uv/);
+they run a pinned YAPF version through `uvx`.
+
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
 through the actual provider protocol. They do not replace live acceptance tests.
@@ -190,11 +193,14 @@ not expose test credentials or an appliance to untrusted pull request code.
 
 The repository prefers tabs displayed at two columns for project-owned code
 and JSON. YAML, Terraform, and Markdown use two-space indentation; Go follows
-`gofmt` and Makefile recipes use tabs. YAPF is configured to use tabs for
-Python block indentation, but Python formatting is not yet checked by lint.
-Spec Kit's managed files retain their generated formatting. The lint check
-uses Prettier to enforce tab indentation in project-owned JavaScript, JSON,
-and shell files; it allows spaces for alignment and content where needed.
+`gofmt` and Makefile recipes use tabs. Lint uses YAPF for Python and Prettier
+for JavaScript, JSON, and shell, including Spec Kit's managed files. Spaces
+are allowed for alignment and content where needed.
+
+Run `pnpm run format` to reformat those files after generating or updating
+Spec Kit. Review the changes before committing. Formatting changes to managed
+files count as local edits: Spec Kit upgrades may preserve them or require
+manual reconciliation. Do not update its recorded hashes to hide changes.
 
 ## 📦 Preparing a release
 

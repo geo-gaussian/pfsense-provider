@@ -42,3 +42,12 @@ test("shell formatting preserves here-document content", () => {
 	assert.equal(result.status, 0);
 	assert.match(result.stdout, /\n  keep spaces\n/);
 });
+
+for (const [filename, spaced] of [
+	[".specify/integrations/fixture.json", '{\n  "value": 1\n}\n'],
+	[".specify/scripts/bash/fixture.sh", "if true; then\n  echo ok\nfi\n"],
+]) {
+	test(`${filename} is not excluded from formatting`, () => {
+		assert.equal(runPrettier(filename, spaced).status, 1);
+	});
+}

@@ -24,10 +24,3 @@ tab_width = 2
 
 [LICENSE]
 trim_trailing_whitespace = false
-
-[.specify/**]
-indent_style = unset
-indent_size = unset
-
-[.specify/workflows/workflow-registry.json]
-insert_final_newline = unset

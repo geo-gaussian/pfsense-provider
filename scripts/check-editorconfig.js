@@ -14,6 +14,7 @@ const checkExtensions = new Set([
 	".js",
 	".json",
 	".md",
+	".py",
 	".sh",
 	".tf",
 	".yaml",
@@ -46,18 +47,11 @@ function walk(directory) {
 		const relative = path.relative(root, absolute).split(path.sep).join("/");
 		const text = fs.readFileSync(absolute, "utf8");
 		const lines = text.split("\n");
-		const managedSpecKit =
-			relative.startsWith(".specify/") ||
-			relative.startsWith(".github/skills/speckit-");
 		const tabsAllowed =
-			managedSpecKit ||
-			[".js", ".json", ".sh"].includes(extension) ||
+			[".js", ".json", ".py", ".sh"].includes(extension) ||
 			entry.name === "Makefile";
 
-		if (
-			!text.endsWith("\n") &&
-			relative !== ".specify/workflows/workflow-registry.json"
-		) {
+		if (!text.endsWith("\n")) {
 			issues.push(`${relative}: missing final newline`);
 		}
 		lines.forEach((line, index) => {
