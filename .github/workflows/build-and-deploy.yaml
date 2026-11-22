@@ -35,7 +35,7 @@ jobs:
           cache: pnpm
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v10.4.0
 
       - name: Install Node dependencies without running install scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
