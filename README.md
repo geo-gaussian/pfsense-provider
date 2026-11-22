@@ -1,4 +1,4 @@
-# Terraform Provider for pfSense Nexus
+# 🌐 Terraform Provider for pfSense Nexus
 
 This experimental provider manages a firewall alias on a local pfSense
 firewall through the Nexus controller. It uses Netgate's OpenAPI specification
@@ -9,25 +9,36 @@ Alias writes and reloads have only been tested against mock servers. Do not use
 the resource on a production firewall. Verify API behaviour, compatibility,
 and recovery in an isolated environment first.
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
+overview.
+
 The provider routes firewall operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
 installations have not been verified. Firewall writes initiate a filter reload,
-but do not establish that the resulting rules are active. A mutex serializes requests within one
-provider process; it does not coordinate separate Terraform processes.
+but do not establish that the resulting rules are active. Requests are
+serialized per configured client, not across separate provider configurations
+or Terraform processes.
 If a write or reload fails, check the firewall configuration and initiate a
 reload manually before retrying: Terraform refresh may observe the changed
 configuration without retrying the failed reload. A failed create with an
 uncertain API response may also require importing the existing alias.
 
-## Requirements
+## 📋 Requirements
 
 - Go 1.25 or newer to build
 - Terraform 1.8 or newer
 - Node.js and pnpm for repository lint checks
 - A Nexus controller with a local firewall registered as described above
 
-## Build and configure Terraform
+## 📥 Install from the Terraform Registry
+
+Declare `geo-gaussian/pfsense-nexus` in `required_providers`, as shown below,
+and run `terraform init` without a development override. Commit
+`.terraform.lock.hcl` for reproducible provider selection; do not commit state,
+saved plans, or files containing credentials.
+
+## 🛠️ Build and configure for development
 
 ```sh
 mkdir -p bin
@@ -84,7 +95,7 @@ variables, rather than committing them. TLS certificates are verified by
 default; `insecure = true` disables verification and is for isolated testing
 only. Terraform state can contain sensitive configuration; protect it.
 
-## Read-only alias lookup
+## 🔍 Read-only alias lookup
 
 To test authentication and read alias metadata without managing an alias, use a
 separate Terraform directory with only this configuration:
@@ -130,7 +141,7 @@ by the API are null. If the API omits the alias list, the output is null and a
 warning is shown; an empty list means the API returned an empty list. Saved
 plans and state can contain alias metadata and other sensitive information.
 
-## Importing aliases
+## 📥 Importing aliases
 
 Import an existing alias by name:
 
@@ -143,7 +154,7 @@ If you have state from the earlier experimental version, back it up, remove
 the old resource addresses from state (not from the firewall), and import the
 existing aliases under the new resource type. Review the plan before applying.
 
-## API specification and generation
+## 📄 API specification and generation
 
 [docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) corresponds to
 Netgate's [pfapi_openapi.yml](https://github.com/Netgate/pfsense-api/blob/b4acd7ca21dbca739a530403a1f62a7440f7726f/pfapi_openapi.yml)
@@ -156,7 +167,7 @@ client using pinned generator versions. The generated `*_gen.go` files are not
 hand-edited. Terraform CRUD, session management, request serialization, and
 reload handling remain custom code.
 
-## Development
+## 💻 Development
 
 ```sh
 pnpm install --ignore-scripts
@@ -192,7 +203,7 @@ tagging:
 2. Verify the release documentation and experimental warnings, and ensure the
    intended commit has passed checks. The workflow builds Linux, macOS, Windows,
    and FreeBSD packages for AMD64 and ARM64.
-3. Push a version tag such as `v0.1.0`. Review the draft release and its
+3. Push a new version tag. Review the draft release and its
    signed checksums before publishing it. Do not replace assets of an already
    published release.
 4. Register the repository in the Terraform Registry, or let its webhook ingest

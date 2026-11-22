@@ -2,15 +2,18 @@
 
 ## 🎯 Project Context
 
-This repository implements a custom Terraform provider (`pfsense-nexus`) in Go using `://github.com`. It wraps Netgate's official Go-based REST API (`docs/nexus.openapi.yaml`) for pfSense 26.07+ and 26.10+.
+This repository implements an experimental Terraform provider in Go, published
+as `geo-gaussian/pfsense-nexus`. It wraps the Nexus API described in
+`docs/nexus.openapi.yaml`. Alias listing has been tested on one appliance;
+write operations and compatibility with other versions remain unverified.
 
 ## 📐 Architectural Rules & Constraints
 
-1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. This method enforces a `sync.Mutex` lock so concurrent Terraform goroutines execute sequentially against pfSense's configuration backend.
+1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serializes HTTP requests per configured client, not across separate clients or Terraform processes.
 2. **Preserve Generated Files vs. Custom Logic:**
    - Files emitted by `tfplugingen-framework` into `internal/provider/` define schemas and models. When regenerating from `generator_config.yml`, verify that custom `Create`/`Read`/`Update`/`Delete` wiring and `ImportState` methods are preserved.
 3. **Explicit Apply / Reload Lifecycle:**
-   - If an endpoint in `docs/nexus.openapi.yaml` stages changes without immediately activating them (e.g., firewall rules, NAT, Unbound DNS), trigger the corresponding `/apply` endpoint at the end of `Create`, `Update`, and `Delete`.
+   - If an endpoint in `docs/nexus.openapi.yaml` stages changes without immediately activating them, trigger its corresponding apply or reload operation after `Create`, `Update`, and `Delete`. The alias resource initiates a filter reload but does not confirm completion.
 4. **Strict Secret Handling:**
    - Any field holding keys, passwords, PSKs, or tokens (`private_key`, `preshared_key`, `password`, `tls_key`) MUST have `Sensitive: true` in its `schema.StringAttribute`.
    - If a `GET` endpoint masks or omits a secret value, `Read()` MUST retain the existing `state` value rather than overwriting it with an empty string.

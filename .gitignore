@@ -36,6 +36,24 @@ pnpm-debug.log*
 /dist/
 /provider_code_spec.json
 
+# Terraform local data, state, plans, and variable files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.tfrc
+
 # Editor/IDE
 .vscode/*
 !.vscode/settings.json
