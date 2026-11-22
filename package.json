@@ -16,7 +16,7 @@
 		"setup-hooks": "node scripts/install-hooks.js"
 	},
 	"devDependencies": {
-		"cspell": "9.2.2",
+		"cspell": "10.5.2",
 		"editorconfig-checker": "7.0.0",
 		"prettier": "3.10.1",
 		"prettier-plugin-sh": "0.20.2"
