@@ -13,7 +13,8 @@ It currently offers:
 - Read-only JSON data sources for firewall NAT rules, firewall interfaces and
   rules, schedules, traffic shapers, ALTQ queues and limiters, interface
   assignments and discovery, bridge/tunnel/VLAN interface types, static routes,
-  gateways, selected service configuration, and VPN status.
+  gateways, selected service configuration and status, VPN status, and system
+  health and discovery.
 
 Login and alias listing have been exercised on one appliance. Alias writes and
 reloads have only been tested against mock servers. Do not use the write

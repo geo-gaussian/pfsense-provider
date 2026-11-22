@@ -610,6 +610,71 @@ type BridgeInterfaces struct {
 	Interfaces       *[]BridgeInterface        `json:"interfaces,omitempty"`
 }
 
+// CertOpts defines model for CertOpts.
+type CertOpts struct {
+	Digest  *[]string `json:"digest,omitempty"`
+	KeyOpt  *[]string `json:"key_opt,omitempty"`
+	KeySize *[]int    `json:"key_size,omitempty"`
+	KeyType *[]string `json:"key_type,omitempty"`
+}
+
+// DHCPHAState DHCP service high-availability status
+type DHCPHAState struct {
+	// LastHeartbeatSec how long ago was the last heartbeat, -1 for none
+	LastHeartbeatSec *int `json:"last_heartbeat_sec,omitempty"`
+
+	// Role primary or standby
+	Role *string `json:"role,omitempty"`
+
+	// ServerName node name
+	ServerName *string `json:"server_name,omitempty"`
+
+	// State node state - eg hot standby
+	State *string `json:"state,omitempty"`
+
+	// Where node type - local or remote
+	Where *string `json:"where,omitempty"`
+}
+
+// DHCPLease defines model for DHCPLease.
+type DHCPLease struct {
+	// AssignedIntf assigned network interface name
+	AssignedIntf *string `json:"assigned_intf,omitempty"`
+	Cid          *string `json:"cid,omitempty"`
+	Cltt         *string `json:"cltt,omitempty"`
+	Descr        *string `json:"descr,omitempty"`
+
+	// Dnsreg (readonly) if the host(name) was registered to the service
+	Dnsreg       *bool   `json:"dnsreg,omitempty"`
+	Duid         *string `json:"duid,omitempty"`
+	End          *string `json:"end,omitempty"`
+	Host         *string `json:"host,omitempty"`
+	Iaid         *string `json:"iaid,omitempty"`
+	Ip           *string `json:"ip,omitempty"`
+	Lifetime     *int    `json:"lifetime,omitempty"`
+	Mac          *string `json:"mac,omitempty"`
+	OnlineStatus *string `json:"online_status,omitempty"`
+
+	// RoutedTo PD next hop
+	RoutedTo *string `json:"routed_to,omitempty"`
+	Start    *string `json:"start,omitempty"`
+	State    *string `json:"state,omitempty"`
+
+	// Type dynamic, static, ia-na, ia-pd, ia-ta
+	Type *string `json:"type,omitempty"`
+}
+
+// DHCPLeases defines model for DHCPLeases.
+type DHCPLeases struct {
+	Interfaces   *[]LeaseInterface `json:"interfaces,omitempty"`
+	Interfacesv6 *[]LeaseInterface `json:"interfacesv6,omitempty"`
+	Prefixes     *[]DHCPLease      `json:"prefixes,omitempty"`
+	V4HaStatus   *[]DHCPHAState    `json:"v4_ha_status,omitempty"`
+	V4leases     *[]DHCPLease      `json:"v4leases,omitempty"`
+	V6HaStatus   *[]DHCPHAState    `json:"v6_ha_status,omitempty"`
+	V6leases     *[]DHCPLease      `json:"v6leases,omitempty"`
+}
+
 // DNSForwarderAlias defines model for DNSForwarderAlias.
 type DNSForwarderAlias struct {
 	Description *string `json:"description,omitempty"`
@@ -659,6 +724,41 @@ type DNSForwarderHost struct {
 	Domain  *string              `json:"domain,omitempty"`
 	Host    *string              `json:"host,omitempty"`
 	Ip      *string              `json:"ip,omitempty"`
+}
+
+// DNSResolverStatus defines model for DNSResolverStatus.
+type DNSResolverStatus struct {
+	Speed *[]DNSResolverStatusSpeed `json:"speed,omitempty"`
+	Stats *[]DNSResolverStatusStats `json:"stats,omitempty"`
+}
+
+// DNSResolverStatusSpeed defines model for DNSResolverStatusSpeed.
+type DNSResolverStatusSpeed struct {
+	Expired      *bool   `json:"expired,omitempty"`
+	Ping         *int    `json:"ping,omitempty"`
+	Rto          *int    `json:"rto,omitempty"`
+	Rtt          *int    `json:"rtt,omitempty"`
+	Server       string  `json:"server"`
+	TimeoutA     *int    `json:"timeout_a,omitempty"`
+	TimeoutAaaa  *int    `json:"timeout_aaaa,omitempty"`
+	TimeoutOther *int    `json:"timeout_other,omitempty"`
+	Ttl          *int    `json:"ttl,omitempty"`
+	Var          *int    `json:"var,omitempty"`
+	Zone         *string `json:"zone,omitempty"`
+}
+
+// DNSResolverStatusStats defines model for DNSResolverStatusStats.
+type DNSResolverStatusStats struct {
+	EdnsLameKnown *int    `json:"edns_lame_known,omitempty"`
+	EdnsVersion   *int    `json:"edns_version,omitempty"`
+	Expired       *bool   `json:"expired,omitempty"`
+	LameA         *int    `json:"lame_a,omitempty"`
+	LameDnssec    *int    `json:"lame_dnssec,omitempty"`
+	LameOther     *int    `json:"lame_other,omitempty"`
+	LameRec       *int    `json:"lame_rec,omitempty"`
+	ProbeDelay    *int    `json:"probe_delay,omitempty"`
+	Server        string  `json:"server"`
+	Zone          *string `json:"zone,omitempty"`
 }
 
 // Dhcp6AdvancedOptions defines model for Dhcp6AdvancedOptions.
@@ -725,6 +825,19 @@ type DhcpRelayConfig struct {
 	Interfaces            *[]string    `json:"interfaces,omitempty"`
 	InterfacesEntries     *[]TextValue `json:"interfaces_entries,omitempty"`
 	UpstreamServers       *[]string    `json:"upstream_servers,omitempty"`
+}
+
+// DirtySubsystem defines model for DirtySubsystem.
+type DirtySubsystem struct {
+	Descr *string `json:"descr,omitempty"`
+	File  *string `json:"file,omitempty"`
+	Name  *string `json:"name,omitempty"`
+}
+
+// DirtySubsystems defines model for DirtySubsystems.
+type DirtySubsystems struct {
+	AllSubsystems   *map[string]DirtySubsystem `json:"all_subsystems,omitempty"`
+	DirtySubsystems *map[string]DirtySubsystem `json:"dirty_subsystems,omitempty"`
 }
 
 // Error defines model for Error.
@@ -1197,12 +1310,99 @@ type GatewayDefaults struct {
 	Defaultgw6 *string `json:"defaultgw6,omitempty"`
 }
 
+// GatewayGroup defines model for GatewayGroup.
+type GatewayGroup struct {
+	Descr                   *string                 `json:"descr,omitempty"`
+	GatewayPriority         *[]GatewayGroupPriority `json:"gateway_priority,omitempty"`
+	Idx                     *int                    `json:"idx,omitempty"`
+	KeepFailoverStates      *string                 `json:"keep_failover_states,omitempty"`
+	KeepFailoverStatesDescr *string                 `json:"keep_failover_states_descr,omitempty"`
+	Name                    string                  `json:"name"`
+	Trigger                 *string                 `json:"trigger,omitempty"`
+	TriggerDescr            *string                 `json:"trigger_descr,omitempty"`
+}
+
+// GatewayGroupPriority defines model for GatewayGroupPriority.
+type GatewayGroupPriority struct {
+	Gateway  *string `json:"gateway,omitempty"`
+	Priority *string `json:"priority,omitempty"`
+	Vaddress *string `json:"vaddress,omitempty"`
+}
+
+// GatewayGroups defines model for GatewayGroups.
+type GatewayGroups struct {
+	Groups *[]GatewayGroup `json:"groups,omitempty"`
+}
+
+// GatewayPInfo defines model for GatewayPInfo.
+type GatewayPInfo struct {
+	Descr *string `json:"descr,omitempty"`
+
+	// Gateway gateway address
+	Gateway string `json:"gateway"`
+
+	// Ipprotocol inet or inet6
+	Ipprotocol *string            `json:"ipprotocol,omitempty"`
+	Name       string             `json:"name"`
+	Vaddress   *[]GatewayVAddress `json:"vaddress,omitempty"`
+}
+
+// GatewayPriorities defines model for GatewayPriorities.
+type GatewayPriorities struct {
+	Gateways   *[]GatewayPInfo    `json:"gateways,omitempty"`
+	Priorities *[]GatewayPriority `json:"priorities,omitempty"`
+}
+
+// GatewayPriority defines model for GatewayPriority.
+type GatewayPriority struct {
+	Priority      *string `json:"priority,omitempty"`
+	PriorityDescr *string `json:"priority_descr,omitempty"`
+}
+
+// GatewayStatus defines model for GatewayStatus.
+type GatewayStatus struct {
+	// Defaultgw default gateway
+	Defaultgw *bool   `json:"defaultgw,omitempty"`
+	Delay     *string `json:"delay,omitempty"`
+	Descr     *string `json:"descr,omitempty"`
+	Display   *string `json:"display,omitempty"`
+	Gateway   string  `json:"gateway"`
+	Loss      *string `json:"loss,omitempty"`
+	Monitor   *string `json:"monitor,omitempty"`
+	Name      string  `json:"name"`
+	Status    *string `json:"status,omitempty"`
+	Stddev    *string `json:"stddev,omitempty"`
+}
+
+// GatewayVAddress defines model for GatewayVAddress.
+type GatewayVAddress struct {
+	Descr    *string `json:"descr,omitempty"`
+	Vaddress string  `json:"vaddress"`
+}
+
 // Gateways defines model for Gateways.
 type Gateways struct {
 	DefaultAssignableGw4 *[]TextValue     `json:"default_assignable_gw4,omitempty"`
 	DefaultAssignableGw6 *[]TextValue     `json:"default_assignable_gw6,omitempty"`
 	Defaults             *GatewayDefaults `json:"defaults,omitempty"`
 	Gateways             *[]Gateway       `json:"gateways,omitempty"`
+}
+
+// GatewaysStatus defines model for GatewaysStatus.
+type GatewaysStatus struct {
+	Gateways *[]GatewayStatus `json:"gateways,omitempty"`
+	Groups   *[]GroupStatus   `json:"groups,omitempty"`
+}
+
+// GroupStatus defines model for GroupStatus.
+type GroupStatus struct {
+	Descr *string `json:"descr,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Tier1 *[]Tier `json:"tier1,omitempty"`
+	Tier2 *[]Tier `json:"tier2,omitempty"`
+	Tier3 *[]Tier `json:"tier3,omitempty"`
+	Tier4 *[]Tier `json:"tier4,omitempty"`
+	Tier5 *[]Tier `json:"tier5,omitempty"`
 }
 
 // IGMPProxies defines model for IGMPProxies.
@@ -1262,6 +1462,27 @@ type IfGroupCapableInterface struct {
 	IfIdentity     *string `json:"if_identity,omitempty"`
 }
 
+// IfStats defines model for IfStats.
+type IfStats struct {
+	Bytesin  *int `json:"bytesin,omitempty"`
+	Bytesout *int `json:"bytesout,omitempty"`
+	Time     *int `json:"time,omitempty"`
+}
+
+// IfStatsBandwidth defines model for IfStatsBandwidth.
+type IfStatsBandwidth struct {
+	Bitsin  *string `json:"bitsin,omitempty"`
+	Bitsout *string `json:"bitsout,omitempty"`
+	Host    *string `json:"host,omitempty"`
+}
+
+// IfStatsSummary defines model for IfStatsSummary.
+type IfStatsSummary struct {
+	Bandwidth *[]IfStatsBandwidth `json:"bandwidth,omitempty"`
+	If        *string             `json:"if,omitempty"`
+	Ifstats   *IfStats            `json:"ifstats,omitempty"`
+}
+
 // InterfaceAssignedName defines model for InterfaceAssignedName.
 type InterfaceAssignedName struct {
 	// Assigned user assigned name, e.g. WAN, LAN, MYLAN
@@ -1313,6 +1534,80 @@ type InterfaceGroups struct {
 	GroupsCapableIfs *[]IfGroupCapableInterface `json:"groups_capable_ifs,omitempty"`
 }
 
+// InterfaceInfo defines model for InterfaceInfo.
+type InterfaceInfo struct {
+	// AssignedInterface alias to device
+	AssignedInterface *string   `json:"assigned_interface,omitempty"`
+	AssignedName      *string   `json:"assigned_name,omitempty"`
+	Bssid             *string   `json:"bssid,omitempty"`
+	CellBwdownstream  *int      `json:"cell_bwdownstream,omitempty"`
+	CellBwupstream    *int      `json:"cell_bwupstream,omitempty"`
+	CellDownstream    *int      `json:"cell_downstream,omitempty"`
+	CellMode          *string   `json:"cell_mode,omitempty"`
+	CellRssi          *string   `json:"cell_rssi,omitempty"`
+	CellService       *string   `json:"cell_service,omitempty"`
+	CellSimstate      *string   `json:"cell_simstate,omitempty"`
+	CellUpstream      *int      `json:"cell_upstream,omitempty"`
+	Channel           *int      `json:"channel,omitempty"`
+	Collisions        *int      `json:"collisions,omitempty"`
+	CurrentPppUptime  *string   `json:"current_ppp_uptime,omitempty"`
+	Device            *string   `json:"device,omitempty"`
+	Dhcplink          *string   `json:"dhcplink,omitempty"`
+	DnsServers        *[]string `json:"dns_servers,omitempty"`
+	Enabled           *bool     `json:"enabled,omitempty"`
+
+	// FriendlyName alias to assigned_name
+	FriendlyName        *string `json:"friendly_name,omitempty"`
+	Gateway             *string `json:"gateway,omitempty"`
+	HistoricalPppUptime *string `json:"historical_ppp_uptime,omitempty"`
+	Identity            *string `json:"identity,omitempty"`
+	InBytes             *int    `json:"in_bytes,omitempty"`
+	InBytesBlock        *int    `json:"in_bytes_block,omitempty"`
+	InBytesPass         *int    `json:"in_bytes_pass,omitempty"`
+	InErrors            *int    `json:"in_errors,omitempty"`
+	InPackets           *int    `json:"in_packets,omitempty"`
+	InPacketsBlock      *int    `json:"in_packets_block,omitempty"`
+	InPacketsPass       *int    `json:"in_packets_pass,omitempty"`
+
+	// InternalName alias to identity
+	InternalName    *string `json:"internal_name,omitempty"`
+	IpAddress       *string `json:"ip_address,omitempty"`
+	Ipv6Address     *string `json:"ipv6_address,omitempty"`
+	Ipv6Gateway     *string `json:"ipv6_gateway,omitempty"`
+	Ipv6LinkLocal   *string `json:"ipv6_link_local,omitempty"`
+	Ipv6SubnetMask  *string `json:"ipv6_subnet_mask,omitempty"`
+	LaggEnabled     *bool   `json:"lagg_enabled,omitempty"`
+	LaggPorts       *string `json:"lagg_ports,omitempty"`
+	MacAddress      *string `json:"mac_address,omitempty"`
+	Media           *string `json:"media,omitempty"`
+	Mtu             *int    `json:"mtu,omitempty"`
+	OutBytes        *int    `json:"out_bytes,omitempty"`
+	OutBytesBlock   *int    `json:"out_bytes_block,omitempty"`
+	OutBytesPass    *int    `json:"out_bytes_pass,omitempty"`
+	OutErrors       *int    `json:"out_errors,omitempty"`
+	OutPackets      *int    `json:"out_packets,omitempty"`
+	OutPacketsBlock *int    `json:"out_packets_block,omitempty"`
+	OutPacketsPass  *int    `json:"out_packets_pass,omitempty"`
+	Plugged         *string `json:"plugged,omitempty"`
+	Pppoelink       *string `json:"pppoelink,omitempty"`
+	Pptplink        *string `json:"pptplink,omitempty"`
+	Rate            *string `json:"rate,omitempty"`
+	Rssi            *string `json:"rssi,omitempty"`
+	Rx              *string `json:"rx,omitempty"`
+	Ssid            *string `json:"ssid,omitempty"`
+	Status          *string `json:"status,omitempty"`
+	SubnetMask      *string `json:"subnet_mask,omitempty"`
+	Temperature     *string `json:"temperature,omitempty"`
+	Tx              *string `json:"tx,omitempty"`
+	Vendor          *string `json:"vendor,omitempty"`
+	Voltage         *string `json:"voltage,omitempty"`
+}
+
+// InterfaceInfoList defines model for InterfaceInfoList.
+type InterfaceInfoList struct {
+	Interfaces *[]InterfaceInfo `json:"interfaces,omitempty"`
+}
+
 // InterfaceLabel defines model for InterfaceLabel.
 type InterfaceLabel struct {
 	Assigned *string `json:"assigned,omitempty"`
@@ -1349,9 +1644,38 @@ type InterfaceSimple struct {
 	Tag  *int   `json:"tag,omitempty"`
 }
 
+// InterfaceStatisticsWidget defines model for InterfaceStatisticsWidget.
+type InterfaceStatisticsWidget struct {
+	BytesIn    *int `json:"bytes_in,omitempty"`
+	BytesOut   *int `json:"bytes_out,omitempty"`
+	Collisions *int `json:"collisions,omitempty"`
+	ErrorsIn   *int `json:"errors_in,omitempty"`
+	ErrorsOut  *int `json:"errors_out,omitempty"`
+	PacketsIn  *int `json:"packets_in,omitempty"`
+	PacketsOut *int `json:"packets_out,omitempty"`
+}
+
+// InterfaceStatisticsWidgetResult defines model for InterfaceStatisticsWidgetResult.
+type InterfaceStatisticsWidgetResult struct {
+	Interfaces *map[string]InterfaceStatisticsWidget `json:"interfaces,omitempty"`
+}
+
+// InterfaceWidgets defines model for InterfaceWidgets.
+type InterfaceWidgets struct {
+	Interfaces *[]InterfacesWidget `json:"interfaces,omitempty"`
+}
+
 // InterfacesSimple defines model for InterfacesSimple.
 type InterfacesSimple struct {
 	Interfaces *[]InterfaceSimple `json:"interfaces,omitempty"`
+}
+
+// InterfacesWidget defines model for InterfacesWidget.
+type InterfacesWidget struct {
+	Ip     *string `json:"ip,omitempty"`
+	Name   *string `json:"name,omitempty"`
+	Speed  *string `json:"speed,omitempty"`
+	Status *string `json:"status,omitempty"`
 }
 
 // IntfRouterAdvSetting defines model for IntfRouterAdvSetting.
@@ -1451,6 +1775,15 @@ type LAGGInterfaceProto string
 type LAGGInterfaces struct {
 	Interfaces     *[]LAGGInterface       `json:"interfaces,omitempty"`
 	LaggCapableIfs *LAGGCapableInterfaces `json:"lagg_capable_ifs,omitempty"`
+}
+
+// LeaseInterface defines model for LeaseInterface.
+type LeaseInterface struct {
+	Capacity *int    `json:"capacity,omitempty"`
+	End      *string `json:"end,omitempty"`
+	Name     *string `json:"name,omitempty"`
+	Num      *int    `json:"num,omitempty"`
+	Start    *string `json:"start,omitempty"`
 }
 
 // Limiter defines model for Limiter.
@@ -1815,6 +2148,18 @@ type MDNSPublishing struct {
 	Workstation *bool `json:"workstation,omitempty"`
 }
 
+// MonitoringDatasetInfo defines model for MonitoringDatasetInfo.
+type MonitoringDatasetInfo struct {
+	Dataset          *string `json:"dataset,omitempty"`
+	EarliestDataTime *int    `json:"earliest_data_time,omitempty"`
+	Scope            *string `json:"scope,omitempty"`
+}
+
+// MonitoringDatasets defines model for MonitoringDatasets.
+type MonitoringDatasets struct {
+	Datasets *[]MonitoringDatasetInfo `json:"datasets,omitempty"`
+}
+
 // NAT1To1Rule defines model for NAT1To1Rule.
 type NAT1To1Rule struct {
 	Descr       *string      `json:"descr,omitempty"`
@@ -1961,6 +2306,22 @@ type NATRules struct {
 type NATRulesEntry struct {
 	Rule      *NATRule   `json:"rule,omitempty"`
 	Separator *Separator `json:"separator,omitempty"`
+}
+
+// NDPEntry defines model for NDPEntry.
+type NDPEntry struct {
+	Exp      *string `json:"exp,omitempty"`
+	Flags    *string `json:"flags,omitempty"`
+	Hostname *string `json:"hostname,omitempty"`
+	Iface    *string `json:"iface,omitempty"`
+	Ipv6     *string `json:"ipv6,omitempty"`
+	Mac      *string `json:"mac,omitempty"`
+	Status   *string `json:"status,omitempty"`
+}
+
+// NDPTable defines model for NDPTable.
+type NDPTable struct {
+	Ndptable *[]NDPEntry `json:"ndptable,omitempty"`
 }
 
 // NameDescr generic (name, description) pair
@@ -2144,6 +2505,30 @@ type NetIfs struct {
 	Interfaces *[]NetIf `json:"interfaces,omitempty"`
 }
 
+// NetifStatus defines model for NetifStatus.
+type NetifStatus struct {
+	Addresses    *[]string `json:"addresses,omitempty"`
+	AssignedName *string   `json:"assigned_name,omitempty"`
+	Device       *string   `json:"device,omitempty"`
+	Identity     *string   `json:"identity,omitempty"`
+	State        *string   `json:"state,omitempty"`
+}
+
+// NexusControllerInfo defines model for NexusControllerInfo.
+type NexusControllerInfo struct {
+	Addresses *[]string `json:"addresses,omitempty"`
+
+	// MimAddr address of established MIM VPN connection
+	MimAddr *string `json:"mim_addr,omitempty"`
+
+	// PublicKey controller identity
+	PublicKey *string `json:"public_key,omitempty"`
+	VpnAddr   *string `json:"vpn_addr,omitempty"`
+
+	// VpnPubkey public key used for MIM connection
+	VpnPubkey *string `json:"vpn_pubkey,omitempty"`
+}
+
 // OpenVPNActiveConn defines model for OpenVPNActiveConn.
 type OpenVPNActiveConn struct {
 	BytesRecv    *string         `json:"bytes_recv,omitempty"`
@@ -2198,6 +2583,14 @@ type OpenVPNStatus struct {
 	SkServers *[]OpenVPNActiveConn `json:"sk_servers,omitempty"`
 }
 
+// PackageStatus defines model for PackageStatus.
+type PackageStatus struct {
+	Descr   *string `json:"descr,omitempty"`
+	Enabled *bool   `json:"enabled,omitempty"`
+	Name    *string `json:"name,omitempty"`
+	Version *string `json:"version,omitempty"`
+}
+
 // PfsenseResult defines model for PfsenseResult.
 type PfsenseResult struct {
 	// Alrt raise alert
@@ -2246,6 +2639,22 @@ type QinQInterfaces struct {
 	VlanCapableIfs *[]VLANCapableInterface `json:"vlan_capable_ifs,omitempty"`
 }
 
+// QueueStats defines model for QueueStats.
+type QueueStats struct {
+	Borrows      *string   `json:"borrows,omitempty"`
+	Bytes        *string   `json:"bytes,omitempty"`
+	Contains     *[]string `json:"contains,omitempty"`
+	Droppedbytes *string   `json:"droppedbytes,omitempty"`
+	Droppedpkts  *string   `json:"droppedpkts,omitempty"`
+	Interface    *string   `json:"interface,omitempty"`
+	Name         *string   `json:"name,omitempty"`
+	Pkts         *string   `json:"pkts,omitempty"`
+	Qlengthitems *string   `json:"qlengthitems,omitempty"`
+	Qlengthsize  *string   `json:"qlengthsize,omitempty"`
+	Shapertype   *string   `json:"shapertype,omitempty"`
+	Suspends     *string   `json:"suspends,omitempty"`
+}
+
 // RefreshTokenParam defines model for RefreshTokenParam.
 type RefreshTokenParam struct {
 	Username *string `json:"username,omitempty"`
@@ -2261,6 +2670,11 @@ type RouterAdvSettings struct {
 	IntfRadvs *[]IntfRouterAdvSetting `json:"intf_radvs,omitempty"`
 }
 
+// RoutesDirtyState defines model for RoutesDirtyState.
+type RoutesDirtyState struct {
+	Dirty *bool `json:"dirty,omitempty"`
+}
+
 // Separator defines model for Separator.
 type Separator struct {
 	Color *string `json:"color,omitempty"`
@@ -2268,6 +2682,34 @@ type Separator struct {
 	If    *string `json:"if,omitempty"`
 	Row   *string `json:"row,omitempty"`
 	Text  *string `json:"text,omitempty"`
+}
+
+// ServicesStatus defines model for ServicesStatus.
+type ServicesStatus struct {
+	Description *string `json:"description,omitempty"`
+	Enabled     *bool   `json:"enabled,omitempty"`
+
+	// Mode for openvpn service only
+	Mode    *string `json:"mode,omitempty"`
+	Name    string  `json:"name"`
+	Running *bool   `json:"running,omitempty"`
+
+	// Vpnid for openvpn service only
+	Vpnid *string `json:"vpnid,omitempty"`
+
+	// Zone for captive portal service only
+	Zone *string `json:"zone,omitempty"`
+}
+
+// ServicesStatusList defines model for ServicesStatusList.
+type ServicesStatusList struct {
+	Services *[]ServicesStatus `json:"services,omitempty"`
+}
+
+// ServicesUPnPConfig defines model for ServicesUPnPConfig.
+type ServicesUPnPConfig struct {
+	Config     *UPnPConfig `json:"config,omitempty"`
+	Interfaces *[]string   `json:"interfaces,omitempty"`
 }
 
 // SimpleInterface defines model for SimpleInterface.
@@ -2296,6 +2738,77 @@ type StaticRoutes struct {
 	Routes *[]StaticRoute `json:"routes,omitempty"`
 }
 
+// StatusSummary defines model for StatusSummary.
+type StatusSummary struct {
+	Alerts   *string          `json:"alerts,omitempty"`
+	Dirty    *DirtySubsystems `json:"dirty,omitempty"`
+	Packages *[]PackageStatus `json:"packages,omitempty"`
+	Status   *SystemStatus    `json:"status,omitempty"`
+
+	// Timestamp millisecond timestamp of the system
+	Timestamp  *int             `json:"timestamp,omitempty"`
+	UiFeatures *map[string]bool `json:"ui_features,omitempty"`
+}
+
+// SysFirmwareInfo defines model for SysFirmwareInfo.
+type SysFirmwareInfo struct {
+	// CurrentVersion current firmware of the system
+	CurrentVersion *string `json:"current_version,omitempty"`
+
+	// LatestVersion firmware version for upgrading to
+	LatestVersion *string `json:"latest_version,omitempty"`
+
+	// Message message to display, e.g. error or expectation after upgrading
+	Message *string `json:"message,omitempty"`
+
+	// Status status message, if the firmware upgrade is in progress
+	Status *string `json:"status,omitempty"`
+}
+
+// SystemStatus defines model for SystemStatus.
+type SystemStatus struct {
+	Alerts *string `json:"alerts,omitempty"`
+	Apiver *string `json:"apiver,omitempty"`
+	Arch   *string `json:"arch,omitempty"`
+	Cores  *int    `json:"cores,omitempty"`
+	Cpu    *string `json:"cpu,omitempty"`
+	Fram   *int    `json:"fram,omitempty"`
+	Fswap  *int    `json:"fswap,omitempty"`
+	Host   *string `json:"host,omitempty"`
+
+	// License license ID
+	License          *string                `json:"license,omitempty"`
+	Machine          *string                `json:"machine,omitempty"`
+	Ndi              *string                `json:"ndi,omitempty"`
+	NetInterfaces    *[]NetifStatus         `json:"net_interfaces,omitempty"`
+	NexusControllers *[]NexusControllerInfo `json:"nexus_controllers,omitempty"`
+	Os               *string                `json:"os,omitempty"`
+	Osver            *string                `json:"osver,omitempty"`
+	Prod             *string                `json:"prod,omitempty"`
+	Ram              *int                   `json:"ram,omitempty"`
+	Rev              *string                `json:"rev,omitempty"`
+	Swap             *int                   `json:"swap,omitempty"`
+	Timestamp        *string                `json:"timestamp,omitempty"`
+	Up               *string                `json:"up,omitempty"`
+	Vndr             *string                `json:"vndr,omitempty"`
+	VpnAddr          *string                `json:"vpn_addr,omitempty"`
+}
+
+// SystemSummary defines model for SystemSummary.
+type SystemSummary struct {
+	// ApiVersion API version supported by this sytem
+	ApiVersion *string `json:"api_version,omitempty"`
+
+	// Arch hardware architecture
+	Arch *string `json:"arch,omitempty"`
+
+	// Name system name
+	Name *string `json:"name,omitempty"`
+
+	// Os operating system
+	Os *string `json:"os,omitempty"`
+}
+
 // TCPFlags defines model for TCPFlags.
 type TCPFlags struct {
 	Ack *bool `json:"ack,omitempty"`
@@ -2314,11 +2827,63 @@ type TextValue struct {
 	Value *string `json:"value,omitempty"`
 }
 
+// Tier defines model for Tier.
+type Tier struct {
+	Display *string `json:"display,omitempty"`
+	Name    *string `json:"name,omitempty"`
+	Status  *string `json:"status,omitempty"`
+}
+
 // TrafficShapers defines model for TrafficShapers.
 type TrafficShapers struct {
 	Altq           *[]ALTQRootQueue        `json:"altq,omitempty"`
 	AltqCapableIfs *[]ALTQCapableInterface `json:"altq_capable_ifs,omitempty"`
 	Limiter        *[]Limiter              `json:"limiter,omitempty"`
+}
+
+// UPnPConfig defines model for UPnPConfig.
+type UPnPConfig struct {
+	Download        *string         `json:"download,omitempty"`
+	Enable          *bool           `json:"enable,omitempty"`
+	EnableNatpmp    *bool           `json:"enable_natpmp,omitempty"`
+	EnableStun      *bool           `json:"enable_stun,omitempty"`
+	EnableUpnp      *bool           `json:"enable_upnp,omitempty"`
+	ExtIface        *string         `json:"ext_iface,omitempty"`
+	IfaceArray      *[]string       `json:"iface_array,omitempty"`
+	Logpackets      *bool           `json:"logpackets,omitempty"`
+	Modelnumber     *string         `json:"modelnumber,omitempty"`
+	Overridewanip   *string         `json:"overridewanip,omitempty"`
+	Permdefault     *bool           `json:"permdefault,omitempty"`
+	Presentationurl *string         `json:"presentationurl,omitempty"`
+	Row             *[]UPnPPermUser `json:"row,omitempty"`
+	StunHost        *string         `json:"stun_host,omitempty"`
+	StunPort        *string         `json:"stun_port,omitempty"`
+	Sysuptime       *bool           `json:"sysuptime,omitempty"`
+	Upload          *string         `json:"upload,omitempty"`
+	Upnpqueue       *string         `json:"upnpqueue,omitempty"`
+}
+
+// UPnPMapping defines model for UPnPMapping.
+type UPnPMapping struct {
+	Desc         *string `json:"desc,omitempty"`
+	ExtInterface *string `json:"ext_interface,omitempty"`
+	ExtPort      *string `json:"ext_port,omitempty"`
+	IntIp        *string `json:"int_ip,omitempty"`
+	IntPort      *string `json:"int_port,omitempty"`
+	Proto        *string `json:"proto,omitempty"`
+	SourceIp     *string `json:"source_ip,omitempty"`
+	SourcePort   *string `json:"source_port,omitempty"`
+}
+
+// UPnPMappings defines model for UPnPMappings.
+type UPnPMappings struct {
+	Mappings *[]UPnPMapping `json:"mappings,omitempty"`
+}
+
+// UPnPPermUser defines model for UPnPPermUser.
+type UPnPPermUser struct {
+	Id       *string `json:"id,omitempty"`
+	Permuser *string `json:"permuser,omitempty"`
 }
 
 // VLANCapableInterface defines model for VLANCapableInterface.
@@ -2432,6 +2997,21 @@ type WGTunnel struct {
 	Name       string         `json:"name"`
 	Privatekey string         `json:"privatekey"`
 	Publickey  string         `json:"publickey"`
+}
+
+// WatchdogList defines model for WatchdogList.
+type WatchdogList struct {
+	Services *[]WatchdogService `json:"services,omitempty"`
+}
+
+// WatchdogService defines model for WatchdogService.
+type WatchdogService struct {
+	Description *string `json:"description,omitempty"`
+
+	// Id Unique identifier for the service, generated by the server deterministically
+	Id    *string `json:"id,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Watch *bool   `json:"watch,omitempty"`
 }
 
 // WireGuardPeerStatus defines model for WireGuardPeerStatus.
@@ -2769,10 +3349,20 @@ type ClientInterface interface {
 	// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
 	GetDhcpV6RelayConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetDHCPLeases List DHCP leases
+	//
+	// Corresponds with GET /services/dhcp/leases (the `GetDHCPLeases` operationId).
+	GetDHCPLeases(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetDNSForwarderConfig Get DNS Forwarder config
 	//
 	// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
 	GetDNSForwarderConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDnsResolverStatus Get the status of the DNS resolver
+	//
+	// Corresponds with GET /services/dnsresolver/status (the `GetDnsResolverStatus` operationId).
+	GetDnsResolverStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetIGMPProxies Get IGMP proxies
 	//
@@ -2784,10 +3374,52 @@ type ClientInterface interface {
 	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
 	GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetNDPTable Get NDP Table
+	//
+	// Corresponds with GET /services/ndp (the `GetNDPTable` operationId).
+	GetNDPTable(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetRouterAdvSettings Get router advertisement configuration
 	//
 	// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
 	GetRouterAdvSettings(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetServicesStatus Get Service Status
+	//
+	// Corresponds with GET /services/status (the `GetServicesStatus` operationId).
+	GetServicesStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetUPnP Get UPnP config
+	//
+	// Corresponds with GET /services/upnp (the `GetUPnP` operationId).
+	GetUPnP(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetUPnPStatus Get a list of active UPnP mappings
+	//
+	// Corresponds with GET /services/upnp/status (the `GetUPnPStatus` operationId).
+	GetUPnPStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetServiceWatchdogServices Retrieve watched services
+	//
+	// Corresponds with GET /services/watchdog (the `GetServiceWatchdogServices` operationId).
+	GetServiceWatchdogServices(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSystemSummary Get system summary
+	//
+	// Corresponds with GET /system (the `GetSystemSummary` operationId).
+	GetSystemSummary(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCertOptions Get options for new certificate creation
+	//
+	// Corresponds with GET /system/certoptions (the `GetCertOptions` operationId).
+	GetCertOptions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDirtySubsystems Get subsystem dirty states
+	//
+	// Retrieve the list of subsystem configuration which are pending applying of changes.
+	//
+	// Corresponds with GET /system/config/dirty (the `GetDirtySubsystems` operationId).
+	GetDirtySubsystems(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DoFilterReload Initiate a manual filter reload
 	//
@@ -2799,15 +3431,78 @@ type ClientInterface interface {
 	// Corresponds with GET /system/filterreload/status (the `GetFilterReloadStatus` operationId).
 	GetFilterReloadStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetFirmware Get the current system firmware version and the available upgrade version
+	//
+	// Retrieve the system's current firmware version and determine if there is an upgradable
+	// firmware image available to install on the system.
+	//
+	// Corresponds with GET /system/firmware (the `GetFirmware` operationId).
+	GetFirmware(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetGateways List gateways
 	//
 	// Corresponds with GET /system/gateways (the `GetGateways` operationId).
 	GetGateways(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetGatewayPriorities Get the list of gateways and the priority labeling associated with it
+	//
+	// Corresponds with GET /system/gateways/group_priorities (the `GetGatewayPriorities` operationId).
+	GetGatewayPriorities(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGatewayGroups Get gateway groups
+	//
+	// Corresponds with GET /system/gateways/groups (the `GetGatewayGroups` operationId).
+	GetGatewayGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGatewaysStatus List Gateway status
+	//
+	// Corresponds with GET /system/gateways/status (the `GetGatewaysStatus` operationId).
+	GetGatewaysStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfacesStatus Get the status of any configured interfaces.
+	//
+	// Corresponds with GET /system/interfaces/status (the `GetInterfacesStatus` operationId).
+	GetInterfacesStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMonitoringDatasets Get the available monitoring datasets
+	//
+	// Corresponds with GET /system/monitoring/datasets (the `GetMonitoringDatasets` operationId).
+	GetMonitoringDatasets(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetQueueStats Get stats of traffic shaping queues
+	//
+	// Corresponds with GET /system/queue/stats (the `GetQueueStats` operationId).
+	GetQueueStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetRoutesDirtyState Determine if there are any pending routing changes (dirty config)
+	//
+	// Corresponds with GET /system/routes (the `GetRoutesDirtyState` operationId).
+	GetRoutesDirtyState(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetStaticRoutes Get static routes
 	//
 	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 	GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetStatus Get system status
+	//
+	// Corresponds with GET /system/status (the `GetStatus` operationId).
+	GetStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIfStats Get network interface stats
+	//
+	// Corresponds with GET /system/status/ifstats (the `GetIfStats` operationId).
+	GetIfStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfacesWidgets Get Interfaces widget
+	//
+	// Corresponds with GET /system/widgets/interfaces (the `GetInterfacesWidgets` operationId).
+	GetInterfacesWidgets(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfaceStatisticsWidget Get Interface statistics widget
+	//
+	// Corresponds with GET /system/widgets/interfacestats (the `GetInterfaceStatisticsWidget` operationId).
+	GetInterfaceStatisticsWidget(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetIPSecWidget Get IPSec widget
 	//
@@ -3378,11 +4073,41 @@ func (c *Client) GetDhcpV6RelayConfig(ctx context.Context, reqEditors ...Request
 	return c.Client.Do(req)
 }
 
+// GetDHCPLeases List DHCP leases
+//
+// Corresponds with GET /services/dhcp/leases (the `GetDHCPLeases` operationId).
+func (c *Client) GetDHCPLeases(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDHCPLeasesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetDNSForwarderConfig Get DNS Forwarder config
 //
 // Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
 func (c *Client) GetDNSForwarderConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetDNSForwarderConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetDnsResolverStatus Get the status of the DNS resolver
+//
+// Corresponds with GET /services/dnsresolver/status (the `GetDnsResolverStatus` operationId).
+func (c *Client) GetDnsResolverStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDnsResolverStatusRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3423,11 +4148,133 @@ func (c *Client) GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorF
 	return c.Client.Do(req)
 }
 
+// GetNDPTable Get NDP Table
+//
+// Corresponds with GET /services/ndp (the `GetNDPTable` operationId).
+func (c *Client) GetNDPTable(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetNDPTableRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetRouterAdvSettings Get router advertisement configuration
 //
 // Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
 func (c *Client) GetRouterAdvSettings(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetRouterAdvSettingsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetServicesStatus Get Service Status
+//
+// Corresponds with GET /services/status (the `GetServicesStatus` operationId).
+func (c *Client) GetServicesStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetServicesStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetUPnP Get UPnP config
+//
+// Corresponds with GET /services/upnp (the `GetUPnP` operationId).
+func (c *Client) GetUPnP(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUPnPRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetUPnPStatus Get a list of active UPnP mappings
+//
+// Corresponds with GET /services/upnp/status (the `GetUPnPStatus` operationId).
+func (c *Client) GetUPnPStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUPnPStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetServiceWatchdogServices Retrieve watched services
+//
+// Corresponds with GET /services/watchdog (the `GetServiceWatchdogServices` operationId).
+func (c *Client) GetServiceWatchdogServices(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetServiceWatchdogServicesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSystemSummary Get system summary
+//
+// Corresponds with GET /system (the `GetSystemSummary` operationId).
+func (c *Client) GetSystemSummary(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSystemSummaryRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetCertOptions Get options for new certificate creation
+//
+// Corresponds with GET /system/certoptions (the `GetCertOptions` operationId).
+func (c *Client) GetCertOptions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCertOptionsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetDirtySubsystems Get subsystem dirty states
+//
+// Retrieve the list of subsystem configuration which are pending applying of changes.
+//
+// Corresponds with GET /system/config/dirty (the `GetDirtySubsystems` operationId).
+func (c *Client) GetDirtySubsystems(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDirtySubsystemsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3468,6 +4315,24 @@ func (c *Client) GetFilterReloadStatus(ctx context.Context, reqEditors ...Reques
 	return c.Client.Do(req)
 }
 
+// GetFirmware Get the current system firmware version and the available upgrade version
+//
+// Retrieve the system's current firmware version and determine if there is an upgradable
+// firmware image available to install on the system.
+//
+// Corresponds with GET /system/firmware (the `GetFirmware` operationId).
+func (c *Client) GetFirmware(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFirmwareRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetGateways List gateways
 //
 // Corresponds with GET /system/gateways (the `GetGateways` operationId).
@@ -3483,11 +4348,176 @@ func (c *Client) GetGateways(ctx context.Context, reqEditors ...RequestEditorFn)
 	return c.Client.Do(req)
 }
 
+// GetGatewayPriorities Get the list of gateways and the priority labeling associated with it
+//
+// Corresponds with GET /system/gateways/group_priorities (the `GetGatewayPriorities` operationId).
+func (c *Client) GetGatewayPriorities(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGatewayPrioritiesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGatewayGroups Get gateway groups
+//
+// Corresponds with GET /system/gateways/groups (the `GetGatewayGroups` operationId).
+func (c *Client) GetGatewayGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGatewayGroupsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGatewaysStatus List Gateway status
+//
+// Corresponds with GET /system/gateways/status (the `GetGatewaysStatus` operationId).
+func (c *Client) GetGatewaysStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGatewaysStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfacesStatus Get the status of any configured interfaces.
+//
+// Corresponds with GET /system/interfaces/status (the `GetInterfacesStatus` operationId).
+func (c *Client) GetInterfacesStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfacesStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMonitoringDatasets Get the available monitoring datasets
+//
+// Corresponds with GET /system/monitoring/datasets (the `GetMonitoringDatasets` operationId).
+func (c *Client) GetMonitoringDatasets(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMonitoringDatasetsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetQueueStats Get stats of traffic shaping queues
+//
+// Corresponds with GET /system/queue/stats (the `GetQueueStats` operationId).
+func (c *Client) GetQueueStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetQueueStatsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetRoutesDirtyState Determine if there are any pending routing changes (dirty config)
+//
+// Corresponds with GET /system/routes (the `GetRoutesDirtyState` operationId).
+func (c *Client) GetRoutesDirtyState(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetRoutesDirtyStateRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetStaticRoutes Get static routes
 //
 // Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 func (c *Client) GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetStaticRoutesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetStatus Get system status
+//
+// Corresponds with GET /system/status (the `GetStatus` operationId).
+func (c *Client) GetStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIfStats Get network interface stats
+//
+// Corresponds with GET /system/status/ifstats (the `GetIfStats` operationId).
+func (c *Client) GetIfStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIfStatsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfacesWidgets Get Interfaces widget
+//
+// Corresponds with GET /system/widgets/interfaces (the `GetInterfacesWidgets` operationId).
+func (c *Client) GetInterfacesWidgets(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfacesWidgetsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfaceStatisticsWidget Get Interface statistics widget
+//
+// Corresponds with GET /system/widgets/interfacestats (the `GetInterfaceStatisticsWidget` operationId).
+func (c *Client) GetInterfaceStatisticsWidget(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfaceStatisticsWidgetRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -4487,6 +5517,33 @@ func NewGetDhcpV6RelayConfigRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetDHCPLeasesRequest constructs an http.Request for the GetDHCPLeases method
+func NewGetDHCPLeasesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/dhcp/leases")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetDNSForwarderConfigRequest constructs an http.Request for the GetDNSForwarderConfig method
 func NewGetDNSForwarderConfigRequest(server string) (*http.Request, error) {
 	var err error
@@ -4497,6 +5554,33 @@ func NewGetDNSForwarderConfigRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/services/dnsmasq")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDnsResolverStatusRequest constructs an http.Request for the GetDnsResolverStatus method
+func NewGetDnsResolverStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/dnsresolver/status")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -4568,6 +5652,33 @@ func NewGetMDNSConfigRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetNDPTableRequest constructs an http.Request for the GetNDPTable method
+func NewGetNDPTableRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/ndp")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetRouterAdvSettingsRequest constructs an http.Request for the GetRouterAdvSettings method
 func NewGetRouterAdvSettingsRequest(server string) (*http.Request, error) {
 	var err error
@@ -4578,6 +5689,195 @@ func NewGetRouterAdvSettingsRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/services/radv")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetServicesStatusRequest constructs an http.Request for the GetServicesStatus method
+func NewGetServicesStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetUPnPRequest constructs an http.Request for the GetUPnP method
+func NewGetUPnPRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/upnp")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetUPnPStatusRequest constructs an http.Request for the GetUPnPStatus method
+func NewGetUPnPStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/upnp/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetServiceWatchdogServicesRequest constructs an http.Request for the GetServiceWatchdogServices method
+func NewGetServiceWatchdogServicesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/watchdog")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSystemSummaryRequest constructs an http.Request for the GetSystemSummary method
+func NewGetSystemSummaryRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetCertOptionsRequest constructs an http.Request for the GetCertOptions method
+func NewGetCertOptionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/certoptions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDirtySubsystemsRequest constructs an http.Request for the GetDirtySubsystems method
+func NewGetDirtySubsystemsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/config/dirty")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -4649,6 +5949,33 @@ func NewGetFilterReloadStatusRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetFirmwareRequest constructs an http.Request for the GetFirmware method
+func NewGetFirmwareRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/firmware")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetGatewaysRequest constructs an http.Request for the GetGateways method
 func NewGetGatewaysRequest(server string) (*http.Request, error) {
 	var err error
@@ -4676,6 +6003,195 @@ func NewGetGatewaysRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetGatewayPrioritiesRequest constructs an http.Request for the GetGatewayPriorities method
+func NewGetGatewayPrioritiesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/gateways/group_priorities")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGatewayGroupsRequest constructs an http.Request for the GetGatewayGroups method
+func NewGetGatewayGroupsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/gateways/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGatewaysStatusRequest constructs an http.Request for the GetGatewaysStatus method
+func NewGetGatewaysStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/gateways/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfacesStatusRequest constructs an http.Request for the GetInterfacesStatus method
+func NewGetInterfacesStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/interfaces/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMonitoringDatasetsRequest constructs an http.Request for the GetMonitoringDatasets method
+func NewGetMonitoringDatasetsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/monitoring/datasets")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetQueueStatsRequest constructs an http.Request for the GetQueueStats method
+func NewGetQueueStatsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/queue/stats")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetRoutesDirtyStateRequest constructs an http.Request for the GetRoutesDirtyState method
+func NewGetRoutesDirtyStateRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/routes")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetStaticRoutesRequest constructs an http.Request for the GetStaticRoutes method
 func NewGetStaticRoutesRequest(server string) (*http.Request, error) {
 	var err error
@@ -4686,6 +6202,114 @@ func NewGetStaticRoutesRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/system/routes/static")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetStatusRequest constructs an http.Request for the GetStatus method
+func NewGetStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetIfStatsRequest constructs an http.Request for the GetIfStats method
+func NewGetIfStatsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/status/ifstats")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfacesWidgetsRequest constructs an http.Request for the GetInterfacesWidgets method
+func NewGetInterfacesWidgetsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/widgets/interfaces")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfaceStatisticsWidgetRequest constructs an http.Request for the GetInterfaceStatisticsWidget method
+func NewGetInterfaceStatisticsWidgetRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/widgets/interfacestats")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -5085,12 +6709,26 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
 	GetDhcpV6RelayConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDhcpV6RelayConfigAPIResponse, error)
 
+	// GetDHCPLeasesWithResponse List DHCP leases
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/dhcp/leases (the `GetDHCPLeases` operationId).
+	GetDHCPLeasesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDHCPLeasesAPIResponse, error)
+
 	// GetDNSForwarderConfigWithResponse Get DNS Forwarder config
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
 	GetDNSForwarderConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDNSForwarderConfigAPIResponse, error)
+
+	// GetDnsResolverStatusWithResponse Get the status of the DNS resolver
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/dnsresolver/status (the `GetDnsResolverStatus` operationId).
+	GetDnsResolverStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDnsResolverStatusAPIResponse, error)
 
 	// GetIGMPProxiesWithResponse Get IGMP proxies
 	//
@@ -5106,12 +6744,70 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
 	GetMDNSConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMDNSConfigAPIResponse, error)
 
+	// GetNDPTableWithResponse Get NDP Table
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/ndp (the `GetNDPTable` operationId).
+	GetNDPTableWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetNDPTableAPIResponse, error)
+
 	// GetRouterAdvSettingsWithResponse Get router advertisement configuration
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
 	GetRouterAdvSettingsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRouterAdvSettingsAPIResponse, error)
+
+	// GetServicesStatusWithResponse Get Service Status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/status (the `GetServicesStatus` operationId).
+	GetServicesStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetServicesStatusAPIResponse, error)
+
+	// GetUPnPWithResponse Get UPnP config
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/upnp (the `GetUPnP` operationId).
+	GetUPnPWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUPnPAPIResponse, error)
+
+	// GetUPnPStatusWithResponse Get a list of active UPnP mappings
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/upnp/status (the `GetUPnPStatus` operationId).
+	GetUPnPStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUPnPStatusAPIResponse, error)
+
+	// GetServiceWatchdogServicesWithResponse Retrieve watched services
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/watchdog (the `GetServiceWatchdogServices` operationId).
+	GetServiceWatchdogServicesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetServiceWatchdogServicesAPIResponse, error)
+
+	// GetSystemSummaryWithResponse Get system summary
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system (the `GetSystemSummary` operationId).
+	GetSystemSummaryWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSystemSummaryAPIResponse, error)
+
+	// GetCertOptionsWithResponse Get options for new certificate creation
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/certoptions (the `GetCertOptions` operationId).
+	GetCertOptionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCertOptionsAPIResponse, error)
+
+	// GetDirtySubsystemsWithResponse Get subsystem dirty states
+	//
+	// Retrieve the list of subsystem configuration which are pending applying of changes.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/config/dirty (the `GetDirtySubsystems` operationId).
+	GetDirtySubsystemsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDirtySubsystemsAPIResponse, error)
 
 	// DoFilterReloadWithResponse Initiate a manual filter reload
 	//
@@ -5127,6 +6823,16 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /system/filterreload/status (the `GetFilterReloadStatus` operationId).
 	GetFilterReloadStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFilterReloadStatusAPIResponse, error)
 
+	// GetFirmwareWithResponse Get the current system firmware version and the available upgrade version
+	//
+	// Retrieve the system's current firmware version and determine if there is an upgradable
+	// firmware image available to install on the system.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/firmware (the `GetFirmware` operationId).
+	GetFirmwareWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFirmwareAPIResponse, error)
+
 	// GetGatewaysWithResponse List gateways
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -5134,12 +6840,89 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /system/gateways (the `GetGateways` operationId).
 	GetGatewaysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewaysAPIResponse, error)
 
+	// GetGatewayPrioritiesWithResponse Get the list of gateways and the priority labeling associated with it
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/gateways/group_priorities (the `GetGatewayPriorities` operationId).
+	GetGatewayPrioritiesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewayPrioritiesAPIResponse, error)
+
+	// GetGatewayGroupsWithResponse Get gateway groups
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/gateways/groups (the `GetGatewayGroups` operationId).
+	GetGatewayGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewayGroupsAPIResponse, error)
+
+	// GetGatewaysStatusWithResponse List Gateway status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/gateways/status (the `GetGatewaysStatus` operationId).
+	GetGatewaysStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewaysStatusAPIResponse, error)
+
+	// GetInterfacesStatusWithResponse Get the status of any configured interfaces.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/interfaces/status (the `GetInterfacesStatus` operationId).
+	GetInterfacesStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesStatusAPIResponse, error)
+
+	// GetMonitoringDatasetsWithResponse Get the available monitoring datasets
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/monitoring/datasets (the `GetMonitoringDatasets` operationId).
+	GetMonitoringDatasetsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMonitoringDatasetsAPIResponse, error)
+
+	// GetQueueStatsWithResponse Get stats of traffic shaping queues
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/queue/stats (the `GetQueueStats` operationId).
+	GetQueueStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetQueueStatsAPIResponse, error)
+
+	// GetRoutesDirtyStateWithResponse Determine if there are any pending routing changes (dirty config)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/routes (the `GetRoutesDirtyState` operationId).
+	GetRoutesDirtyStateWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRoutesDirtyStateAPIResponse, error)
+
 	// GetStaticRoutesWithResponse Get static routes
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 	GetStaticRoutesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStaticRoutesAPIResponse, error)
+
+	// GetStatusWithResponse Get system status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/status (the `GetStatus` operationId).
+	GetStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStatusAPIResponse, error)
+
+	// GetIfStatsWithResponse Get network interface stats
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/status/ifstats (the `GetIfStats` operationId).
+	GetIfStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIfStatsAPIResponse, error)
+
+	// GetInterfacesWidgetsWithResponse Get Interfaces widget
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/widgets/interfaces (the `GetInterfacesWidgets` operationId).
+	GetInterfacesWidgetsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesWidgetsAPIResponse, error)
+
+	// GetInterfaceStatisticsWidgetWithResponse Get Interface statistics widget
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/widgets/interfacestats (the `GetInterfaceStatisticsWidget` operationId).
+	GetInterfaceStatisticsWidgetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceStatisticsWidgetAPIResponse, error)
 
 	// GetIPSecWidgetWithResponse Get IPSec widget
 	//
@@ -6651,6 +8434,54 @@ func (r GetDhcpV6RelayConfigAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetDHCPLeasesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DHCPLeases
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDHCPLeasesAPIResponse) GetJSON200() *DHCPLeases {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDHCPLeasesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDHCPLeasesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDHCPLeasesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDHCPLeasesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDHCPLeasesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetDNSForwarderConfigAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6693,6 +8524,54 @@ func (r GetDNSForwarderConfigAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetDNSForwarderConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDnsResolverStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DNSResolverStatus
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDnsResolverStatusAPIResponse) GetJSON200() *DNSResolverStatus {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDnsResolverStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDnsResolverStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDnsResolverStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDnsResolverStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDnsResolverStatusAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -6795,6 +8674,54 @@ func (r GetMDNSConfigAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetNDPTableAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NDPTable
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetNDPTableAPIResponse) GetJSON200() *NDPTable {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetNDPTableAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetNDPTableAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetNDPTableAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetNDPTableAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetNDPTableAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetRouterAdvSettingsAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6837,6 +8764,342 @@ func (r GetRouterAdvSettingsAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetRouterAdvSettingsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetServicesStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ServicesStatusList
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetServicesStatusAPIResponse) GetJSON200() *ServicesStatusList {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetServicesStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetServicesStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetServicesStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetServicesStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetServicesStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetUPnPAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ServicesUPnPConfig
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetUPnPAPIResponse) GetJSON200() *ServicesUPnPConfig {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetUPnPAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetUPnPAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetUPnPAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetUPnPAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetUPnPAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetUPnPStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *UPnPMappings
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetUPnPStatusAPIResponse) GetJSON200() *UPnPMappings {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetUPnPStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetUPnPStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetUPnPStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetUPnPStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetUPnPStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetServiceWatchdogServicesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WatchdogList
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetServiceWatchdogServicesAPIResponse) GetJSON200() *WatchdogList {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetServiceWatchdogServicesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetServiceWatchdogServicesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetServiceWatchdogServicesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetServiceWatchdogServicesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetServiceWatchdogServicesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetSystemSummaryAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SystemSummary
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSystemSummaryAPIResponse) GetJSON200() *SystemSummary {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetSystemSummaryAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSystemSummaryAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSystemSummaryAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSystemSummaryAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSystemSummaryAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetCertOptionsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CertOpts
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetCertOptionsAPIResponse) GetJSON200() *CertOpts {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetCertOptionsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetCertOptionsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCertOptionsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCertOptionsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetCertOptionsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDirtySubsystemsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DirtySubsystems
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDirtySubsystemsAPIResponse) GetJSON200() *DirtySubsystems {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDirtySubsystemsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDirtySubsystemsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDirtySubsystemsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDirtySubsystemsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDirtySubsystemsAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -6939,6 +9202,54 @@ func (r GetFilterReloadStatusAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetFirmwareAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SysFirmwareInfo
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetFirmwareAPIResponse) GetJSON200() *SysFirmwareInfo {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetFirmwareAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetFirmwareAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFirmwareAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFirmwareAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetFirmwareAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetGatewaysAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6987,6 +9298,342 @@ func (r GetGatewaysAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetGatewayPrioritiesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GatewayPriorities
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGatewayPrioritiesAPIResponse) GetJSON200() *GatewayPriorities {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGatewayPrioritiesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGatewayPrioritiesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGatewayPrioritiesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGatewayPrioritiesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGatewayPrioritiesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGatewayGroupsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GatewayGroups
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGatewayGroupsAPIResponse) GetJSON200() *GatewayGroups {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGatewayGroupsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGatewayGroupsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGatewayGroupsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGatewayGroupsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGatewayGroupsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGatewaysStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GatewaysStatus
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGatewaysStatusAPIResponse) GetJSON200() *GatewaysStatus {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGatewaysStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGatewaysStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGatewaysStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGatewaysStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGatewaysStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfacesStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceInfoList
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfacesStatusAPIResponse) GetJSON200() *InterfaceInfoList {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfacesStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfacesStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfacesStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfacesStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfacesStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMonitoringDatasetsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MonitoringDatasets
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMonitoringDatasetsAPIResponse) GetJSON200() *MonitoringDatasets {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetMonitoringDatasetsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMonitoringDatasetsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMonitoringDatasetsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMonitoringDatasetsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMonitoringDatasetsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetQueueStatsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *QueueStats
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetQueueStatsAPIResponse) GetJSON200() *QueueStats {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetQueueStatsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetQueueStatsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetQueueStatsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetQueueStatsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetQueueStatsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetRoutesDirtyStateAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RoutesDirtyState
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetRoutesDirtyStateAPIResponse) GetJSON200() *RoutesDirtyState {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetRoutesDirtyStateAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetRoutesDirtyStateAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetRoutesDirtyStateAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetRoutesDirtyStateAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetRoutesDirtyStateAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetStaticRoutesAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7029,6 +9676,198 @@ func (r GetStaticRoutesAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetStaticRoutesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StatusSummary
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetStatusAPIResponse) GetJSON200() *StatusSummary {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIfStatsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IfStatsSummary
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIfStatsAPIResponse) GetJSON200() *IfStatsSummary {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetIfStatsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIfStatsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIfStatsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIfStatsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIfStatsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfacesWidgetsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceWidgets
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfacesWidgetsAPIResponse) GetJSON200() *InterfaceWidgets {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfacesWidgetsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfacesWidgetsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfacesWidgetsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfacesWidgetsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfacesWidgetsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfaceStatisticsWidgetAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceStatisticsWidgetResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfaceStatisticsWidgetAPIResponse) GetJSON200() *InterfaceStatisticsWidgetResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfaceStatisticsWidgetAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfaceStatisticsWidgetAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfaceStatisticsWidgetAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfaceStatisticsWidgetAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfaceStatisticsWidgetAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -7646,6 +10485,19 @@ func (c *ClientWithResponses) GetDhcpV6RelayConfigWithResponse(ctx context.Conte
 	return ParseGetDhcpV6RelayConfigAPIResponse(rsp)
 }
 
+// GetDHCPLeasesWithResponse List DHCP leases
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/dhcp/leases (the `GetDHCPLeases` operationId).
+func (c *ClientWithResponses) GetDHCPLeasesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDHCPLeasesAPIResponse, error) {
+	rsp, err := c.GetDHCPLeases(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDHCPLeasesAPIResponse(rsp)
+}
+
 // GetDNSForwarderConfigWithResponse Get DNS Forwarder config
 //
 // Returns a wrapper object for the known response body format(s).
@@ -7657,6 +10509,19 @@ func (c *ClientWithResponses) GetDNSForwarderConfigWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetDNSForwarderConfigAPIResponse(rsp)
+}
+
+// GetDnsResolverStatusWithResponse Get the status of the DNS resolver
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/dnsresolver/status (the `GetDnsResolverStatus` operationId).
+func (c *ClientWithResponses) GetDnsResolverStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDnsResolverStatusAPIResponse, error) {
+	rsp, err := c.GetDnsResolverStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDnsResolverStatusAPIResponse(rsp)
 }
 
 // GetIGMPProxiesWithResponse Get IGMP proxies
@@ -7685,6 +10550,19 @@ func (c *ClientWithResponses) GetMDNSConfigWithResponse(ctx context.Context, req
 	return ParseGetMDNSConfigAPIResponse(rsp)
 }
 
+// GetNDPTableWithResponse Get NDP Table
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/ndp (the `GetNDPTable` operationId).
+func (c *ClientWithResponses) GetNDPTableWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetNDPTableAPIResponse, error) {
+	rsp, err := c.GetNDPTable(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetNDPTableAPIResponse(rsp)
+}
+
 // GetRouterAdvSettingsWithResponse Get router advertisement configuration
 //
 // Returns a wrapper object for the known response body format(s).
@@ -7696,6 +10574,99 @@ func (c *ClientWithResponses) GetRouterAdvSettingsWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetRouterAdvSettingsAPIResponse(rsp)
+}
+
+// GetServicesStatusWithResponse Get Service Status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/status (the `GetServicesStatus` operationId).
+func (c *ClientWithResponses) GetServicesStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetServicesStatusAPIResponse, error) {
+	rsp, err := c.GetServicesStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetServicesStatusAPIResponse(rsp)
+}
+
+// GetUPnPWithResponse Get UPnP config
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/upnp (the `GetUPnP` operationId).
+func (c *ClientWithResponses) GetUPnPWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUPnPAPIResponse, error) {
+	rsp, err := c.GetUPnP(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetUPnPAPIResponse(rsp)
+}
+
+// GetUPnPStatusWithResponse Get a list of active UPnP mappings
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/upnp/status (the `GetUPnPStatus` operationId).
+func (c *ClientWithResponses) GetUPnPStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUPnPStatusAPIResponse, error) {
+	rsp, err := c.GetUPnPStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetUPnPStatusAPIResponse(rsp)
+}
+
+// GetServiceWatchdogServicesWithResponse Retrieve watched services
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/watchdog (the `GetServiceWatchdogServices` operationId).
+func (c *ClientWithResponses) GetServiceWatchdogServicesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetServiceWatchdogServicesAPIResponse, error) {
+	rsp, err := c.GetServiceWatchdogServices(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetServiceWatchdogServicesAPIResponse(rsp)
+}
+
+// GetSystemSummaryWithResponse Get system summary
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system (the `GetSystemSummary` operationId).
+func (c *ClientWithResponses) GetSystemSummaryWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSystemSummaryAPIResponse, error) {
+	rsp, err := c.GetSystemSummary(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSystemSummaryAPIResponse(rsp)
+}
+
+// GetCertOptionsWithResponse Get options for new certificate creation
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/certoptions (the `GetCertOptions` operationId).
+func (c *ClientWithResponses) GetCertOptionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCertOptionsAPIResponse, error) {
+	rsp, err := c.GetCertOptions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCertOptionsAPIResponse(rsp)
+}
+
+// GetDirtySubsystemsWithResponse Get subsystem dirty states
+//
+// Retrieve the list of subsystem configuration which are pending applying of changes.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/config/dirty (the `GetDirtySubsystems` operationId).
+func (c *ClientWithResponses) GetDirtySubsystemsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDirtySubsystemsAPIResponse, error) {
+	rsp, err := c.GetDirtySubsystems(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDirtySubsystemsAPIResponse(rsp)
 }
 
 // DoFilterReloadWithResponse Initiate a manual filter reload
@@ -7724,6 +10695,22 @@ func (c *ClientWithResponses) GetFilterReloadStatusWithResponse(ctx context.Cont
 	return ParseGetFilterReloadStatusAPIResponse(rsp)
 }
 
+// GetFirmwareWithResponse Get the current system firmware version and the available upgrade version
+//
+// Retrieve the system's current firmware version and determine if there is an upgradable
+// firmware image available to install on the system.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/firmware (the `GetFirmware` operationId).
+func (c *ClientWithResponses) GetFirmwareWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFirmwareAPIResponse, error) {
+	rsp, err := c.GetFirmware(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFirmwareAPIResponse(rsp)
+}
+
 // GetGatewaysWithResponse List gateways
 //
 // Returns a wrapper object for the known response body format(s).
@@ -7737,6 +10724,97 @@ func (c *ClientWithResponses) GetGatewaysWithResponse(ctx context.Context, reqEd
 	return ParseGetGatewaysAPIResponse(rsp)
 }
 
+// GetGatewayPrioritiesWithResponse Get the list of gateways and the priority labeling associated with it
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/gateways/group_priorities (the `GetGatewayPriorities` operationId).
+func (c *ClientWithResponses) GetGatewayPrioritiesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewayPrioritiesAPIResponse, error) {
+	rsp, err := c.GetGatewayPriorities(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGatewayPrioritiesAPIResponse(rsp)
+}
+
+// GetGatewayGroupsWithResponse Get gateway groups
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/gateways/groups (the `GetGatewayGroups` operationId).
+func (c *ClientWithResponses) GetGatewayGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewayGroupsAPIResponse, error) {
+	rsp, err := c.GetGatewayGroups(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGatewayGroupsAPIResponse(rsp)
+}
+
+// GetGatewaysStatusWithResponse List Gateway status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/gateways/status (the `GetGatewaysStatus` operationId).
+func (c *ClientWithResponses) GetGatewaysStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewaysStatusAPIResponse, error) {
+	rsp, err := c.GetGatewaysStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGatewaysStatusAPIResponse(rsp)
+}
+
+// GetInterfacesStatusWithResponse Get the status of any configured interfaces.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/interfaces/status (the `GetInterfacesStatus` operationId).
+func (c *ClientWithResponses) GetInterfacesStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesStatusAPIResponse, error) {
+	rsp, err := c.GetInterfacesStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfacesStatusAPIResponse(rsp)
+}
+
+// GetMonitoringDatasetsWithResponse Get the available monitoring datasets
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/monitoring/datasets (the `GetMonitoringDatasets` operationId).
+func (c *ClientWithResponses) GetMonitoringDatasetsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMonitoringDatasetsAPIResponse, error) {
+	rsp, err := c.GetMonitoringDatasets(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMonitoringDatasetsAPIResponse(rsp)
+}
+
+// GetQueueStatsWithResponse Get stats of traffic shaping queues
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/queue/stats (the `GetQueueStats` operationId).
+func (c *ClientWithResponses) GetQueueStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetQueueStatsAPIResponse, error) {
+	rsp, err := c.GetQueueStats(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetQueueStatsAPIResponse(rsp)
+}
+
+// GetRoutesDirtyStateWithResponse Determine if there are any pending routing changes (dirty config)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/routes (the `GetRoutesDirtyState` operationId).
+func (c *ClientWithResponses) GetRoutesDirtyStateWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRoutesDirtyStateAPIResponse, error) {
+	rsp, err := c.GetRoutesDirtyState(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetRoutesDirtyStateAPIResponse(rsp)
+}
+
 // GetStaticRoutesWithResponse Get static routes
 //
 // Returns a wrapper object for the known response body format(s).
@@ -7748,6 +10826,58 @@ func (c *ClientWithResponses) GetStaticRoutesWithResponse(ctx context.Context, r
 		return nil, err
 	}
 	return ParseGetStaticRoutesAPIResponse(rsp)
+}
+
+// GetStatusWithResponse Get system status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/status (the `GetStatus` operationId).
+func (c *ClientWithResponses) GetStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStatusAPIResponse, error) {
+	rsp, err := c.GetStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetStatusAPIResponse(rsp)
+}
+
+// GetIfStatsWithResponse Get network interface stats
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/status/ifstats (the `GetIfStats` operationId).
+func (c *ClientWithResponses) GetIfStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIfStatsAPIResponse, error) {
+	rsp, err := c.GetIfStats(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIfStatsAPIResponse(rsp)
+}
+
+// GetInterfacesWidgetsWithResponse Get Interfaces widget
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/widgets/interfaces (the `GetInterfacesWidgets` operationId).
+func (c *ClientWithResponses) GetInterfacesWidgetsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesWidgetsAPIResponse, error) {
+	rsp, err := c.GetInterfacesWidgets(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfacesWidgetsAPIResponse(rsp)
+}
+
+// GetInterfaceStatisticsWidgetWithResponse Get Interface statistics widget
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/widgets/interfacestats (the `GetInterfaceStatisticsWidget` operationId).
+func (c *ClientWithResponses) GetInterfaceStatisticsWidgetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceStatisticsWidgetAPIResponse, error) {
+	rsp, err := c.GetInterfaceStatisticsWidget(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfaceStatisticsWidgetAPIResponse(rsp)
 }
 
 // GetIPSecWidgetWithResponse Get IPSec widget
@@ -8812,6 +11942,39 @@ func ParseGetDhcpV6RelayConfigAPIResponse(rsp *http.Response) (*GetDhcpV6RelayCo
 	return response, nil
 }
 
+// ParseGetDHCPLeasesAPIResponse parses an HTTP response from a GetDHCPLeasesWithResponse call
+func ParseGetDHCPLeasesAPIResponse(rsp *http.Response) (*GetDHCPLeasesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDHCPLeasesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DHCPLeases
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetDNSForwarderConfigAPIResponse parses an HTTP response from a GetDNSForwarderConfigWithResponse call
 func ParseGetDNSForwarderConfigAPIResponse(rsp *http.Response) (*GetDNSForwarderConfigAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8828,6 +11991,39 @@ func ParseGetDNSForwarderConfigAPIResponse(rsp *http.Response) (*GetDNSForwarder
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DNSForwarderConfigInfo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDnsResolverStatusAPIResponse parses an HTTP response from a GetDnsResolverStatusWithResponse call
+func ParseGetDnsResolverStatusAPIResponse(rsp *http.Response) (*GetDnsResolverStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDnsResolverStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DNSResolverStatus
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -8911,6 +12107,39 @@ func ParseGetMDNSConfigAPIResponse(rsp *http.Response) (*GetMDNSConfigAPIRespons
 	return response, nil
 }
 
+// ParseGetNDPTableAPIResponse parses an HTTP response from a GetNDPTableWithResponse call
+func ParseGetNDPTableAPIResponse(rsp *http.Response) (*GetNDPTableAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetNDPTableAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NDPTable
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetRouterAdvSettingsAPIResponse parses an HTTP response from a GetRouterAdvSettingsWithResponse call
 func ParseGetRouterAdvSettingsAPIResponse(rsp *http.Response) (*GetRouterAdvSettingsAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -8927,6 +12156,237 @@ func ParseGetRouterAdvSettingsAPIResponse(rsp *http.Response) (*GetRouterAdvSett
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest RouterAdvSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetServicesStatusAPIResponse parses an HTTP response from a GetServicesStatusWithResponse call
+func ParseGetServicesStatusAPIResponse(rsp *http.Response) (*GetServicesStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetServicesStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServicesStatusList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetUPnPAPIResponse parses an HTTP response from a GetUPnPWithResponse call
+func ParseGetUPnPAPIResponse(rsp *http.Response) (*GetUPnPAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetUPnPAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServicesUPnPConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetUPnPStatusAPIResponse parses an HTTP response from a GetUPnPStatusWithResponse call
+func ParseGetUPnPStatusAPIResponse(rsp *http.Response) (*GetUPnPStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetUPnPStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UPnPMappings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetServiceWatchdogServicesAPIResponse parses an HTTP response from a GetServiceWatchdogServicesWithResponse call
+func ParseGetServiceWatchdogServicesAPIResponse(rsp *http.Response) (*GetServiceWatchdogServicesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetServiceWatchdogServicesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WatchdogList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSystemSummaryAPIResponse parses an HTTP response from a GetSystemSummaryWithResponse call
+func ParseGetSystemSummaryAPIResponse(rsp *http.Response) (*GetSystemSummaryAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSystemSummaryAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SystemSummary
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCertOptionsAPIResponse parses an HTTP response from a GetCertOptionsWithResponse call
+func ParseGetCertOptionsAPIResponse(rsp *http.Response) (*GetCertOptionsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCertOptionsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CertOpts
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDirtySubsystemsAPIResponse parses an HTTP response from a GetDirtySubsystemsWithResponse call
+func ParseGetDirtySubsystemsAPIResponse(rsp *http.Response) (*GetDirtySubsystemsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDirtySubsystemsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DirtySubsystems
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -9010,6 +12470,39 @@ func ParseGetFilterReloadStatusAPIResponse(rsp *http.Response) (*GetFilterReload
 	return response, nil
 }
 
+// ParseGetFirmwareAPIResponse parses an HTTP response from a GetFirmwareWithResponse call
+func ParseGetFirmwareAPIResponse(rsp *http.Response) (*GetFirmwareAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFirmwareAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SysFirmwareInfo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetGatewaysAPIResponse parses an HTTP response from a GetGatewaysWithResponse call
 func ParseGetGatewaysAPIResponse(rsp *http.Response) (*GetGatewaysAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9043,6 +12536,237 @@ func ParseGetGatewaysAPIResponse(rsp *http.Response) (*GetGatewaysAPIResponse, e
 	return response, nil
 }
 
+// ParseGetGatewayPrioritiesAPIResponse parses an HTTP response from a GetGatewayPrioritiesWithResponse call
+func ParseGetGatewayPrioritiesAPIResponse(rsp *http.Response) (*GetGatewayPrioritiesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGatewayPrioritiesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GatewayPriorities
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGatewayGroupsAPIResponse parses an HTTP response from a GetGatewayGroupsWithResponse call
+func ParseGetGatewayGroupsAPIResponse(rsp *http.Response) (*GetGatewayGroupsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGatewayGroupsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GatewayGroups
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGatewaysStatusAPIResponse parses an HTTP response from a GetGatewaysStatusWithResponse call
+func ParseGetGatewaysStatusAPIResponse(rsp *http.Response) (*GetGatewaysStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGatewaysStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GatewaysStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfacesStatusAPIResponse parses an HTTP response from a GetInterfacesStatusWithResponse call
+func ParseGetInterfacesStatusAPIResponse(rsp *http.Response) (*GetInterfacesStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfacesStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceInfoList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMonitoringDatasetsAPIResponse parses an HTTP response from a GetMonitoringDatasetsWithResponse call
+func ParseGetMonitoringDatasetsAPIResponse(rsp *http.Response) (*GetMonitoringDatasetsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMonitoringDatasetsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MonitoringDatasets
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetQueueStatsAPIResponse parses an HTTP response from a GetQueueStatsWithResponse call
+func ParseGetQueueStatsAPIResponse(rsp *http.Response) (*GetQueueStatsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetQueueStatsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest QueueStats
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetRoutesDirtyStateAPIResponse parses an HTTP response from a GetRoutesDirtyStateWithResponse call
+func ParseGetRoutesDirtyStateAPIResponse(rsp *http.Response) (*GetRoutesDirtyStateAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetRoutesDirtyStateAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoutesDirtyState
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetStaticRoutesAPIResponse parses an HTTP response from a GetStaticRoutesWithResponse call
 func ParseGetStaticRoutesAPIResponse(rsp *http.Response) (*GetStaticRoutesAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -9059,6 +12783,138 @@ func ParseGetStaticRoutesAPIResponse(rsp *http.Response) (*GetStaticRoutesAPIRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest StaticRoutes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetStatusAPIResponse parses an HTTP response from a GetStatusWithResponse call
+func ParseGetStatusAPIResponse(rsp *http.Response) (*GetStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StatusSummary
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIfStatsAPIResponse parses an HTTP response from a GetIfStatsWithResponse call
+func ParseGetIfStatsAPIResponse(rsp *http.Response) (*GetIfStatsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIfStatsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IfStatsSummary
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfacesWidgetsAPIResponse parses an HTTP response from a GetInterfacesWidgetsWithResponse call
+func ParseGetInterfacesWidgetsAPIResponse(rsp *http.Response) (*GetInterfacesWidgetsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfacesWidgetsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceWidgets
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfaceStatisticsWidgetAPIResponse parses an HTTP response from a GetInterfaceStatisticsWidgetWithResponse call
+func ParseGetInterfaceStatisticsWidgetAPIResponse(rsp *http.Response) (*GetInterfaceStatisticsWidgetAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfaceStatisticsWidgetAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceStatisticsWidgetResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

@@ -58,3 +58,5 @@ radvs
 fwmark
 inpkts
 outpkts
+UPnP
+neighbor

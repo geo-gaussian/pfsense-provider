@@ -45,5 +45,27 @@ output-options:
     - GetIPSecWidget
     - GetOpenVPNStatus
     - GetWireGuardStatus
+    - GetDHCPLeases
+    - GetDnsResolverStatus
+    - GetNDPTable
+    - GetServicesStatus
+    - GetUPnP
+    - GetUPnPStatus
+    - GetServiceWatchdogServices
+    - GetSystemSummary
+    - GetCertOptions
+    - GetDirtySubsystems
+    - GetFirmware
+    - GetGatewayPriorities
+    - GetGatewayGroups
+    - GetGatewaysStatus
+    - GetInterfacesStatus
+    - GetMonitoringDatasets
+    - GetQueueStats
+    - GetRoutesDirtyState
+    - GetStatus
+    - GetIfStats
+    - GetInterfacesWidgets
+    - GetInterfaceStatisticsWidget
     - DoFilterReload
     - GetFilterReloadStatus

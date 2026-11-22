@@ -112,6 +112,10 @@ configuration or status as JSON; use `jsondecode()` to select fields. Some
 outputs are sensitive, and the WireGuard status source omits key material. For
 example, read aliases, configured interfaces, and firewall NAT rules:
 
+The catalog also includes DHCP lease and service status reads, system summary
+and health information, gateway and interface status, and monitoring metadata.
+Sensitive outputs are marked in their individual data source documentation.
+
 ```hcl
 terraform {
   required_providers {
