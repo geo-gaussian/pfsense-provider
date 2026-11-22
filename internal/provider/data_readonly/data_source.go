@@ -150,6 +150,10 @@ func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	}
 
 	state["json"] = types.StringValue(string(body))
+	setReadState(ctx, state, resp)
+}
+
+func setReadState(ctx context.Context, state map[string]attr.Value, resp *datasource.ReadResponse) {
 	stateTypes := make(map[string]attr.Type, len(state))
 	for name := range state {
 		stateTypes[name] = types.StringType

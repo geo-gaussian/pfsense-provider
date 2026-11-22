@@ -26,6 +26,10 @@ func NewOpenVPNStatus() datasource.DataSource {
 }
 
 func NewWireGuardStatus() datasource.DataSource {
+	return newWireGuardStatusDataSource(json.Marshal)
+}
+
+func newWireGuardStatusDataSource(marshalJSON func(any) ([]byte, error)) datasource.DataSource {
 	return newDataSourceWithJSONDescription(
 		"wireguard_status",
 		"Reads WireGuard operational status without returning private keys, preshared keys, or configuration objects.",
@@ -45,7 +49,7 @@ func NewWireGuardStatus() datasource.DataSource {
 			}
 
 			safeStatus := projectWireGuardStatus(result.JSON200)
-			body, err := json.Marshal(safeStatus)
+			body, err := marshalJSON(safeStatus)
 			if err != nil {
 				return nil, err
 			}

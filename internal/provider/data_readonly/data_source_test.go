@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -723,6 +724,17 @@ func TestReadDataSourceHandlesReadFailures(t *testing.T) {
 	}
 }
 
+func TestSetReadStateReportsObjectConstructionErrors(t *testing.T) {
+	d := NewFirewallNATNpt()
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSourceSchema(t, d)}}
+	setReadState(context.Background(), map[string]attr.Value{
+		"json": types.BoolValue(true),
+	}, &resp)
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error for an invalid state value")
+	}
+}
+
 func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
 	const responseBody = `{"config":[{"enable":true}],"status":[{"private_key":"tunnel-private","public_key":"tunnel-public","listen_port":"51820","status":"up","transfer_rx":10,"transfer_tx":20,"config":{"privatekey":"nested-private"},"peers":[{"public_key":"peer-public","preshared_key":"peer-secret","endpoint":"peer.example:51820","allowed_ips":"10.0.0.0/24","latest_handshake":"now","transfer_rx":"30","transfer_tx":"40","config":{"presharedkey":"nested-secret"}}]}]}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -782,6 +794,38 @@ func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
 		if !strings.Contains(got, safeValue) {
 			t.Fatalf("WireGuard output omitted expected status value %q: %s", safeValue, got)
 		}
+	}
+}
+
+func TestWireGuardStatusHandlesMarshalError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = fmt.Fprint(w, `{"status":[]}`)
+	}))
+	defer server.Close()
+
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d := newWireGuardStatusDataSource(func(any) ([]byte, error) {
+		return nil, errors.New("mock marshal failure")
+	})
+	configureDataSource(t, d, client)
+	dataSchema := dataSourceSchema(t, d)
+	config := tfsdk.Config{
+		Schema: dataSchema,
+		Raw: tftypes.NewValue(dataSchema.Type().TerraformType(context.Background()), map[string]tftypes.Value{
+			"json": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+		}),
+	}
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
+	d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error when WireGuard JSON encoding fails")
+	}
+	if !strings.Contains(resp.Diagnostics.Errors()[0].Detail(), "mock marshal failure") {
+		t.Fatalf("unexpected diagnostics: %v", resp.Diagnostics)
 	}
 }
 
