@@ -1,0 +1,6 @@
+provider_installation {
+  dev_overrides {
+    "geo-gaussian/pfsense-nexus" = "$PFSENSE_TEST_PROVIDER_DIR"
+  }
+  direct {}
+}

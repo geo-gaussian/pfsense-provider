@@ -28,6 +28,10 @@ type NexusClient struct {
 }
 
 func New(baseURL, username, password string, insecure bool) (*NexusClient, error) {
+	return newWithFactories(baseURL, username, password, insecure, cookiejar.New, api.NewClientWithResponses)
+}
+
+func newWithFactories(baseURL, username, password string, insecure bool, newJar func(*cookiejar.Options) (*cookiejar.Jar, error), newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) (*NexusClient, error) {
 	u, err := url.Parse(baseURL)
 	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Path != "" && u.Path != "/") {
 		return nil, fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
@@ -35,7 +39,7 @@ func New(baseURL, username, password string, insecure bool) (*NexusClient, error
 	if username == "" || password == "" {
 		return nil, fmt.Errorf("username and password must not be empty")
 	}
-	jar, err := cookiejar.New(nil)
+	jar, err := newJar(nil)
 	if err != nil {
 		return nil, fmt.Errorf("create cookie jar: %w", err)
 	}
@@ -53,7 +57,7 @@ func New(baseURL, username, password string, insecure bool) (*NexusClient, error
 		username: base64.StdEncoding.EncodeToString([]byte(username)),
 		password: base64.StdEncoding.EncodeToString([]byte(password)),
 	}
-	c.auth, err = api.NewClientWithResponses(strings.TrimRight(baseURL, "/")+"/api", api.WithHTTPClient(rawClient{c}))
+	c.auth, err = newAPI(strings.TrimRight(baseURL, "/")+"/api", api.WithHTTPClient(rawClient{c}))
 	if err != nil {
 		return nil, fmt.Errorf("configure API client: %w", err)
 	}

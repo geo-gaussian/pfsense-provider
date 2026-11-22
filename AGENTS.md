@@ -21,6 +21,11 @@ write operations and compatibility with other versions remain unverified.
    - When the Nexus API returns `HTTP 404 Not Found` during `Read()`, call `resp.State.RemoveResource(ctx)` and return without adding an error diagnostic so Terraform detects out-of-band deletion cleanly.
 6. **POSIX Shell Scripts:**
    - Project-owned shell scripts MUST use POSIX shell syntax and `#!/bin/sh`. Spec Kit-managed scripts are temporarily exempt.
+7. **No Inline Programs:**
+   - Store executable code, configuration used as a program, and test fixtures in standalone files in their own language. Pass dynamic values as arguments, environment variables, or supported configuration variables. Do not embed programs in shell commands, workflow blocks, other languages' strings, or agent terminal commands.
+   - This includes interpreter `-c`/`-e` code and inline AWK, sed, and jq programs. Ordinary commands and arguments are allowed.
+   - Spec Kit-managed scripts under `.specify/scripts/` are exempt. No other automatic exception applies, including tests and generated fixtures: obtain the user's explicit approval before adding any other exception.
+   - Short, syntax-highlighted documentation examples may explain a concept; reusable automation belongs in standalone files.
 
 ## 📝 Documentation Rules
 
@@ -33,7 +38,7 @@ write operations and compatibility with other versions remain unverified.
 
 ## 🔄 Standard Development Workflow
 
-Use pnpm for JavaScript-based repository tooling. The repository `.npmrc`
+Use pnpm for Node-based repository tooling. The repository `.npmrc`
 disables package installation scripts; do not override this setting. Run
 required project scripts explicitly with `pnpm run`.
 

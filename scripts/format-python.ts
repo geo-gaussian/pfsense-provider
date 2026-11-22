@@ -1,10 +1,10 @@
-const { spawnSync } = require("node:child_process");
-const path = require("node:path");
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const root = path.resolve(__dirname, "..");
+const root = fileURLToPath(new URL("..", import.meta.url));
 const mode = process.argv[2];
-if (!["--check", "--write"].includes(mode) || process.argv.length !== 3) {
-	console.error("Usage: node scripts/format-python.js --check|--write");
+if ((mode !== "--check" && mode !== "--write") || process.argv.length !== 3) {
+	console.error("Usage: node scripts/format-python.ts --check|--write");
 	process.exit(2);
 }
 

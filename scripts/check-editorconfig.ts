@@ -1,7 +1,8 @@
-const fs = require("node:fs");
-const path = require("node:path");
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = path.resolve(__dirname, "..");
+const root = fileURLToPath(new URL("..", import.meta.url));
 const ignored = new Set([
 	".git",
 	".terraform",
@@ -12,6 +13,7 @@ const ignored = new Set([
 ]);
 const checkExtensions = new Set([
 	".js",
+	".ts",
 	".json",
 	".md",
 	".py",
@@ -20,9 +22,9 @@ const checkExtensions = new Set([
 	".yaml",
 	".yml",
 ]);
-const issues = [];
+const issues: string[] = [];
 
-function walk(directory) {
+function walk(directory: string): void {
 	for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
 		if (ignored.has(entry.name)) {
 			continue;
@@ -48,7 +50,7 @@ function walk(directory) {
 		const text = fs.readFileSync(absolute, "utf8");
 		const lines = text.split("\n");
 		const tabsAllowed =
-			[".js", ".json", ".py", ".sh"].includes(extension) ||
+			[".js", ".ts", ".json", ".py", ".sh"].includes(extension) ||
 			entry.name === "Makefile";
 
 		if (!text.endsWith("\n")) {

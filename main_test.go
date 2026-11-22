@@ -15,13 +15,53 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 )
 
+func prepareTerraformFixture(t *testing.T, dir, fixture string) string {
+	t.Helper()
+	config, err := os.ReadFile(filepath.Join("tests", "terraform", fixture, "main.tf"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "main.tf"), config, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	cliConfig, err := os.ReadFile(filepath.Join("tests", "terraform", "terraform.tfrc"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cliConfigPath := filepath.Join(dir, "terraform.rc")
+	if err := os.WriteFile(cliConfigPath, cliConfig, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return cliConfigPath
+}
+
+func terraformEnvironment(cliConfigPath, serverURL, providerDir, description string) []string {
+	env := make([]string, 0, len(os.Environ())+8)
+	for _, entry := range os.Environ() {
+		key, _, _ := strings.Cut(entry, "=")
+		switch key {
+		case "TF_CLI_CONFIG_FILE", "TF_IN_AUTOMATION", "CHECKPOINT_DISABLE", "PFSENSE_TEST_PROVIDER_DIR",
+			"TF_VAR_nexus_url", "TF_VAR_nexus_username", "TF_VAR_nexus_password", "TF_VAR_alias_description":
+			continue
+		}
+		env = append(env, entry)
+	}
+	env = append(env, "TF_CLI_CONFIG_FILE="+cliConfigPath, "TF_IN_AUTOMATION=1", "CHECKPOINT_DISABLE=1",
+		"PFSENSE_TEST_PROVIDER_DIR="+providerDir, "TF_VAR_nexus_url="+serverURL,
+		"TF_VAR_nexus_username=test-user", "TF_VAR_nexus_password="+strings.Repeat("x", 12))
+	if description != "" {
+		env = append(env, "TF_VAR_alias_description="+description)
+	}
+	return env
+}
+
 func TestTerraformFirewallAliasesDataSource(t *testing.T) {
 	terraform, err := exec.LookPath("terraform")
 	if err != nil {
 		t.Skip("Terraform CLI is not installed")
 	}
 	dir := t.TempDir()
-	providerDir := filepath.Join(dir, "provider")
+	providerDir := filepath.Join(dir, "provider${fixture}%{fixture}")
 	if err := os.Mkdir(providerDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -59,35 +99,11 @@ func TestTerraformFirewallAliasesDataSource(t *testing.T) {
 	}))
 	defer server.Close()
 
-	config := fmt.Sprintf(`
-	terraform {
-	  required_providers {
-	    pfsense = { source = "geo-gaussian/pfsense-nexus" }
-	  }
-	}
-	provider "pfsense" {
-	  url = %q
-	  username = "test-user"
-	  password = %q
-	  insecure = true
-	}
-	data "pfsense_firewall_aliases" "test" {}
-	output "alias_names" {
-	  value = [for alias in data.pfsense_firewall_aliases.test.aliases : alias.name]
-	}
-	`, server.URL, strings.Repeat("x", 12))
-	if err := os.WriteFile(filepath.Join(dir, "main.tf"), []byte(config), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	cliConfig := fmt.Sprintf("provider_installation {\n  dev_overrides { \"geo-gaussian/pfsense-nexus\" = %q }\n  direct {}\n}\n", providerDir)
-	cliConfigPath := filepath.Join(dir, "terraform.rc")
-	if err := os.WriteFile(cliConfigPath, []byte(cliConfig), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	cliConfigPath := prepareTerraformFixture(t, dir, "data-source")
 	plan := func() ([]byte, error) {
 		cmd := exec.Command(terraform, "plan", "-input=false", "-no-color")
 		cmd.Dir = dir
-		cmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+cliConfigPath, "TF_IN_AUTOMATION=1", "CHECKPOINT_DISABLE=1")
+		cmd.Env = terraformEnvironment(cliConfigPath, server.URL, providerDir, "")
 		return cmd.CombinedOutput()
 	}
 	output, err := plan()
@@ -180,47 +196,20 @@ func TestTerraformAliasLifecycle(t *testing.T) {
 		}
 	}))
 	defer server.Close()
-	config := fmt.Sprintf(`
-terraform {
-  required_providers {
-    pfsense = { source = "geo-gaussian/pfsense-nexus" }
-  }
-}
-provider "pfsense" {
-  url = %q
-  username = "test-user"
-  password = %q
-  insecure = true
-}
-resource "pfsense_firewall_alias" "test" {
-  name = "example"
-  type = "host"
-  targets = [{ name = "example.test" }]
-}
-`, server.URL, strings.Repeat("x", 12))
-	if err := os.WriteFile(filepath.Join(dir, "main.tf"), []byte(config), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	cliConfig := fmt.Sprintf("provider_installation {\n  dev_overrides { \"geo-gaussian/pfsense-nexus\" = %q }\n  direct {}\n}\n", providerDir)
-	cliConfigPath := filepath.Join(dir, "terraform.rc")
-	if err := os.WriteFile(cliConfigPath, []byte(cliConfig), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	cliConfigPath := prepareTerraformFixture(t, dir, "lifecycle")
+	description := ""
 	run := func(args ...string) {
 		t.Helper()
 		cmd := exec.Command(terraform, args...)
 		cmd.Dir = dir
-		cmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+cliConfigPath, "TF_IN_AUTOMATION=1", "CHECKPOINT_DISABLE=1")
+		cmd.Env = terraformEnvironment(cliConfigPath, server.URL, providerDir, description)
 		if output, err := cmd.CombinedOutput(); err != nil {
 			t.Fatalf("terraform %s: %v\n%s", strings.Join(args, " "), err, output)
 		}
 	}
 	run("apply", "-auto-approve", "-input=false", "-no-color")
 	run("plan", "-detailed-exitcode", "-input=false", "-no-color")
-	config = strings.Replace(config, `type = "host"`, "type = \"host\"\n  descr = \"updated\"", 1)
-	if err := os.WriteFile(filepath.Join(dir, "main.tf"), []byte(config), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	description = "updated"
 	run("apply", "-auto-approve", "-input=false", "-no-color")
 	run("plan", "-detailed-exitcode", "-input=false", "-no-color")
 	run("state", "rm", "pfsense_firewall_alias.test")
@@ -237,7 +226,7 @@ resource "pfsense_firewall_alias" "test" {
 
 	cmd := exec.Command(terraform, "apply", "-auto-approve", "-input=false", "-no-color")
 	cmd.Dir = dir
-	cmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+cliConfigPath, "TF_IN_AUTOMATION=1", "CHECKPOINT_DISABLE=1")
+	cmd.Env = terraformEnvironment(cliConfigPath, server.URL, providerDir, description)
 	output, err := cmd.CombinedOutput()
 	if err == nil || !strings.Contains(string(output), "Alias created but firewall reload failed") {
 		t.Fatalf("expected a reload failure after creation: %v\n%s", err, output)

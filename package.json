@@ -1,25 +1,33 @@
 {
 	"name": "pfsense-nexus-provider",
 	"private": true,
+	"type": "module",
 	"packageManager": "pnpm@12.21.0",
+	"engines": {
+		"node": "^22.18.0 || >=23.6.0"
+	},
 	"scripts": {
-		"lint": "pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
-		"lint:editorconfig": "node scripts/check-editorconfig.js",
-		"lint:format": "prettier --check '**/*.{js,json,sh}' .githooks/pre-commit",
-		"lint:python": "node scripts/format-python.js --check",
+		"lint": "pnpm run lint:inline && pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:types && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
+		"lint:inline": "node scripts/check-inline-programs.ts",
+		"lint:editorconfig": "node scripts/check-editorconfig.ts",
+		"lint:format": "prettier --check '**/*.{js,ts,json,sh}' .githooks/pre-commit",
+		"lint:types": "tsc --noEmit",
+		"lint:python": "node scripts/format-python.ts --check",
 		"lint:cspell": "cspell --config cspell.config.yaml --no-progress --no-must-find-files \"**/*\"",
-		"lint:go": "gofmt -l . | awk 'NF { print } END { exit NR ? 1 : 0 }' && go vet ./...",
+		"lint:go": "sh scripts/check-go-format.sh && go vet ./...",
 		"format": "pnpm run format:prettier && pnpm run format:python",
-		"format:prettier": "prettier --write '**/*.{js,json,sh}' .githooks/pre-commit",
-		"format:python": "node scripts/format-python.js --write",
-		"test": "node --test scripts/check-format.test.js && go test -race ./...",
+		"format:prettier": "prettier --write '**/*.{js,ts,json,sh}' .githooks/pre-commit",
+		"format:python": "node scripts/format-python.ts --write",
+		"test": "node --test scripts/*.test.ts && go test -race ./...",
 		"coverage": "go test -race -coverprofile=coverage.raw.out ./... && go run ./tools/coverage coverage.raw.out coverage-report",
-		"setup-hooks": "node scripts/install-hooks.js"
+		"setup-hooks": "node scripts/install-hooks.ts"
 	},
 	"devDependencies": {
+		"@types/node": "22.20.5",
 		"cspell": "10.5.2",
 		"editorconfig-checker": "7.0.0",
 		"prettier": "3.10.1",
-		"prettier-plugin-sh": "0.20.2"
+		"prettier-plugin-sh": "0.20.2",
+		"typescript": "7.0.2"
 	}
 }
