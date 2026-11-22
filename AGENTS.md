@@ -33,7 +33,7 @@ write operations and compatibility with other versions remain unverified.
 
 ## 🔄 Standard Development Workflow
 
-Use pnpm for JavaScript-based repository tooling. The repository `.npmrc`
+Use pnpm for Node-based repository tooling. The repository `.npmrc`
 disables package installation scripts; do not override this setting. Run
 required project scripts explicitly with `pnpm run`.
 

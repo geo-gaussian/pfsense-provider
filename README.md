@@ -32,7 +32,8 @@ uncertain API response may also require importing the existing alias.
 
 - Go 1.25 or newer to build
 - Terraform 1.8 or newer
-- Node.js and pnpm for repository lint checks
+- Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
+  repository lint checks
 - A Nexus controller with a local firewall registered as described above
 
 ## 📥 Install from the Terraform Registry
@@ -184,7 +185,8 @@ pnpm run test
 ```
 
 The lint and format commands require [uv](https://docs.astral.sh/uv/);
-they run a pinned YAPF version through `uvx`.
+they run a pinned YAPF version through `uvx`. Node runs the TypeScript
+tooling directly; lint also checks its types without emitting build files.
 
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
@@ -257,7 +259,8 @@ not expose test credentials or an appliance to untrusted pull request code.
 The repository prefers tabs displayed at two columns for project-owned code
 and JSON. YAML, Terraform, and Markdown use two-space indentation; Go follows
 `gofmt` and Makefile recipes use tabs. Lint uses YAPF for Python and Prettier
-for JavaScript, JSON, and shell, including Spec Kit's managed files. Spaces
+for Node scripts, TypeScript, JSON, and shell, including Spec Kit's managed
+files. Spaces
 are allowed for alignment and content where needed. Markdown and YAML are not
 automatically formatted; the whitespace check catches some issues but does not
 enforce all indentation. Project-owned shell scripts use POSIX shell and
@@ -265,9 +268,10 @@ enforce all indentation. Project-owned shell scripts use POSIX shell and
 compatibility is not currently checked by lint.
 
 Run `pnpm run format` to reformat those files after generating or updating
-Spec Kit. Review the changes before committing. Formatting changes to managed
-files count as local edits: Spec Kit upgrades may preserve them or require
-manual reconciliation. Do not update its recorded hashes to hide changes.
+Spec Kit. Review the changes before committing. Formatting and skill changes to
+managed files count as local edits: Spec Kit upgrades may preserve them or
+require manual reconciliation. Do not update its recorded hashes to hide
+changes.
 
 ## 📦 Preparing a release
 

@@ -1,8 +1,9 @@
-const fs = require("node:fs");
-const path = require("node:path");
-const { execFileSync } = require("node:child_process");
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const root = path.resolve(__dirname, "..");
+const root = fileURLToPath(new URL("..", import.meta.url));
 execFileSync("git", ["config", "core.hooksPath", ".githooks"], {
 	cwd: root,
 	stdio: "inherit",

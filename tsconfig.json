@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "nodenext",
+		"types": ["node"],
+		"rootDir": "scripts",
+		"strict": true,
+		"noEmit": true,
+		"rewriteRelativeImportExtensions": true,
+		"erasableSyntaxOnly": true,
+		"verbatimModuleSyntax": true
+	},
+	"include": ["scripts/**/*.ts"]
+}

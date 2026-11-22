@@ -37,7 +37,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Install JavaScript dependencies without running install scripts
+      - name: Install Node dependencies without running install scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Install Go dependencies
@@ -74,14 +74,14 @@ jobs:
           terraform_version: 1.11.4
           terraform_wrapper: false
 
-      - name: Install JavaScript dependencies without running install scripts
+      - name: Install Node dependencies without running install scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Install Go dependencies
         run: go mod download
 
       - name: Run formatting tests
-        run: node --test scripts/check-format.test.js
+        run: node --test scripts/check-format.test.ts
 
       - name: Run race tests and produce coverage reports
         run: pnpm run coverage
