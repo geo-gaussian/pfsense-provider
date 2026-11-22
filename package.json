@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"cspell": "9.2.2",
-		"editorconfig-checker": "6.1.0",
+		"editorconfig-checker": "7.0.0",
 		"prettier": "3.10.1",
 		"prettier-plugin-sh": "0.20.2"
 	}
