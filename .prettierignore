@@ -1,0 +1,7 @@
+.specify/
+.github/skills/speckit-*/
+.terraform/
+provider_code_spec.json
+node_modules/
+dist/
+bin/

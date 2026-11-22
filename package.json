@@ -1,17 +1,20 @@
 {
-  "name": "pfsense-nexus-provider",
-  "private": true,
-  "packageManager": "pnpm@12.21.0",
-  "scripts": {
-    "lint": "pnpm run lint:editorconfig && pnpm run lint:cspell && pnpm run lint:go",
-    "lint:editorconfig": "node scripts/check-editorconfig.js",
-    "lint:cspell": "cspell --config cspell.config.yaml --no-progress --no-must-find-files \"**/*\"",
-    "lint:go": "gofmt -l . | awk 'NF { print } END { exit NR ? 1 : 0 }' && go vet ./...",
-    "test": "go test -race ./...",
-    "setup-hooks": "node scripts/install-hooks.js"
-  },
-  "devDependencies": {
-    "cspell": "9.2.2",
-    "editorconfig-checker": "6.1.0"
-  }
+	"name": "pfsense-nexus-provider",
+	"private": true,
+	"packageManager": "pnpm@12.21.0",
+	"scripts": {
+		"lint": "pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:cspell && pnpm run lint:go",
+		"lint:editorconfig": "node scripts/check-editorconfig.js",
+		"lint:format": "prettier --check '**/*.{js,json,sh}' .githooks/pre-commit",
+		"lint:cspell": "cspell --config cspell.config.yaml --no-progress --no-must-find-files \"**/*\"",
+		"lint:go": "gofmt -l . | awk 'NF { print } END { exit NR ? 1 : 0 }' && go vet ./...",
+		"test": "node --test scripts/check-format.test.js && go test -race ./...",
+		"setup-hooks": "node scripts/install-hooks.js"
+	},
+	"devDependencies": {
+		"cspell": "9.2.2",
+		"editorconfig-checker": "6.1.0",
+		"prettier": "3.10.1",
+		"prettier-plugin-sh": "0.20.2"
+	}
 }

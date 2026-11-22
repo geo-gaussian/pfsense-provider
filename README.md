@@ -176,10 +176,11 @@ pnpm run lint
 pnpm run test
 ```
 
-The tests use mock HTTP servers; when the Terraform CLI is available they also
-exercise create, update, import, refresh, and destroy through the actual
-provider protocol. They do not replace live acceptance tests. The Git hook and
-CI run the same lint and race-test commands, with CI running them in parallel.
+The tests check formatting and use mock HTTP servers; when the Terraform CLI is
+available they also exercise create, update, import, refresh, and destroy
+through the actual provider protocol. They do not replace live acceptance tests.
+The Git hook and CI run the same lint and test commands, with CI running them
+in parallel.
 
 Future acceptance tests can run as a separate workflow job against an isolated,
 disposable pfSense instance with test-only credentials. If they become a release
@@ -187,8 +188,13 @@ requirement, add that job to the release job's dependencies and ensure it runs
 on version tags; a skipped dependency would otherwise prevent the release. Do
 not expose test credentials or an appliance to untrusted pull request code.
 
-The repository uses two-space indentation by default. Go source follows `gofmt`
-and Makefile recipes use tabs.
+The repository prefers tabs displayed at two columns for project-owned code
+and JSON. YAML, Terraform, and Markdown use two-space indentation; Go follows
+`gofmt` and Makefile recipes use tabs. YAPF is configured to use tabs for
+Python block indentation, but Python formatting is not yet checked by lint.
+Spec Kit's managed files retain their generated formatting. The lint check
+uses Prettier to enforce tab indentation in project-owned JavaScript, JSON,
+and shell files; it allows spaces for alignment and content where needed.
 
 ## 📦 Preparing a release
 
