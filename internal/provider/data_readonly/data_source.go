@@ -22,22 +22,54 @@ type apiResponse interface {
 type readFunc func(context.Context, *api.ClientWithResponses, map[string]string) (apiResponse, error)
 
 type dataSource struct {
-	client      *api.ClientWithResponses
-	typeName    string
-	description string
-	arguments   map[string]schema.Attribute
-	read        readFunc
+	client          *api.ClientWithResponses
+	typeName        string
+	description     string
+	jsonDescription string
+	sensitiveJSON   bool
+	arguments       map[string]schema.Attribute
+	read            readFunc
 }
 
 var _ datasource.DataSource = &dataSource{}
 var _ datasource.DataSourceWithConfigure = &dataSource{}
 
 func newDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+	return newDataSourceWithJSONDescription(
+		typeName,
+		description,
+		arguments,
+		"The complete API response as JSON. Use jsondecode() to access its fields.",
+		false,
+		read,
+	)
+}
+
+func newSensitiveDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+	return newDataSourceWithJSONDescription(
+		typeName,
+		description,
+		arguments,
+		"The complete API response as sensitive JSON. Use jsondecode() to access its fields. Protect Terraform state and saved plans.",
+		true,
+		read,
+	)
+}
+
+func newDataSourceWithJSONDescription(
+	typeName, description string,
+	arguments map[string]schema.Attribute,
+	jsonDescription string,
+	sensitiveJSON bool,
+	read readFunc,
+) datasource.DataSource {
 	return &dataSource{
-		typeName:    typeName,
-		description: description,
-		arguments:   arguments,
-		read:        read,
+		typeName:        typeName,
+		description:     description,
+		jsonDescription: jsonDescription,
+		sensitiveJSON:   sensitiveJSON,
+		arguments:       arguments,
+		read:            read,
 	}
 }
 
@@ -52,7 +84,8 @@ func (d *dataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp 
 	}
 	attributes["json"] = schema.StringAttribute{
 		Computed:    true,
-		Description: "The complete API response as JSON. Use jsondecode() to access its fields.",
+		Description: d.jsonDescription,
+		Sensitive:   d.sensitiveJSON,
 	}
 	resp.Schema = schema.Schema{
 		Description: d.description,

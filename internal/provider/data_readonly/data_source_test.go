@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
@@ -24,6 +25,7 @@ func TestReadDataSource(t *testing.T) {
 		status     int
 		body       string
 		wantJSON   string
+		sensitive  bool
 		wantError  bool
 	}{
 		{
@@ -220,6 +222,71 @@ func TestReadDataSource(t *testing.T) {
 			wantJSON:   `{}`,
 		},
 		{
+			name:       "DNS Forwarder",
+			dataSource: NewDNSForwarder,
+			path:       "/services/dnsmasq",
+			status:     http.StatusOK,
+			body:       `{"config":{"custom_options":"YQ=="}}`,
+			wantJSON:   `{"config":{"custom_options":"YQ=="}}`,
+			sensitive:  true,
+		},
+		{
+			name:       "IGMP proxies",
+			dataSource: NewIGMPProxies,
+			path:       "/services/igmpproxy",
+			status:     http.StatusOK,
+			body:       `{"igmpentries":[]}`,
+			wantJSON:   `{"igmpentries":[]}`,
+		},
+		{
+			name:       "mDNS",
+			dataSource: NewMDNS,
+			path:       "/services/mdns",
+			status:     http.StatusOK,
+			body:       `{"enable":true}`,
+			wantJSON:   `{"enable":true}`,
+		},
+		{
+			name:       "DHCPv4 relay",
+			dataSource: NewDHCPv4Relay,
+			path:       "/services/dhcp-relay/v4",
+			status:     http.StatusOK,
+			body:       `{"enable":true}`,
+			wantJSON:   `{"enable":true}`,
+		},
+		{
+			name:       "DHCPv6 relay",
+			dataSource: NewDHCPv6Relay,
+			path:       "/services/dhcp-relay/v6",
+			status:     http.StatusOK,
+			body:       `{"enable":true}`,
+			wantJSON:   `{"enable":true}`,
+		},
+		{
+			name:       "router advertisements",
+			dataSource: NewRouterAdvertisements,
+			path:       "/services/radv",
+			status:     http.StatusOK,
+			body:       `{"intf_radvs":[]}`,
+			wantJSON:   `{"intf_radvs":[]}`,
+		},
+		{
+			name:       "IPsec widget",
+			dataSource: NewIPSecWidget,
+			path:       "/system/widgets/ipsec",
+			status:     http.StatusOK,
+			body:       `{"phase1s_active":0}`,
+			wantJSON:   `{"phase1s_active":0}`,
+		},
+		{
+			name:       "OpenVPN status",
+			dataSource: NewOpenVPNStatus,
+			path:       "/vpn/openvpn/status",
+			status:     http.StatusOK,
+			body:       `{"servers":[],"clients":[]}`,
+			wantJSON:   `{"servers":[],"clients":[]}`,
+		},
+		{
 			name:       "HTTP error",
 			dataSource: NewFirewallNATPortForward,
 			path:       "/firewall/nat/port-forward",
@@ -265,7 +332,14 @@ func TestReadDataSource(t *testing.T) {
 			}
 			d := tt.dataSource()
 			configureDataSource(t, d, client)
-			schema := dataSourceSchema(t, d)
+			dataSchema := dataSourceSchema(t, d)
+			jsonAttribute, ok := dataSchema.Attributes["json"].(schema.StringAttribute)
+			if !ok {
+				t.Fatal("json attribute is not a string")
+			}
+			if jsonAttribute.Sensitive != tt.sensitive {
+				t.Fatalf("json sensitivity = %t, want %t", jsonAttribute.Sensitive, tt.sensitive)
+			}
 
 			configValues := make(map[string]tftypes.Value, len(tt.configured)+1)
 			for name, value := range tt.configured {
@@ -273,10 +347,10 @@ func TestReadDataSource(t *testing.T) {
 			}
 			configValues["json"] = tftypes.NewValue(tftypes.String, tftypes.UnknownValue)
 			config := tfsdk.Config{
-				Schema: schema,
-				Raw:    tftypes.NewValue(schema.Type().TerraformType(context.Background()), configValues),
+				Schema: dataSchema,
+				Raw:    tftypes.NewValue(dataSchema.Type().TerraformType(context.Background()), configValues),
 			}
-			resp := datasource.ReadResponse{State: tfsdk.State{Schema: schema}}
+			resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
 			d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
 
 			if resp.Diagnostics.HasError() != tt.wantError {
@@ -306,6 +380,68 @@ func TestReadDataSource(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
+	const responseBody = `{"config":[{"enable":true}],"status":[{"private_key":"tunnel-private","public_key":"tunnel-public","listen_port":"51820","status":"up","transfer_rx":10,"transfer_tx":20,"config":{"privatekey":"nested-private"},"peers":[{"public_key":"peer-public","preshared_key":"peer-secret","endpoint":"peer.example:51820","allowed_ips":"10.0.0.0/24","latest_handshake":"now","transfer_rx":"30","transfer_tx":"40","config":{"presharedkey":"nested-secret"}}]}]}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if req.Method != http.MethodGet || req.URL.Path != "/vpn/wg/status" {
+			t.Errorf("unexpected request: %s %s", req.Method, req.URL.Path)
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = fmt.Fprint(w, responseBody)
+	}))
+	defer server.Close()
+
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d := NewWireGuardStatus()
+	configureDataSource(t, d, client)
+	schema := dataSourceSchema(t, d)
+	configValues := map[string]tftypes.Value{
+		"json": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+	}
+	config := tfsdk.Config{
+		Schema: schema,
+		Raw:    tftypes.NewValue(schema.Type().TerraformType(context.Background()), configValues),
+	}
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: schema}}
+	d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+	if resp.Diagnostics.HasError() {
+		t.Fatal(resp.Diagnostics)
+	}
+
+	var state types.Object
+	if diags := resp.State.Get(context.Background(), &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	jsonValue, ok := state.Attributes()["json"].(types.String)
+	if !ok {
+		t.Fatal("json state attribute is not a string")
+	}
+	got := jsonValue.ValueString()
+	for _, secret := range []string{
+		"private_key",
+		"preshared_key",
+		`"config"`,
+		"tunnel-private",
+		"peer-secret",
+		"nested-private",
+		"nested-secret",
+	} {
+		if strings.Contains(got, secret) {
+			t.Fatalf("WireGuard output contains secret material %q: %s", secret, got)
+		}
+	}
+	for _, safeValue := range []string{"tunnel-public", "peer-public", "latest_handshake", "transfer_rx"} {
+		if !strings.Contains(got, safeValue) {
+			t.Fatalf("WireGuard output omitted expected status value %q: %s", safeValue, got)
+		}
 	}
 }
 

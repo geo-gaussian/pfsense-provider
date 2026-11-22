@@ -13,7 +13,7 @@ It currently offers:
 - Read-only JSON data sources for firewall NAT rules, firewall interfaces and
   rules, schedules, traffic shapers, ALTQ queues and limiters, interface
   assignments and discovery, bridge/tunnel/VLAN interface types, static routes,
-  and gateways.
+  gateways, selected service configuration, and VPN status.
 
 Login and alias listing have been exercised on one appliance. Alias writes and
 reloads have only been tested against mock servers. Do not use the write
@@ -92,9 +92,10 @@ than saving incomplete resource state. The alias data source returns metadata on
 warning and null, rather than an empty list. The additional read-only data
 sources expose the selected API payload as a computed JSON string so callers
 can inspect fields with Terraform's `jsondecode()`. They intentionally exclude
-diagnostic actions, downloads, and endpoints whose responses can contain
-credentials or keys. These endpoints are mock-tested but have not been
-validated against a live appliance.
+diagnostic actions and downloads. Outputs that may contain arbitrary
+configuration are marked sensitive; WireGuard status is projected to omit
+private keys, preshared keys, and configuration objects. These endpoints are
+mock-tested but have not been validated against a live appliance.
 
 ## ⚙️ Generation and development
 

@@ -36,5 +36,14 @@ output-options:
     - GetQinQs
     - GetVLANs
     - GetVXLANs
+    - GetDNSForwarderConfig
+    - GetIGMPProxies
+    - GetMDNSConfig
+    - GetDhcpV4RelayConfig
+    - GetDhcpV6RelayConfig
+    - GetRouterAdvSettings
+    - GetIPSecWidget
+    - GetOpenVPNStatus
+    - GetWireGuardStatus
     - DoFilterReload
     - GetFilterReloadStatus

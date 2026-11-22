@@ -111,5 +111,14 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewVXLANInterfaces,
 		data_readonly.NewGateways,
 		data_readonly.NewStaticRoutes,
+		data_readonly.NewDNSForwarder,
+		data_readonly.NewIGMPProxies,
+		data_readonly.NewMDNS,
+		data_readonly.NewDHCPv4Relay,
+		data_readonly.NewDHCPv6Relay,
+		data_readonly.NewRouterAdvertisements,
+		data_readonly.NewIPSecWidget,
+		data_readonly.NewOpenVPNStatus,
+		data_readonly.NewWireGuardStatus,
 	}
 }

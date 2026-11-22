@@ -107,9 +107,10 @@ only. Terraform state can contain sensitive configuration; protect it.
 
 ## 🔍 Read-only data sources
 
-Read-only data sources expose selected firewall and network configuration as
-JSON; use `jsondecode()` to select fields. For example, read aliases,
-configured interfaces, and firewall NAT rules:
+Read-only data sources expose selected firewall, network, service, and VPN
+configuration or status as JSON; use `jsondecode()` to select fields. Some
+outputs are sensitive, and the WireGuard status source omits key material. For
+example, read aliases, configured interfaces, and firewall NAT rules:
 
 ```hcl
 terraform {
@@ -154,9 +155,10 @@ output "port_forward_rules" {
 
 With the development override configured, run `terraform plan`. Data sources
 perform API reads and do not write configuration or reload the firewall.
-Authentication may create a session or audit record. The added configuration
-data sources have only been tested against mock servers; their API behaviour and
+Authentication may create a session or audit record. The added data sources
+have only been tested against mock servers; their API behaviour and
 compatibility beyond the included specification remain unverified on appliances.
+Protect Terraform state and saved plans, especially for sensitive data sources.
 
 The output contains the name, type, description (`descr`), and `truncated` flag
 for user-defined aliases, not system aliases or alias contents. Fields omitted

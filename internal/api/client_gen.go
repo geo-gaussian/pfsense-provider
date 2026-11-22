@@ -196,6 +196,36 @@ func (e FWUpdateAliasReqType) Valid() bool {
 	}
 }
 
+// Defines values for IntfRouterAdvSettingMode.
+const (
+	Assist        IntfRouterAdvSettingMode = "assist"
+	Disabled      IntfRouterAdvSettingMode = "disabled"
+	Managed       IntfRouterAdvSettingMode = "managed"
+	Router        IntfRouterAdvSettingMode = "router"
+	StatelessDhcp IntfRouterAdvSettingMode = "stateless_dhcp"
+	Unmanaged     IntfRouterAdvSettingMode = "unmanaged"
+)
+
+// Valid indicates whether the value is a known member of the IntfRouterAdvSettingMode enum.
+func (e IntfRouterAdvSettingMode) Valid() bool {
+	switch e {
+	case Assist:
+		return true
+	case Disabled:
+		return true
+	case Managed:
+		return true
+	case Router:
+		return true
+	case StatelessDhcp:
+		return true
+	case Unmanaged:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for LAGGInterfaceLacptimeout.
 const (
 	Fast LAGGInterfaceLacptimeout = "fast"
@@ -580,6 +610,57 @@ type BridgeInterfaces struct {
 	Interfaces       *[]BridgeInterface        `json:"interfaces,omitempty"`
 }
 
+// DNSForwarderAlias defines model for DNSForwarderAlias.
+type DNSForwarderAlias struct {
+	Description *string `json:"description,omitempty"`
+	Domain      *string `json:"domain,omitempty"`
+	Host        *string `json:"host,omitempty"`
+}
+
+// DNSForwarderConfig defines model for DNSForwarderConfig.
+type DNSForwarderConfig struct {
+	CustomOptions    *[]byte               `json:"custom_options,omitempty"`
+	Dhcpfirst        *bool                 `json:"dhcpfirst,omitempty"`
+	DomainNeeded     *bool                 `json:"domain_needed,omitempty"`
+	Domainoverrides  *[]DNSForwarderDomain `json:"domainoverrides,omitempty"`
+	Enable           bool                  `json:"enable"`
+	Hosts            *[]DNSForwarderHost   `json:"hosts,omitempty"`
+	Interface        *string               `json:"interface,omitempty"`
+	NoPrivateReverse *bool                 `json:"no_private_reverse,omitempty"`
+	NoSystemDns      *bool                 `json:"no_system_dns,omitempty"`
+	Port             *string               `json:"port,omitempty"`
+	Regdhcp          *bool                 `json:"regdhcp,omitempty"`
+	Regdhcpstatic    *bool                 `json:"regdhcpstatic,omitempty"`
+	StrictOrder      *bool                 `json:"strict_order,omitempty"`
+
+	// Strictbind do not use system DNS servers. Custom DNS servers must be used.
+	Strictbind *bool `json:"strictbind,omitempty"`
+}
+
+// DNSForwarderConfigInfo defines model for DNSForwarderConfigInfo.
+type DNSForwarderConfigInfo struct {
+	Config     *DNSForwarderConfig `json:"config,omitempty"`
+	Interfaces *map[string]string  `json:"interfaces,omitempty"`
+}
+
+// DNSForwarderDomain defines model for DNSForwarderDomain.
+type DNSForwarderDomain struct {
+	Descr    *string `json:"descr,omitempty"`
+	Domain   string  `json:"domain"`
+	Idx      *int    `json:"idx,omitempty"`
+	Ip       string  `json:"ip"`
+	SourceIp string  `json:"source_ip"`
+}
+
+// DNSForwarderHost defines model for DNSForwarderHost.
+type DNSForwarderHost struct {
+	Aliases *[]DNSForwarderAlias `json:"aliases,omitempty"`
+	Descr   *string              `json:"descr,omitempty"`
+	Domain  *string              `json:"domain,omitempty"`
+	Host    *string              `json:"host,omitempty"`
+	Ip      *string              `json:"ip,omitempty"`
+}
+
 // Dhcp6AdvancedOptions defines model for Dhcp6AdvancedOptions.
 type Dhcp6AdvancedOptions struct {
 	ClientId               *string `json:"client_id,omitempty"`
@@ -633,6 +714,17 @@ type DhcpAdvancedOptions struct {
 
 	// SendOptions options to send to DHCP server
 	SendOptions *string `json:"send_options,omitempty"`
+}
+
+// DhcpRelayConfig defines model for DhcpRelayConfig.
+type DhcpRelayConfig struct {
+	AppendCircuitAgentIds *bool        `json:"append_circuit_agent_ids,omitempty"`
+	CarpStatusVip         *string      `json:"carp_status_vip,omitempty"`
+	CarpStatusVipEntries  *[]TextValue `json:"carp_status_vip_entries,omitempty"`
+	Enable                *bool        `json:"enable,omitempty"`
+	Interfaces            *[]string    `json:"interfaces,omitempty"`
+	InterfacesEntries     *[]TextValue `json:"interfaces_entries,omitempty"`
+	UpstreamServers       *[]string    `json:"upstream_servers,omitempty"`
 }
 
 // Error defines model for Error.
@@ -1113,6 +1205,56 @@ type Gateways struct {
 	Gateways             *[]Gateway       `json:"gateways,omitempty"`
 }
 
+// IGMPProxies defines model for IGMPProxies.
+type IGMPProxies struct {
+	Enable      *bool              `json:"enable,omitempty"`
+	Igmpentries *[]IGMPProxy       `json:"igmpentries,omitempty"`
+	Interfaces  *[]SimpleInterface `json:"interfaces,omitempty"`
+	Verbose     *bool              `json:"verbose,omitempty"`
+}
+
+// IGMPProxy defines model for IGMPProxy.
+type IGMPProxy struct {
+	Address []string `json:"address"`
+	Descr   *string  `json:"descr,omitempty"`
+
+	// Id record ID, read-only
+	Id        *string `json:"id,omitempty"`
+	Ifname    string  `json:"ifname"`
+	Threshold *int    `json:"threshold,omitempty"`
+	Type      *string `json:"type,omitempty"`
+}
+
+// IPSecWidget defines model for IPSecWidget.
+type IPSecWidget struct {
+	Mobile        *[]IPSecWidgetMobile `json:"mobile,omitempty"`
+	MobileActive  *int                 `json:"mobile_active,omitempty"`
+	MobileTotal   *int                 `json:"mobile_total,omitempty"`
+	MobileUsers   *int                 `json:"mobile_users,omitempty"`
+	Phase1sActive *int                 `json:"phase1s_active,omitempty"`
+	Phase1sTotal  *int                 `json:"phase1s_total,omitempty"`
+	Phase2sActive *int                 `json:"phase2s_active,omitempty"`
+	Phase2sTotal  *int                 `json:"phase2s_total,omitempty"`
+	TotalActive   *int                 `json:"total_active,omitempty"`
+	TotalInactive *int                 `json:"total_inactive,omitempty"`
+	Tunnels       *[]IPSecWidgetTunnel `json:"tunnels,omitempty"`
+}
+
+// IPSecWidgetMobile defines model for IPSecWidgetMobile.
+type IPSecWidgetMobile struct {
+	Ip     *string `json:"ip,omitempty"`
+	Status *string `json:"status,omitempty"`
+	User   *string `json:"user,omitempty"`
+}
+
+// IPSecWidgetTunnel defines model for IPSecWidgetTunnel.
+type IPSecWidgetTunnel struct {
+	Description *string `json:"description,omitempty"`
+	Destination *string `json:"destination,omitempty"`
+	Source      *string `json:"source,omitempty"`
+	Status      *string `json:"status,omitempty"`
+}
+
 // IfGroupCapableInterface defines model for IfGroupCapableInterface.
 type IfGroupCapableInterface struct {
 	IfAssignedName *string `json:"if_assigned_name,omitempty"`
@@ -1211,6 +1353,54 @@ type InterfaceSimple struct {
 type InterfacesSimple struct {
 	Interfaces *[]InterfaceSimple `json:"interfaces,omitempty"`
 }
+
+// IntfRouterAdvSetting defines model for IntfRouterAdvSetting.
+type IntfRouterAdvSetting struct {
+	// AssignedInterface assigned name of network interface
+	AssignedInterface string    `json:"assigned_interface"`
+	DnsSearchlist     *[]string `json:"dns_searchlist,omitempty"`
+	DnsServers        *[]string `json:"dns_servers,omitempty"`
+
+	// EnableDns provide DNS configuration via RA service
+	EnableDns *bool `json:"enable_dns,omitempty"`
+
+	// LifetimeSecs length of time in seconds, default is 86400
+	LifetimeSecs *int `json:"lifetime_secs,omitempty"`
+
+	// MaxRaInterval maximum time allowed between sending unsolicited multicast RA in seconds, default 600
+	MaxRaInterval *int `json:"max_ra_interval,omitempty"`
+
+	// MinRaInterval minimum time allowed between sending unsolicited multicast RA in seconds, default 200
+	MinRaInterval *int `json:"min_ra_interval,omitempty"`
+
+	// MirrorDhcp6 copy DNS configuration from primary DHCPv6 options
+	MirrorDhcp6 *bool `json:"mirror_dhcp6,omitempty"`
+
+	// Mode disabled, router, unmanaged, managed, assist, stateless_dhcp
+	Mode IntfRouterAdvSettingMode `json:"mode"`
+
+	// Nat64Enable advertise a NAT64 prefix
+	Nat64Enable *bool `json:"nat64_enable,omitempty"`
+
+	// Nat64Prefix NAT 64 prefix to enable PREF64 support
+	Nat64Prefix *string `json:"nat64_prefix,omitempty"`
+
+	// Nat64PrefixLife length of time in seconds that the prefix is valid for NAT64, default is 3x RA
+	Nat64PrefixLife *int `json:"nat64_prefix_life,omitempty"`
+
+	// PrefLifetimeSecs length of time from SLAAC addresses remain preferred, default 14400
+	PrefLifetimeSecs *int `json:"pref_lifetime_secs,omitempty"`
+
+	// Priority low, normal, high
+	Priority  *string   `json:"priority,omitempty"`
+	RaSubnets *[]string `json:"ra_subnets,omitempty"`
+
+	// RouterLifetime lifetime associated wi th default router in seconds, default 3x max RA
+	RouterLifetime *int `json:"router_lifetime,omitempty"`
+}
+
+// IntfRouterAdvSettingMode disabled, router, unmanaged, managed, assist, stateless_dhcp
+type IntfRouterAdvSettingMode string
 
 // LAGGCapableInterface defines model for LAGGCapableInterface.
 type LAGGCapableInterface struct {
@@ -1571,6 +1761,60 @@ type LoginResponse struct {
 	Version *string   `json:"version,omitempty"`
 }
 
+// MDNSConfig defines model for MDNSConfig.
+type MDNSConfig struct {
+	AvailInterfaces *[]TextValue `json:"avail_interfaces,omitempty"`
+
+	// CarpVipIntf name of CARP VIP interface for detecting current HA status. Service will be stopped when the chosen VIP is in Backup.
+	CarpVipIntf *string      `json:"carp_vip_intf,omitempty"`
+	CarpVips    *[]TextValue `json:"carp_vips,omitempty"`
+
+	// DisableIpv4 disable IPv4 servicing
+	DisableIpv4 *bool `json:"disable_ipv4,omitempty"`
+
+	// DisableIpv6 disable IPv6 servicing
+	DisableIpv6 *bool `json:"disable_ipv6,omitempty"`
+
+	// Enable enable mDNS service
+	Enable            *bool           `json:"enable,omitempty"`
+	ExcludeInterfaces *[]string       `json:"exclude_interfaces,omitempty"`
+	IncludeInterfaces *[]string       `json:"include_interfaces,omitempty"`
+	Publish           *MDNSPublishing `json:"publish,omitempty"`
+
+	// Reflection reflect packets across different subnets
+	Reflection *bool `json:"reflection,omitempty"`
+}
+
+// MDNSPublishing defines model for MDNSPublishing.
+type MDNSPublishing struct {
+	// AOverIpv6 publish local IPv4 addresses over IPv6
+	AOverIpv6 *bool `json:"a_over_ipv6,omitempty"`
+
+	// AaaaOverIpv4 publish local IPv6 addresses over IPv4
+	AaaaOverIpv4 *bool `json:"aaaa_over_ipv4,omitempty"`
+
+	// Addresses publish addresses of this system
+	Addresses *bool `json:"addresses,omitempty"`
+
+	// CustomDomain override domain name used for publishing domain record
+	CustomDomain *string `json:"custom_domain,omitempty"`
+
+	// CustomHostname override host name used for publishing system's host name
+	CustomHostname *string `json:"custom_hostname,omitempty"`
+
+	// Domain publish domain name in use by this system
+	Domain *bool `json:"domain,omitempty"`
+
+	// Enable enable publishing this system info
+	Enable *bool `json:"enable,omitempty"`
+
+	// Hostinfo publish host information (OS and CPU)
+	Hostinfo *bool `json:"hostinfo,omitempty"`
+
+	// Workstation publish workstation record for this system
+	Workstation *bool `json:"workstation,omitempty"`
+}
+
 // NAT1To1Rule defines model for NAT1To1Rule.
 type NAT1To1Rule struct {
 	Descr       *string      `json:"descr,omitempty"`
@@ -1900,6 +2144,60 @@ type NetIfs struct {
 	Interfaces *[]NetIf `json:"interfaces,omitempty"`
 }
 
+// OpenVPNActiveConn defines model for OpenVPNActiveConn.
+type OpenVPNActiveConn struct {
+	BytesRecv    *string         `json:"bytes_recv,omitempty"`
+	BytesSent    *string         `json:"bytes_sent,omitempty"`
+	ConnectTime  *string         `json:"connect_time,omitempty"`
+	Conns        *[]OpenVPNConn  `json:"conns,omitempty"`
+	LocalHost    *string         `json:"local_host,omitempty"`
+	LocalPort    *string         `json:"local_port,omitempty"`
+	Mgmt         *string         `json:"mgmt,omitempty"`
+	Mode         *string         `json:"mode,omitempty"`
+	Name         *string         `json:"name,omitempty"`
+	Port         *string         `json:"port,omitempty"`
+	RemoteHost   *string         `json:"remote_host,omitempty"`
+	RemotePort   *string         `json:"remote_port,omitempty"`
+	Routes       *[]OpenVPNRoute `json:"routes,omitempty"`
+	State        *string         `json:"state,omitempty"`
+	StateDetail  *string         `json:"state_detail,omitempty"`
+	Status       *string         `json:"status,omitempty"`
+	VirtualAddr  *string         `json:"virtual_addr,omitempty"`
+	VirtualAddr6 *string         `json:"virtual_addr6,omitempty"`
+	Vpnid        *string         `json:"vpnid,omitempty"`
+}
+
+// OpenVPNConn defines model for OpenVPNConn.
+type OpenVPNConn struct {
+	BytesRecv       *string `json:"bytes_recv,omitempty"`
+	BytesSent       *string `json:"bytes_sent,omitempty"`
+	Cipher          *string `json:"cipher,omitempty"`
+	ClientId        *string `json:"client_id,omitempty"`
+	CommonName      *string `json:"common_name,omitempty"`
+	ConnectTime     *string `json:"connect_time,omitempty"`
+	ConnectTimeUnix *string `json:"connect_time_unix,omitempty"`
+	PeerId          *string `json:"peer_id,omitempty"`
+	RemoteHost      *string `json:"remote_host,omitempty"`
+	UserName        *string `json:"user_name,omitempty"`
+	VirtualAddr     *string `json:"virtual_addr,omitempty"`
+	VirtualAddr6    *string `json:"virtual_addr6,omitempty"`
+}
+
+// OpenVPNRoute defines model for OpenVPNRoute.
+type OpenVPNRoute struct {
+	CommonName  *string `json:"common_name,omitempty"`
+	LastTime    *string `json:"last_time,omitempty"`
+	RemoteHost  *string `json:"remote_host,omitempty"`
+	VirtualAddr *string `json:"virtual_addr,omitempty"`
+}
+
+// OpenVPNStatus defines model for OpenVPNStatus.
+type OpenVPNStatus struct {
+	Clients   *[]OpenVPNActiveConn `json:"clients,omitempty"`
+	Servers   *[]OpenVPNActiveConn `json:"servers,omitempty"`
+	SkServers *[]OpenVPNActiveConn `json:"sk_servers,omitempty"`
+}
+
 // PfsenseResult defines model for PfsenseResult.
 type PfsenseResult struct {
 	// Alrt raise alert
@@ -1956,6 +2254,11 @@ type RefreshTokenParam struct {
 // Result defines model for Result.
 type Result struct {
 	Result *string `json:"result,omitempty"`
+}
+
+// RouterAdvSettings defines model for RouterAdvSettings.
+type RouterAdvSettings struct {
+	IntfRadvs *[]IntfRouterAdvSetting `json:"intf_radvs,omitempty"`
 }
 
 // Separator defines model for Separator.
@@ -2078,6 +2381,97 @@ type VXLANInterface struct {
 type VXLANInterfaces struct {
 	Interfaces      *[]VXLANInterface        `json:"interfaces,omitempty"`
 	VxlanCapableIfs *[]VXLANCapableInterface `json:"vxlan_capable_ifs,omitempty"`
+}
+
+// WGConfig valid values:
+// enable = "on", "off"
+// keep_conf = "yes", "no"
+// resolve_interval_track = "yes", "no"
+// interface_group = "all", "unassigned", "none"
+// hide_secrets = "yes", "no"
+// hide_peers = "yes", "no"
+type WGConfig struct {
+	Enable               *bool   `json:"enable,omitempty"`
+	HidePeers            *bool   `json:"hide_peers,omitempty"`
+	HideSecrets          *bool   `json:"hide_secrets,omitempty"`
+	InterfaceGroup       *string `json:"interface_group,omitempty"`
+	KeepConf             *bool   `json:"keep_conf,omitempty"`
+	ResolveInterval      *string `json:"resolve_interval,omitempty"`
+	ResolveIntervalTrack *bool   `json:"resolve_interval_track,omitempty"`
+}
+
+// WGIPAddress defines model for WGIPAddress.
+type WGIPAddress struct {
+	// Address CIDR address/mask
+	Address string  `json:"address"`
+	Descr   *string `json:"descr,omitempty"`
+}
+
+// WGPeer valid values:
+// enabled = "yes", "no"
+type WGPeer struct {
+	Allowedips          *[]WGIPAddress `json:"allowedips,omitempty"`
+	Descr               *string        `json:"descr,omitempty"`
+	Enabled             *bool          `json:"enabled,omitempty"`
+	Endpoint            *string        `json:"endpoint,omitempty"`
+	Persistentkeepalive *string        `json:"persistentkeepalive,omitempty"`
+	Port                *string        `json:"port,omitempty"`
+	Presharedkey        *string        `json:"presharedkey,omitempty"`
+	Publickey           string         `json:"publickey"`
+	Tun                 *string        `json:"tun,omitempty"`
+}
+
+// WGTunnel valid values:
+// enabled = "yes", "no"
+type WGTunnel struct {
+	Addresses  *[]WGIPAddress `json:"addresses,omitempty"`
+	Descr      *string        `json:"descr,omitempty"`
+	Enabled    *bool          `json:"enabled,omitempty"`
+	Listenport *int           `json:"listenport,omitempty"`
+	Mtu        *string        `json:"mtu,omitempty"`
+	Name       string         `json:"name"`
+	Privatekey string         `json:"privatekey"`
+	Publickey  string         `json:"publickey"`
+}
+
+// WireGuardPeerStatus defines model for WireGuardPeerStatus.
+type WireGuardPeerStatus struct {
+	AllowedIps *string `json:"allowed_ips,omitempty"`
+
+	// Config valid values:
+	// enabled = "yes", "no"
+	Config              *WGPeer `json:"config,omitempty"`
+	Endpoint            *string `json:"endpoint,omitempty"`
+	LatestHandshake     *string `json:"latest_handshake,omitempty"`
+	PersistentKeepalive *string `json:"persistent_keepalive,omitempty"`
+	PresharedKey        *string `json:"preshared_key,omitempty"`
+	PublicKey           *string `json:"public_key,omitempty"`
+	TransferRx          *string `json:"transfer_rx,omitempty"`
+	TransferTx          *string `json:"transfer_tx,omitempty"`
+}
+
+// WireGuardStatus defines model for WireGuardStatus.
+type WireGuardStatus struct {
+	Config *[]WGConfig              `json:"config,omitempty"`
+	Status *[]WireGuardTunnelStatus `json:"status,omitempty"`
+}
+
+// WireGuardTunnelStatus defines model for WireGuardTunnelStatus.
+type WireGuardTunnelStatus struct {
+	// Config valid values:
+	// enabled = "yes", "no"
+	Config     *WGTunnel              `json:"config,omitempty"`
+	Fwmark     *string                `json:"fwmark,omitempty"`
+	Inpkts     *int                   `json:"inpkts,omitempty"`
+	ListenPort *string                `json:"listen_port,omitempty"`
+	Mtu        *int                   `json:"mtu,omitempty"`
+	Outpkts    *int                   `json:"outpkts,omitempty"`
+	Peers      *[]WireGuardPeerStatus `json:"peers,omitempty"`
+	PrivateKey *string                `json:"private_key,omitempty"`
+	PublicKey  *string                `json:"public_key,omitempty"`
+	Status     *string                `json:"status,omitempty"`
+	TransferRx *int                   `json:"transfer_rx,omitempty"`
+	TransferTx *int                   `json:"transfer_tx,omitempty"`
 }
 
 // FirewallGetAliasesParams defines parameters for FirewallGetAliases.
@@ -2365,6 +2759,36 @@ type ClientInterface interface {
 	// Corresponds with POST /login/refresh (the `RefreshAccessToken` operationId).
 	RefreshAccessToken(ctx context.Context, body RefreshAccessTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetDhcpV4RelayConfig Get current DHCP over IPv4 Relay configuration
+	//
+	// Corresponds with GET /services/dhcp-relay/v4 (the `GetDhcpV4RelayConfig` operationId).
+	GetDhcpV4RelayConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDhcpV6RelayConfig Get current DHCP over IPv6 Relay configuration
+	//
+	// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
+	GetDhcpV6RelayConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDNSForwarderConfig Get DNS Forwarder config
+	//
+	// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
+	GetDNSForwarderConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIGMPProxies Get IGMP proxies
+	//
+	// Corresponds with GET /services/igmpproxy (the `GetIGMPProxies` operationId).
+	GetIGMPProxies(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMDNSConfig Get mDNS service configuration
+	//
+	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
+	GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetRouterAdvSettings Get router advertisement configuration
+	//
+	// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
+	GetRouterAdvSettings(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DoFilterReload Initiate a manual filter reload
 	//
 	// Corresponds with POST /system/filterreload/reload (the `DoFilterReload` operationId).
@@ -2384,6 +2808,21 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 	GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIPSecWidget Get IPSec widget
+	//
+	// Corresponds with GET /system/widgets/ipsec (the `GetIPSecWidget` operationId).
+	GetIPSecWidget(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOpenVPNStatus Get OpenVPN Status
+	//
+	// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
+	GetOpenVPNStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWireGuardStatus Get Wireguard status
+	//
+	// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
+	GetWireGuardStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 // FirewallGetAliases Get firewall aliases
@@ -2909,6 +3348,96 @@ func (c *Client) RefreshAccessToken(ctx context.Context, body RefreshAccessToken
 	return c.Client.Do(req)
 }
 
+// GetDhcpV4RelayConfig Get current DHCP over IPv4 Relay configuration
+//
+// Corresponds with GET /services/dhcp-relay/v4 (the `GetDhcpV4RelayConfig` operationId).
+func (c *Client) GetDhcpV4RelayConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDhcpV4RelayConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetDhcpV6RelayConfig Get current DHCP over IPv6 Relay configuration
+//
+// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
+func (c *Client) GetDhcpV6RelayConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDhcpV6RelayConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetDNSForwarderConfig Get DNS Forwarder config
+//
+// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
+func (c *Client) GetDNSForwarderConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDNSForwarderConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIGMPProxies Get IGMP proxies
+//
+// Corresponds with GET /services/igmpproxy (the `GetIGMPProxies` operationId).
+func (c *Client) GetIGMPProxies(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIGMPProxiesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMDNSConfig Get mDNS service configuration
+//
+// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
+func (c *Client) GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMDNSConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetRouterAdvSettings Get router advertisement configuration
+//
+// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
+func (c *Client) GetRouterAdvSettings(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetRouterAdvSettingsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // DoFilterReload Initiate a manual filter reload
 //
 // Corresponds with POST /system/filterreload/reload (the `DoFilterReload` operationId).
@@ -2959,6 +3488,51 @@ func (c *Client) GetGateways(ctx context.Context, reqEditors ...RequestEditorFn)
 // Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 func (c *Client) GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetStaticRoutesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIPSecWidget Get IPSec widget
+//
+// Corresponds with GET /system/widgets/ipsec (the `GetIPSecWidget` operationId).
+func (c *Client) GetIPSecWidget(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIPSecWidgetRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetOpenVPNStatus Get OpenVPN Status
+//
+// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
+func (c *Client) GetOpenVPNStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOpenVPNStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetWireGuardStatus Get Wireguard status
+//
+// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
+func (c *Client) GetWireGuardStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWireGuardStatusRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3859,6 +4433,168 @@ func NewRefreshAccessTokenRequestWithBody(server string, contentType string, bod
 	return req, nil
 }
 
+// NewGetDhcpV4RelayConfigRequest constructs an http.Request for the GetDhcpV4RelayConfig method
+func NewGetDhcpV4RelayConfigRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/dhcp-relay/v4")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDhcpV6RelayConfigRequest constructs an http.Request for the GetDhcpV6RelayConfig method
+func NewGetDhcpV6RelayConfigRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/dhcp-relay/v6")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDNSForwarderConfigRequest constructs an http.Request for the GetDNSForwarderConfig method
+func NewGetDNSForwarderConfigRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/dnsmasq")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetIGMPProxiesRequest constructs an http.Request for the GetIGMPProxies method
+func NewGetIGMPProxiesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/igmpproxy")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMDNSConfigRequest constructs an http.Request for the GetMDNSConfig method
+func NewGetMDNSConfigRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/mdns")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetRouterAdvSettingsRequest constructs an http.Request for the GetRouterAdvSettings method
+func NewGetRouterAdvSettingsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/radv")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDoFilterReloadRequest constructs an http.Request for the DoFilterReload method
 func NewDoFilterReloadRequest(server string) (*http.Request, error) {
 	var err error
@@ -3950,6 +4686,87 @@ func NewGetStaticRoutesRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/system/routes/static")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetIPSecWidgetRequest constructs an http.Request for the GetIPSecWidget method
+func NewGetIPSecWidgetRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/widgets/ipsec")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetOpenVPNStatusRequest constructs an http.Request for the GetOpenVPNStatus method
+func NewGetOpenVPNStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/openvpn/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWireGuardStatusRequest constructs an http.Request for the GetWireGuardStatus method
+func NewGetWireGuardStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/status")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -4254,6 +5071,48 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /login/refresh (the `RefreshAccessToken` operationId).
 	RefreshAccessTokenWithResponse(ctx context.Context, body RefreshAccessTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*RefreshAccessTokenAPIResponse, error)
 
+	// GetDhcpV4RelayConfigWithResponse Get current DHCP over IPv4 Relay configuration
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/dhcp-relay/v4 (the `GetDhcpV4RelayConfig` operationId).
+	GetDhcpV4RelayConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDhcpV4RelayConfigAPIResponse, error)
+
+	// GetDhcpV6RelayConfigWithResponse Get current DHCP over IPv6 Relay configuration
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
+	GetDhcpV6RelayConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDhcpV6RelayConfigAPIResponse, error)
+
+	// GetDNSForwarderConfigWithResponse Get DNS Forwarder config
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
+	GetDNSForwarderConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDNSForwarderConfigAPIResponse, error)
+
+	// GetIGMPProxiesWithResponse Get IGMP proxies
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/igmpproxy (the `GetIGMPProxies` operationId).
+	GetIGMPProxiesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIGMPProxiesAPIResponse, error)
+
+	// GetMDNSConfigWithResponse Get mDNS service configuration
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
+	GetMDNSConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMDNSConfigAPIResponse, error)
+
+	// GetRouterAdvSettingsWithResponse Get router advertisement configuration
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
+	GetRouterAdvSettingsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRouterAdvSettingsAPIResponse, error)
+
 	// DoFilterReloadWithResponse Initiate a manual filter reload
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -4281,6 +5140,27 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
 	GetStaticRoutesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStaticRoutesAPIResponse, error)
+
+	// GetIPSecWidgetWithResponse Get IPSec widget
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/widgets/ipsec (the `GetIPSecWidget` operationId).
+	GetIPSecWidgetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIPSecWidgetAPIResponse, error)
+
+	// GetOpenVPNStatusWithResponse Get OpenVPN Status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
+	GetOpenVPNStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOpenVPNStatusAPIResponse, error)
+
+	// GetWireGuardStatusWithResponse Get Wireguard status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
+	GetWireGuardStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetWireGuardStatusAPIResponse, error)
 }
 
 type FirewallGetAliasesAPIResponse struct {
@@ -5675,6 +6555,294 @@ func (r RefreshAccessTokenAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetDhcpV4RelayConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DhcpRelayConfig
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDhcpV4RelayConfigAPIResponse) GetJSON200() *DhcpRelayConfig {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDhcpV4RelayConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDhcpV4RelayConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDhcpV4RelayConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDhcpV4RelayConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDhcpV4RelayConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDhcpV6RelayConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DhcpRelayConfig
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDhcpV6RelayConfigAPIResponse) GetJSON200() *DhcpRelayConfig {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDhcpV6RelayConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDhcpV6RelayConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDhcpV6RelayConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDhcpV6RelayConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDhcpV6RelayConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDNSForwarderConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DNSForwarderConfigInfo
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDNSForwarderConfigAPIResponse) GetJSON200() *DNSForwarderConfigInfo {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetDNSForwarderConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDNSForwarderConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDNSForwarderConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDNSForwarderConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDNSForwarderConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIGMPProxiesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IGMPProxies
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIGMPProxiesAPIResponse) GetJSON200() *IGMPProxies {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetIGMPProxiesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIGMPProxiesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIGMPProxiesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIGMPProxiesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIGMPProxiesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMDNSConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MDNSConfig
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMDNSConfigAPIResponse) GetJSON200() *MDNSConfig {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetMDNSConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMDNSConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMDNSConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMDNSConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMDNSConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetRouterAdvSettingsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RouterAdvSettings
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetRouterAdvSettingsAPIResponse) GetJSON200() *RouterAdvSettings {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetRouterAdvSettingsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetRouterAdvSettingsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetRouterAdvSettingsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetRouterAdvSettingsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetRouterAdvSettingsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type DoFilterReloadAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -5861,6 +7029,150 @@ func (r GetStaticRoutesAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetStaticRoutesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIPSecWidgetAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IPSecWidget
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIPSecWidgetAPIResponse) GetJSON200() *IPSecWidget {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetIPSecWidgetAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIPSecWidgetAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIPSecWidgetAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIPSecWidgetAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIPSecWidgetAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetOpenVPNStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *OpenVPNStatus
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetOpenVPNStatusAPIResponse) GetJSON200() *OpenVPNStatus {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetOpenVPNStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetOpenVPNStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOpenVPNStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOpenVPNStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetOpenVPNStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWireGuardStatusAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WireGuardStatus
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetWireGuardStatusAPIResponse) GetJSON200() *WireGuardStatus {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetWireGuardStatusAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetWireGuardStatusAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWireGuardStatusAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWireGuardStatusAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWireGuardStatusAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -6308,6 +7620,84 @@ func (c *ClientWithResponses) RefreshAccessTokenWithResponse(ctx context.Context
 	return ParseRefreshAccessTokenAPIResponse(rsp)
 }
 
+// GetDhcpV4RelayConfigWithResponse Get current DHCP over IPv4 Relay configuration
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/dhcp-relay/v4 (the `GetDhcpV4RelayConfig` operationId).
+func (c *ClientWithResponses) GetDhcpV4RelayConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDhcpV4RelayConfigAPIResponse, error) {
+	rsp, err := c.GetDhcpV4RelayConfig(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDhcpV4RelayConfigAPIResponse(rsp)
+}
+
+// GetDhcpV6RelayConfigWithResponse Get current DHCP over IPv6 Relay configuration
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/dhcp-relay/v6 (the `GetDhcpV6RelayConfig` operationId).
+func (c *ClientWithResponses) GetDhcpV6RelayConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDhcpV6RelayConfigAPIResponse, error) {
+	rsp, err := c.GetDhcpV6RelayConfig(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDhcpV6RelayConfigAPIResponse(rsp)
+}
+
+// GetDNSForwarderConfigWithResponse Get DNS Forwarder config
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/dnsmasq (the `GetDNSForwarderConfig` operationId).
+func (c *ClientWithResponses) GetDNSForwarderConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDNSForwarderConfigAPIResponse, error) {
+	rsp, err := c.GetDNSForwarderConfig(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDNSForwarderConfigAPIResponse(rsp)
+}
+
+// GetIGMPProxiesWithResponse Get IGMP proxies
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/igmpproxy (the `GetIGMPProxies` operationId).
+func (c *ClientWithResponses) GetIGMPProxiesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIGMPProxiesAPIResponse, error) {
+	rsp, err := c.GetIGMPProxies(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIGMPProxiesAPIResponse(rsp)
+}
+
+// GetMDNSConfigWithResponse Get mDNS service configuration
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
+func (c *ClientWithResponses) GetMDNSConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMDNSConfigAPIResponse, error) {
+	rsp, err := c.GetMDNSConfig(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMDNSConfigAPIResponse(rsp)
+}
+
+// GetRouterAdvSettingsWithResponse Get router advertisement configuration
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/radv (the `GetRouterAdvSettings` operationId).
+func (c *ClientWithResponses) GetRouterAdvSettingsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetRouterAdvSettingsAPIResponse, error) {
+	rsp, err := c.GetRouterAdvSettings(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetRouterAdvSettingsAPIResponse(rsp)
+}
+
 // DoFilterReloadWithResponse Initiate a manual filter reload
 //
 // Returns a wrapper object for the known response body format(s).
@@ -6358,6 +7748,45 @@ func (c *ClientWithResponses) GetStaticRoutesWithResponse(ctx context.Context, r
 		return nil, err
 	}
 	return ParseGetStaticRoutesAPIResponse(rsp)
+}
+
+// GetIPSecWidgetWithResponse Get IPSec widget
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/widgets/ipsec (the `GetIPSecWidget` operationId).
+func (c *ClientWithResponses) GetIPSecWidgetWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetIPSecWidgetAPIResponse, error) {
+	rsp, err := c.GetIPSecWidget(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIPSecWidgetAPIResponse(rsp)
+}
+
+// GetOpenVPNStatusWithResponse Get OpenVPN Status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
+func (c *ClientWithResponses) GetOpenVPNStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOpenVPNStatusAPIResponse, error) {
+	rsp, err := c.GetOpenVPNStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOpenVPNStatusAPIResponse(rsp)
+}
+
+// GetWireGuardStatusWithResponse Get Wireguard status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
+func (c *ClientWithResponses) GetWireGuardStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetWireGuardStatusAPIResponse, error) {
+	rsp, err := c.GetWireGuardStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWireGuardStatusAPIResponse(rsp)
 }
 
 // ParseFirewallGetAliasesAPIResponse parses an HTTP response from a FirewallGetAliasesWithResponse call
@@ -7317,6 +8746,204 @@ func ParseRefreshAccessTokenAPIResponse(rsp *http.Response) (*RefreshAccessToken
 	return response, nil
 }
 
+// ParseGetDhcpV4RelayConfigAPIResponse parses an HTTP response from a GetDhcpV4RelayConfigWithResponse call
+func ParseGetDhcpV4RelayConfigAPIResponse(rsp *http.Response) (*GetDhcpV4RelayConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDhcpV4RelayConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DhcpRelayConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDhcpV6RelayConfigAPIResponse parses an HTTP response from a GetDhcpV6RelayConfigWithResponse call
+func ParseGetDhcpV6RelayConfigAPIResponse(rsp *http.Response) (*GetDhcpV6RelayConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDhcpV6RelayConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DhcpRelayConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDNSForwarderConfigAPIResponse parses an HTTP response from a GetDNSForwarderConfigWithResponse call
+func ParseGetDNSForwarderConfigAPIResponse(rsp *http.Response) (*GetDNSForwarderConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDNSForwarderConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DNSForwarderConfigInfo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIGMPProxiesAPIResponse parses an HTTP response from a GetIGMPProxiesWithResponse call
+func ParseGetIGMPProxiesAPIResponse(rsp *http.Response) (*GetIGMPProxiesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIGMPProxiesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IGMPProxies
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMDNSConfigAPIResponse parses an HTTP response from a GetMDNSConfigWithResponse call
+func ParseGetMDNSConfigAPIResponse(rsp *http.Response) (*GetMDNSConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMDNSConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MDNSConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetRouterAdvSettingsAPIResponse parses an HTTP response from a GetRouterAdvSettingsWithResponse call
+func ParseGetRouterAdvSettingsAPIResponse(rsp *http.Response) (*GetRouterAdvSettingsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetRouterAdvSettingsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RouterAdvSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDoFilterReloadAPIResponse parses an HTTP response from a DoFilterReloadWithResponse call
 func ParseDoFilterReloadAPIResponse(rsp *http.Response) (*DoFilterReloadAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -7432,6 +9059,105 @@ func ParseGetStaticRoutesAPIResponse(rsp *http.Response) (*GetStaticRoutesAPIRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest StaticRoutes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIPSecWidgetAPIResponse parses an HTTP response from a GetIPSecWidgetWithResponse call
+func ParseGetIPSecWidgetAPIResponse(rsp *http.Response) (*GetIPSecWidgetAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIPSecWidgetAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IPSecWidget
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOpenVPNStatusAPIResponse parses an HTTP response from a GetOpenVPNStatusWithResponse call
+func ParseGetOpenVPNStatusAPIResponse(rsp *http.Response) (*GetOpenVPNStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOpenVPNStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OpenVPNStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWireGuardStatusAPIResponse parses an HTTP response from a GetWireGuardStatusWithResponse call
+func ParseGetWireGuardStatusAPIResponse(rsp *http.Response) (*GetWireGuardStatusAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWireGuardStatusAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WireGuardStatus
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
