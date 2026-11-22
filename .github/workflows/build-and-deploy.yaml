@@ -36,6 +36,8 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v10.4.0
+        with:
+          cache-dependency-glob: scripts/format-python.ts
 
       - name: Install Node dependencies without running install scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
