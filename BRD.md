@@ -5,10 +5,12 @@
 This project aims to provide declarative Terraform management of pfSense
 through Netgate's Nexus REST API. It uses HashiCorp's Terraform Plugin
 Framework and code generated from the included OpenAPI specification. The
-current experimental implementation supports firewall aliases and a read-only
-alias metadata data source; broader coverage and version compatibility are
-goals, not established capabilities. See [README.md](README.md) for the
-verified status and safety limits.
+current experimental implementation includes a firewall alias resource, alias
+metadata, and selected read-only JSON data sources. The data sources cover
+additional firewall, network, service, VPN, and system configuration or status;
+they have only been tested with mock servers. Broader resource coverage and
+version compatibility remain goals, not established capabilities. See
+[README.md](README.md) for verified status and safety limits.
 
 ## 🚨 2. Problem Statement & Business Drivers
 
@@ -32,8 +34,10 @@ These are future targets, not claims about the current implementation.
 
 ### 📋 4.1 Target Subsystems (Phase 1 — 95%+ Coverage)
 
-Only `firewall_alias` is currently implemented, and its write operations are
-experimental. The remaining resources below are proposed.
+Only the `firewall_alias` resource is currently implemented, and its write
+operations are experimental. The resources below describe the proposed
+resource-management scope; the existing read-only data sources do not provide
+resource lifecycle management.
 
 | Subsystem          | Target Resources                                                       | Key Capabilities                                                    |
 | :----------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------ |

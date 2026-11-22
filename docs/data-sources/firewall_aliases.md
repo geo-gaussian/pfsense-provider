@@ -1,4 +1,4 @@
-# pfsense_firewall_aliases (Data Source)
+# 🧭 pfsense_firewall_aliases (Data Source)
 
 Reads metadata for user-defined firewall aliases on the controller's local
 firewall. This data source does not write firewall configuration or request a

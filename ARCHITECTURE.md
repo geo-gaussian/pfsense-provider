@@ -43,7 +43,7 @@ flowchart LR
 | [internal/provider/provider.go](internal/provider/provider.go) | Defines configuration, registers resources and data sources, and supplies their API client. |
 | [Alias resource](internal/provider/resource_firewall_alias/firewall_alias_resource.go) | Maps Terraform state and plans to API requests, handles import and missing aliases, and initiates firewall reloads. |
 | [Aliases data source](internal/provider/data_firewall_aliases/firewall_aliases_data_source.go) | Reads alias metadata and reports missing or invalid responses. |
-| [Read-only data sources](internal/provider/data_readonly) | Reads selected firewall and network configuration; returns the API payload as JSON. |
+| [Read-only data sources](internal/provider/data_readonly) | Reads selected firewall, network, service, VPN, and system configuration or status; returns the API payload as JSON, with sensitive outputs marked or projected safely. |
 | [internal/api/client_gen.go](internal/api/client_gen.go) | Generated API types, request builders, and response parsers. |
 | [internal/client/client.go](internal/client/client.go) | Validates the controller URL, manages authentication, and serializes HTTP requests. |
 

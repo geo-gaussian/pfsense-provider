@@ -5,17 +5,17 @@
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
 This experimental provider manages a firewall alias and reads selected
-firewall/network configuration from a local pfSense firewall through the Nexus
-controller. It uses Netgate's OpenAPI specification and HashiCorp's Terraform
-Plugin Framework.
+firewall, network, service, VPN, and system configuration or status from a
+local pfSense firewall through the Nexus controller. It uses Netgate's OpenAPI
+specification and HashiCorp's Terraform Plugin Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
 Alias writes and reloads have only been tested against mock servers. Do not use
 the resource on a production firewall. Verify API behaviour, compatibility,
 and recovery in an isolated environment first.
-The additional configuration data sources have only been tested against mock
-servers and the included OpenAPI specification; verify them on a disposable
-appliance before relying on them.
+The read-only data sources have only been tested against mock servers and the
+included OpenAPI specification; their behaviour on appliances remains
+unverified.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
@@ -160,8 +160,6 @@ output "port_forward_rules" {
 With the development override configured, run `terraform plan`. Data sources
 perform API reads and do not write configuration or reload the firewall.
 Authentication may create a session or audit record. The added data sources
-have only been tested against mock servers; their API behaviour and
-compatibility beyond the included specification remain unverified on appliances.
 Protect Terraform state and saved plans, especially for sensitive data sources.
 
 The output contains the name, type, description (`descr`), and `truncated` flag
@@ -193,8 +191,10 @@ changes. The upstream project is Apache-2.0 licensed; see the included
 
 Run `make generate` to regenerate the Terraform alias schema and the Go HTTP
 client using pinned generator versions. The generated `*_gen.go` files are not
-hand-edited. Terraform CRUD, session management, request serialization, and
-reload handling remain custom code.
+hand-edited. The selected read-only Terraform data sources are custom
+implementations; `make generate` does not generate their schemas or behaviour.
+Terraform CRUD, data-source behaviour, session management, request
+serialization, and reload handling remain custom code.
 
 ## 💻 Development
 

@@ -1,7 +1,10 @@
 # 🌐 pfSense Nexus Provider
 
 The experimental pfSense Nexus provider manages firewall aliases and reads
-alias metadata through the Nexus controller's local firewall API.
+selected firewall, network, service, VPN, and system configuration or status
+through the Nexus controller's local firewall API. Read-only data sources
+return JSON for use with Terraform's `jsondecode()` function. Their individual
+pages are listed under [`data-sources/`](data-sources/).
 
 !> Firewall alias writes and reloads have only been tested against mock servers.
 Do not use the resource on a production firewall.
@@ -33,6 +36,16 @@ provider "pfsense" {
 
 data "pfsense_firewall_aliases" "current" {}
 ```
+
+## 🔍 Read-only Data Sources
+
+The read-only catalog includes firewall NAT and rule configuration, interface
+and route discovery, service settings and status, VPN status, DHCP leases,
+system health, and monitoring information. These data sources do not apply
+configuration or reload the firewall. Some outputs are marked sensitive, and
+WireGuard status omits key material. The additional data sources have only
+been tested against mock servers; appliance behaviour and compatibility remain
+unverified.
 
 ## ⚙️ Argument Reference
 
