@@ -29,8 +29,11 @@ argument lists.
 2. Add the mapping under `resources:` in `generator_config.yml`, and include
    the necessary operation IDs in `oapi-codegen.yml`. Use the existing alias
    mapping as an example; methods and paths vary by endpoint.
-3. Run `make generate`, which uses the repository's pinned generator versions.
-   Review generated changes and preserve custom resource lifecycle code.
+3.    Run `make generate`, which uses the repository's pinned generator versions.
+   The current HashiCorp codegen mapping generates the alias resource; the
+   selected read-only data sources use custom Terraform Framework code and their
+   OpenAPI operations are listed in `oapi-codegen.yml`. Review generated changes
+   and preserve custom resource lifecycle code.
 4. Implement the lifecycle and import methods, register the resource in
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.

@@ -18,25 +18,79 @@ import (
 
 // Defines values for ALTQChildQueueBandwidthtype.
 const (
-	B       ALTQChildQueueBandwidthtype = "b"
-	Gb      ALTQChildQueueBandwidthtype = "Gb"
-	Kb      ALTQChildQueueBandwidthtype = "Kb"
-	Mb      ALTQChildQueueBandwidthtype = "Mb"
-	Percent ALTQChildQueueBandwidthtype = "%"
+	ALTQChildQueueBandwidthtypeB       ALTQChildQueueBandwidthtype = "b"
+	ALTQChildQueueBandwidthtypeGb      ALTQChildQueueBandwidthtype = "Gb"
+	ALTQChildQueueBandwidthtypeKb      ALTQChildQueueBandwidthtype = "Kb"
+	ALTQChildQueueBandwidthtypeMb      ALTQChildQueueBandwidthtype = "Mb"
+	ALTQChildQueueBandwidthtypePercent ALTQChildQueueBandwidthtype = "%"
 )
 
 // Valid indicates whether the value is a known member of the ALTQChildQueueBandwidthtype enum.
 func (e ALTQChildQueueBandwidthtype) Valid() bool {
 	switch e {
-	case B:
+	case ALTQChildQueueBandwidthtypeB:
 		return true
-	case Gb:
+	case ALTQChildQueueBandwidthtypeGb:
 		return true
-	case Kb:
+	case ALTQChildQueueBandwidthtypeKb:
 		return true
-	case Mb:
+	case ALTQChildQueueBandwidthtypeMb:
 		return true
-	case Percent:
+	case ALTQChildQueueBandwidthtypePercent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ALTQRootQueueBandwidthtype.
+const (
+	ALTQRootQueueBandwidthtypeB       ALTQRootQueueBandwidthtype = "b"
+	ALTQRootQueueBandwidthtypeGb      ALTQRootQueueBandwidthtype = "Gb"
+	ALTQRootQueueBandwidthtypeKb      ALTQRootQueueBandwidthtype = "Kb"
+	ALTQRootQueueBandwidthtypeMb      ALTQRootQueueBandwidthtype = "Mb"
+	ALTQRootQueueBandwidthtypePercent ALTQRootQueueBandwidthtype = "%"
+)
+
+// Valid indicates whether the value is a known member of the ALTQRootQueueBandwidthtype enum.
+func (e ALTQRootQueueBandwidthtype) Valid() bool {
+	switch e {
+	case ALTQRootQueueBandwidthtypeB:
+		return true
+	case ALTQRootQueueBandwidthtypeGb:
+		return true
+	case ALTQRootQueueBandwidthtypeKb:
+		return true
+	case ALTQRootQueueBandwidthtypeMb:
+		return true
+	case ALTQRootQueueBandwidthtypePercent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ALTQRootQueueScheduler.
+const (
+	CBQ    ALTQRootQueueScheduler = "CBQ"
+	CODELQ ALTQRootQueueScheduler = "CODELQ"
+	FAIRQ  ALTQRootQueueScheduler = "FAIRQ"
+	HFSC   ALTQRootQueueScheduler = "HFSC"
+	PRIQ   ALTQRootQueueScheduler = "PRIQ"
+)
+
+// Valid indicates whether the value is a known member of the ALTQRootQueueScheduler enum.
+func (e ALTQRootQueueScheduler) Valid() bool {
+	switch e {
+	case CBQ:
+		return true
+	case CODELQ:
+		return true
+	case FAIRQ:
+		return true
+	case HFSC:
+		return true
+	case PRIQ:
 		return true
 	default:
 		return false
@@ -142,6 +196,187 @@ func (e FWUpdateAliasReqType) Valid() bool {
 	}
 }
 
+// Defines values for LAGGInterfaceLacptimeout.
+const (
+	Fast LAGGInterfaceLacptimeout = "fast"
+	Slow LAGGInterfaceLacptimeout = "slow"
+)
+
+// Valid indicates whether the value is a known member of the LAGGInterfaceLacptimeout enum.
+func (e LAGGInterfaceLacptimeout) Valid() bool {
+	switch e {
+	case Fast:
+		return true
+	case Slow:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LAGGInterfaceProto.
+const (
+	LAGGInterfaceProtoFailover    LAGGInterfaceProto = "failover"
+	LAGGInterfaceProtoLacp        LAGGInterfaceProto = "lacp"
+	LAGGInterfaceProtoLoadbalance LAGGInterfaceProto = "loadbalance"
+	LAGGInterfaceProtoNone        LAGGInterfaceProto = "none"
+	LAGGInterfaceProtoRoundrobin  LAGGInterfaceProto = "roundrobin"
+)
+
+// Valid indicates whether the value is a known member of the LAGGInterfaceProto enum.
+func (e LAGGInterfaceProto) Valid() bool {
+	switch e {
+	case LAGGInterfaceProtoFailover:
+		return true
+	case LAGGInterfaceProtoLacp:
+		return true
+	case LAGGInterfaceProtoLoadbalance:
+		return true
+	case LAGGInterfaceProtoNone:
+		return true
+	case LAGGInterfaceProtoRoundrobin:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LimiterAqm.
+const (
+	LimiterAqmCodel    LimiterAqm = "codel"
+	LimiterAqmDroptail LimiterAqm = "droptail"
+	LimiterAqmGred     LimiterAqm = "gred"
+	LimiterAqmPie      LimiterAqm = "pie"
+	LimiterAqmRed      LimiterAqm = "red"
+)
+
+// Valid indicates whether the value is a known member of the LimiterAqm enum.
+func (e LimiterAqm) Valid() bool {
+	switch e {
+	case LimiterAqmCodel:
+		return true
+	case LimiterAqmDroptail:
+		return true
+	case LimiterAqmGred:
+		return true
+	case LimiterAqmPie:
+		return true
+	case LimiterAqmRed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LimiterMask.
+const (
+	LimiterMaskDstaddress LimiterMask = "dstaddress"
+	LimiterMaskNone       LimiterMask = "none"
+	LimiterMaskSrcaddress LimiterMask = "srcaddress"
+)
+
+// Valid indicates whether the value is a known member of the LimiterMask enum.
+func (e LimiterMask) Valid() bool {
+	switch e {
+	case LimiterMaskDstaddress:
+		return true
+	case LimiterMaskNone:
+		return true
+	case LimiterMaskSrcaddress:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LimiterSched.
+const (
+	Fifo    LimiterSched = "fifo"
+	FqCodel LimiterSched = "fq_codel"
+	FqPie   LimiterSched = "fq_pie"
+	Prio    LimiterSched = "prio"
+	Qfq     LimiterSched = "qfq"
+	Rr      LimiterSched = "rr"
+	Wf2q    LimiterSched = "wf2q+"
+)
+
+// Valid indicates whether the value is a known member of the LimiterSched enum.
+func (e LimiterSched) Valid() bool {
+	switch e {
+	case Fifo:
+		return true
+	case FqCodel:
+		return true
+	case FqPie:
+		return true
+	case Prio:
+		return true
+	case Qfq:
+		return true
+	case Rr:
+		return true
+	case Wf2q:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LimiterQueueAqm.
+const (
+	LimiterQueueAqmCodel    LimiterQueueAqm = "codel"
+	LimiterQueueAqmDroptail LimiterQueueAqm = "droptail"
+	LimiterQueueAqmGred     LimiterQueueAqm = "gred"
+	LimiterQueueAqmPie      LimiterQueueAqm = "pie"
+	LimiterQueueAqmRed      LimiterQueueAqm = "red"
+)
+
+// Valid indicates whether the value is a known member of the LimiterQueueAqm enum.
+func (e LimiterQueueAqm) Valid() bool {
+	switch e {
+	case LimiterQueueAqmCodel:
+		return true
+	case LimiterQueueAqmDroptail:
+		return true
+	case LimiterQueueAqmGred:
+		return true
+	case LimiterQueueAqmPie:
+		return true
+	case LimiterQueueAqmRed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LimiterQueueMask.
+const (
+	LimiterQueueMaskDstaddress LimiterQueueMask = "dstaddress"
+	LimiterQueueMaskNone       LimiterQueueMask = "none"
+	LimiterQueueMaskSrcaddress LimiterQueueMask = "srcaddress"
+)
+
+// Valid indicates whether the value is a known member of the LimiterQueueMask enum.
+func (e LimiterQueueMask) Valid() bool {
+	switch e {
+	case LimiterQueueMaskDstaddress:
+		return true
+	case LimiterQueueMaskNone:
+		return true
+	case LimiterQueueMaskSrcaddress:
+		return true
+	default:
+		return false
+	}
+}
+
+// ALTQCapableInterface defines model for ALTQCapableInterface.
+type ALTQCapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfDevice       *string `json:"if_device,omitempty"`
+	IfIdent        *string `json:"if_ident,omitempty"`
+}
+
 // ALTQChildQueue scheduler type CODELQ do NOT have a ALTQChildQueue
 type ALTQChildQueue struct {
 	// Bandwidth (for HFSC, CBQ, and FAIRQ scheduler only) the amount of bandwidth for this queue
@@ -232,6 +467,174 @@ type ALTQChildQueue struct {
 // valid value = Kb, Mb, Gb, b, %
 type ALTQChildQueueBandwidthtype string
 
+// ALTQRootQueue defines model for ALTQRootQueue.
+type ALTQRootQueue struct {
+	// Bandwidth the amount of bandwidth available on this interface in the outbound direction
+	Bandwidth string `json:"bandwidth"`
+
+	// Bandwidthtype units for the bandwidth
+	// valid value = Kb, Mb, Gb, b, %
+	Bandwidthtype ALTQRootQueueBandwidthtype `json:"bandwidthtype"`
+	Enabled       *bool                      `json:"enabled,omitempty"`
+
+	// IfAssignedName human-readable display name of the interface (from interface description)
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+
+	// IfIdent identity of the interface for this traffic shaper (root queue)
+	IfIdent string `json:"if_ident"`
+
+	// Name generated by system when create altq root queue
+	Name *string `json:"name,omitempty"`
+
+	// Qlimit the number of packets that can be held in a queue waiting to be transmitted by the shaper, default size is 50
+	Qlimit *int              `json:"qlimit,omitempty"`
+	Queue  *[]ALTQChildQueue `json:"queue,omitempty"`
+
+	// Scheduler scheduler type
+	// valid values = HFSC, CBQ, FAIRQ, CODELQ, PRIQ
+	Scheduler ALTQRootQueueScheduler `json:"scheduler"`
+
+	// Tbrsize adjusts the size, in bytes, of the token bucket regulator
+	Tbrsize *int `json:"tbrsize,omitempty"`
+}
+
+// ALTQRootQueueBandwidthtype units for the bandwidth
+// valid value = Kb, Mb, Gb, b, %
+type ALTQRootQueueBandwidthtype string
+
+// ALTQRootQueueScheduler scheduler type
+// valid values = HFSC, CBQ, FAIRQ, CODELQ, PRIQ
+type ALTQRootQueueScheduler string
+
+// ALTQRootQueues defines model for ALTQRootQueues.
+type ALTQRootQueues struct {
+	Altq *[]ALTQRootQueue `json:"altq,omitempty"`
+}
+
+// BridgeCapableInterface defines model for BridgeCapableInterface.
+type BridgeCapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfIdentity     *string `json:"if_identity,omitempty"`
+}
+
+// BridgeInterface defines model for BridgeInterface.
+type BridgeInterface struct {
+	Autoedge *[]string `json:"autoedge,omitempty"`
+	Autoptp  *[]string `json:"autoptp,omitempty"`
+
+	// BridgeifDevice generated by system when a Bridge is created
+	BridgeifDevice *string `json:"bridgeif_device,omitempty"`
+
+	// Descr description
+	Descr *string   `json:"descr,omitempty"`
+	Edge  *[]string `json:"edge,omitempty"`
+
+	// Enablestp enable RSTP/STP
+	Enablestp *bool `json:"enablestp,omitempty"`
+
+	// Fwdelay the time that must pass before an interface begins forwarding packets when spanning tree is enabled
+	// default is 15 seconds, minimum is 4 seconds and maximum is 30 seconds
+	Fwdelay *int `json:"fwdelay,omitempty"`
+
+	// Hellotime the time in seconds between broadcasting of STP configuration messages
+	// default is 2 seconds, minimum is 1 second and maximum is 2 seconds
+	Hellotime *int `json:"hellotime,omitempty"`
+
+	// Holdcnt the transmit hold count for spanning tree
+	// default is 6, minimum is 1 and maximum is 10
+	Holdcnt    *int            `json:"holdcnt,omitempty"`
+	Ifpathcost *map[string]int `json:"ifpathcost,omitempty"`
+	Ifpriority *map[string]int `json:"ifpriority,omitempty"`
+
+	// Ip6linklocal enable IPv6 auto linklocal
+	Ip6linklocal *bool `json:"ip6linklocal,omitempty"`
+
+	// Maxaddr cache size of the bridge address, default is 2000 entries
+	Maxaddr *int `json:"maxaddr,omitempty"`
+
+	// Maxage the time that a Spanning Tree Protocol configuration is valid
+	// default is 20 seconds, minimum is 6 seconds and maximum is 40 seconds
+	Maxage  *int     `json:"maxage,omitempty"`
+	Members []string `json:"members"`
+
+	// Priority the bridge priority for spanning tree
+	// default is 32768, minimum is 0 and maximum is 61440
+	Priority *int      `json:"priority,omitempty"`
+	Private  *[]string `json:"private,omitempty"`
+
+	// Proto protocol used for spanning tree
+	// valid value = "rstp" or "stp"
+	Proto  *string   `json:"proto,omitempty"`
+	Ptp    *[]string `json:"ptp,omitempty"`
+	Span   *[]string `json:"span,omitempty"`
+	Static *[]string `json:"static,omitempty"`
+	Stp    *[]string `json:"stp,omitempty"`
+
+	// Timeout cache expire time, default is 1200 seconds
+	Timeout *int `json:"timeout,omitempty"`
+}
+
+// BridgeInterfaces defines model for BridgeInterfaces.
+type BridgeInterfaces struct {
+	BridgeCapableIfs *[]BridgeCapableInterface `json:"bridge_capable_ifs,omitempty"`
+	Interfaces       *[]BridgeInterface        `json:"interfaces,omitempty"`
+}
+
+// Dhcp6AdvancedOptions defines model for Dhcp6AdvancedOptions.
+type Dhcp6AdvancedOptions struct {
+	ClientId               *string `json:"client_id,omitempty"`
+	ConfigFileOverridePath *string `json:"config_file_override_path,omitempty"`
+
+	// Dhcp6PfxdelLen delegated prefix length
+	Dhcp6PfxdelLen             *int    `json:"dhcp6_pfxdel_len,omitempty"`
+	Duid                       *string `json:"duid,omitempty"`
+	EnableOverrideOptions      *bool   `json:"enable_override_options,omitempty"`
+	IfreqInformationOnlyEnable *bool   `json:"ifreq_information_only_enable,omitempty"`
+	OverrideOptions            *string `json:"override_options,omitempty"`
+	PrefixSelectedInterface    *string `json:"prefix_selected_interface,omitempty"`
+	RequestOptions             *string `json:"request_options,omitempty"`
+	SendOptions                *string `json:"send_options,omitempty"`
+}
+
+// DhcpAdvancedOptions defines model for DhcpAdvancedOptions.
+type DhcpAdvancedOptions struct {
+	ConfigFileOverridePath *string `json:"config_file_override_path,omitempty"`
+	EnableOverrideOptions  *bool   `json:"enable_override_options,omitempty"`
+
+	// OptionModifiers modify options from offer received
+	OptionModifiers *string `json:"option_modifiers,omitempty"`
+
+	// OverrideOptions override options received
+	OverrideOptions *string `json:"override_options,omitempty"`
+
+	// ReqBackoffCutoff backoff algorithm duration
+	ReqBackoffCutoff *string `json:"req_backoff_cutoff,omitempty"`
+
+	// ReqInitialInterval interval between initial requests
+	ReqInitialInterval *string `json:"req_initial_interval,omitempty"`
+
+	// ReqRestart time before requiring new lease
+	ReqRestart *string `json:"req_restart,omitempty"`
+
+	// ReqRetry try again duration
+	ReqRetry *string `json:"req_retry,omitempty"`
+
+	// ReqSelectTimeout offer selection timeout when multiple are received
+	ReqSelectTimeout *string `json:"req_select_timeout,omitempty"`
+
+	// ReqTimeout protocol timeout
+	ReqTimeout *string `json:"req_timeout,omitempty"`
+
+	// RequestOptions options wanting from DHCP server
+	RequestOptions *string `json:"request_options,omitempty"`
+
+	// RequiredOptions options that must be received in the offer to be accepted
+	RequiredOptions *string `json:"required_options,omitempty"`
+
+	// SendOptions options to send to DHCP server
+	SendOptions *string `json:"send_options,omitempty"`
+}
+
 // Error defines model for Error.
 type Error struct {
 	Alerts *PfsenseResult `json:"alerts,omitempty"`
@@ -244,6 +647,41 @@ type Error struct {
 
 	// Errmsg Error message
 	Errmsg *string `json:"errmsg,omitempty"`
+}
+
+// FWAddrAlias System or user-defined alias details about the network defined in FWAddrPort.network
+type FWAddrAlias struct {
+	// AliasType system, host, port, network, url
+	AliasType string `json:"alias_type"`
+
+	// Descr description about the alias
+	Descr *string `json:"descr,omitempty"`
+
+	// Label alias label e.g. LAN__NETWORK, alias.name
+	Label string `json:"label"`
+
+	// Table firewall table, if applicable
+	Table *string `json:"table,omitempty"`
+
+	// Truncated indicates whether the value list is truncated
+	Truncated *bool     `json:"truncated,omitempty"`
+	Values    *[]string `json:"values,omitempty"`
+}
+
+// FWAddrPort defines model for FWAddrPort.
+type FWAddrPort struct {
+	// Address single address, subnet or an alias (FWAlias)
+	Address *string `json:"address,omitempty"`
+	AliasId *string `json:"alias_id,omitempty"`
+	Any     *bool   `json:"any,omitempty"`
+
+	// Label read-only; label to display to user
+	Label string `json:"label"`
+
+	// Network system aliases: interface name (e.g. opt1), interface address "opt1ip", or firewall "self"
+	Network *string `json:"network,omitempty"`
+	Not     *bool   `json:"not,omitempty"`
+	Port    *string `json:"port,omitempty"`
 }
 
 // FWAlias defines model for FWAlias.
@@ -290,6 +728,165 @@ type FWAliasReqType string
 type FWAliases struct {
 	Aliases       *[]FWAlias       `json:"aliases,omitempty"`
 	SystemAliases *[]FWSystemAlias `json:"system_aliases,omitempty"`
+}
+
+// FWFilterRule defines model for FWFilterRule.
+type FWFilterRule struct {
+	// Ackqueue acknowledgement shaper queue
+	Ackqueue         *string `json:"ackqueue,omitempty"`
+	Allowopts        *bool   `json:"allowopts,omitempty"`
+	AssociatedRuleId *string `json:"associated_rule_id,omitempty"`
+
+	// Bridgeto ethernet rule, bridge to interface
+	Bridgeto *string          `json:"bridgeto,omitempty"`
+	Created  *FWUserTimestamp `json:"created,omitempty"`
+
+	// Defaultqueue default shaper queue
+	Defaultqueue   *string     `json:"defaultqueue,omitempty"`
+	Descr          *string     `json:"descr,omitempty"`
+	Destination    *FWAddrPort `json:"destination,omitempty"`
+	Direction      *string     `json:"direction,omitempty"`
+	Disabled       *bool       `json:"disabled,omitempty"`
+	Disablereplyto *bool       `json:"disablereplyto,omitempty"`
+
+	// Dnpipe inbound pipe limiter
+	Dnpipe *string `json:"dnpipe,omitempty"`
+	Dscp   *string `json:"dscp,omitempty"`
+
+	// Dstmac destination MAC address for ethernet rule
+	Dstmac *string `json:"dstmac,omitempty"`
+
+	// Ethernet ethernet rule
+	Ethernet *bool `json:"ethernet,omitempty"`
+
+	// Floating floating rule
+	Floating *bool `json:"floating,omitempty"`
+
+	// Fwids system's identifier(s) for rule in its firewall
+	Fwids    *string `json:"fwids,omitempty"`
+	Gateway  *string `json:"gateway,omitempty"`
+	Icmptype *string `json:"icmptype,omitempty"`
+
+	// Id unique identifier for the rule
+	Id              *string          `json:"id,omitempty"`
+	Interface       *string          `json:"interface,omitempty"`
+	Ipprotocol      *string          `json:"ipprotocol,omitempty"`
+	Log             *bool            `json:"log,omitempty"`
+	Max             *string          `json:"max,omitempty"`
+	MaxSrcConn      *string          `json:"max_src_conn,omitempty"`
+	MaxSrcConnRate  *string          `json:"max_src_conn_rate,omitempty"`
+	MaxSrcConnRates *string          `json:"max_src_conn_rates,omitempty"`
+	MaxSrcNodes     *string          `json:"max_src_nodes,omitempty"`
+	MaxSrcStates    *string          `json:"max_src_states,omitempty"`
+	Nat             *FWFilterRuleNAT `json:"nat,omitempty"`
+	Nopfsync        *bool            `json:"nopfsync,omitempty"`
+	Nosync          *bool            `json:"nosync,omitempty"`
+	Nottagged       *bool            `json:"nottagged,omitempty"`
+	Os              *string          `json:"os,omitempty"`
+
+	// Pdnpipe outbound pipe limiter
+	Pdnpipe *string `json:"pdnpipe,omitempty"`
+
+	// Pflow "" (global default), "enabled", "disabled"
+	Pflow    *string     `json:"pflow,omitempty"`
+	Protocol *string     `json:"protocol,omitempty"`
+	Quick    *bool       `json:"quick,omitempty"`
+	Readonly *bool       `json:"readonly,omitempty"`
+	Sched    *string     `json:"sched,omitempty"`
+	Source   *FWAddrPort `json:"source,omitempty"`
+
+	// Srcmac source MAC address for ethernet rule
+	Srcmac *string      `json:"srcmac,omitempty"`
+	State  *FWRuleState `json:"state,omitempty"`
+
+	// Statepolicy "" (global default), if-bound, floating
+	Statepolicy     *string   `json:"statepolicy,omitempty"`
+	Statetimeout    *string   `json:"statetimeout,omitempty"`
+	Statetype       *string   `json:"statetype,omitempty"`
+	Tag             *string   `json:"tag,omitempty"`
+	Tagged          *string   `json:"tagged,omitempty"`
+	Tcpflags1       *string   `json:"tcpflags1,omitempty"`
+	Tcpflags1Struct *TCPFlags `json:"tcpflags1_struct,omitempty"`
+	Tcpflags2       *string   `json:"tcpflags2,omitempty"`
+	Tcpflags2Struct *TCPFlags `json:"tcpflags2_struct,omitempty"`
+	TcpflagsAny     *bool     `json:"tcpflags_any,omitempty"`
+	Tracker         *string   `json:"tracker,omitempty"`
+
+	// Type pass, block, reject (non-ethernet), match (floating)
+	Type        *string          `json:"type,omitempty"`
+	Updated     *FWUserTimestamp `json:"updated,omitempty"`
+	Vlanprio    *string          `json:"vlanprio,omitempty"`
+	Vlanprioset *string          `json:"vlanprioset,omitempty"`
+}
+
+// FWFilterRuleNAT defines model for FWFilterRuleNAT.
+type FWFilterRuleNAT struct {
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// Source address to apply to the NAT64 rule
+	Source *string `json:"source,omitempty"`
+
+	// Type auto, network, alias, interface
+	Type *string `json:"type,omitempty"`
+}
+
+// FWFirewallInterfaces defines model for FWFirewallInterfaces.
+type FWFirewallInterfaces struct {
+	// Ethernet ethernet filter is enabled
+	Ethernet          *bool                      `json:"ethernet,omitempty"`
+	InterfaceMappings *map[string]InterfaceLabel `json:"interface_mappings,omitempty"`
+	Interfaces        *[]string                  `json:"interfaces,omitempty"`
+	Lan               *string                    `json:"lan,omitempty"`
+	TrafficSources    *map[string]string         `json:"traffic_sources,omitempty"`
+	Wan               *string                    `json:"wan,omitempty"`
+}
+
+// FWRuleState defines model for FWRuleState.
+type FWRuleState struct {
+	Bytes          *int    `json:"bytes,omitempty"`
+	Evaluations    *int    `json:"evaluations,omitempty"`
+	Id             *string `json:"id,omitempty"`
+	Label          *string `json:"label,omitempty"`
+	Packets        *int    `json:"packets,omitempty"`
+	Pid            *int    `json:"pid,omitempty"`
+	StateCreations *int    `json:"state_creations,omitempty"`
+	States         *int    `json:"states,omitempty"`
+	Tracker        *string `json:"tracker,omitempty"`
+}
+
+// FWRules defines model for FWRules.
+type FWRules struct {
+	Aliases       *map[string]FWAddrAlias `json:"aliases,omitempty"`
+	Entries       *[]FwRulesEntry         `json:"entries,omitempty"`
+	Gateways4     *[]NameDescr            `json:"gateways4,omitempty"`
+	Gateways6     *[]NameDescr            `json:"gateways6,omitempty"`
+	Limiters      *[]string               `json:"limiters,omitempty"`
+	NatInterfaces *[]string               `json:"nat_interfaces,omitempty"`
+	Queues        *[]string               `json:"queues,omitempty"`
+	Schedules     *[]NameDescr            `json:"schedules,omitempty"`
+}
+
+// FWSchedule defines model for FWSchedule.
+type FWSchedule struct {
+	Descr      *string            `json:"descr,omitempty"`
+	Id         *string            `json:"id,omitempty"`
+	Name       *string            `json:"name,omitempty"`
+	Schedlabel *string            `json:"schedlabel,omitempty"`
+	Timerange  *[]FWScheduleRange `json:"timerange,omitempty"`
+}
+
+// FWScheduleRange defines model for FWScheduleRange.
+type FWScheduleRange struct {
+	Day        *string `json:"day,omitempty"`
+	Hour       *string `json:"hour,omitempty"`
+	Month      *string `json:"month,omitempty"`
+	Position   *string `json:"position,omitempty"`
+	Rangedescr *string `json:"rangedescr,omitempty"`
+}
+
+// FWSchedules defines model for FWSchedules.
+type FWSchedules struct {
+	Schedules *[]FWSchedule `json:"schedules,omitempty"`
 }
 
 // FWSystemAlias defines model for FWSystemAlias.
@@ -340,12 +937,620 @@ type FWUpdateAliasReq struct {
 // FWUpdateAliasReqType host, network, url, urltable, urltable_ports, port, or url_ports
 type FWUpdateAliasReqType string
 
+// FWUserTimestamp defines model for FWUserTimestamp.
+type FWUserTimestamp struct {
+	Time     *string `json:"time,omitempty"`
+	Username *string `json:"username,omitempty"`
+}
+
 // FilterReloadStatus defines model for FilterReloadStatus.
 type FilterReloadStatus struct {
 	Done            *bool     `json:"done,omitempty"`
 	HaXmlrpcEnabled *bool     `json:"ha_xmlrpc_enabled,omitempty"`
 	Ongoing         *bool     `json:"ongoing,omitempty"`
 	StatusLines     *[]string `json:"status_lines,omitempty"`
+}
+
+// FilterSeparator defines model for FilterSeparator.
+type FilterSeparator struct {
+	Color *string `json:"color,omitempty"`
+	Id    *string `json:"id,omitempty"`
+
+	// If interface name
+	If   *string `json:"if,omitempty"`
+	Row  *string `json:"row,omitempty"`
+	Text *string `json:"text,omitempty"`
+}
+
+// FwRulesEntry defines model for FwRulesEntry.
+type FwRulesEntry struct {
+	Rule      *FWFilterRule    `json:"rule,omitempty"`
+	Separator *FilterSeparator `json:"separator,omitempty"`
+}
+
+// GIFCapableInterface defines model for GIFCapableInterface.
+type GIFCapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfIdentity     *string `json:"if_identity,omitempty"`
+}
+
+// GIFInterface defines model for GIFInterface.
+type GIFInterface struct {
+	// Descr description
+	Descr *string `json:"descr,omitempty"`
+
+	// Gifif generated by system when create gif
+	Gifif *string `json:"gifif,omitempty"`
+
+	// IfIdentity identity name of the parent interface
+	IfIdentity string `json:"if_identity"`
+
+	// Link1 explicit congestion notification (ecn) friendly behavior
+	Link1 *bool `json:"link1,omitempty"`
+
+	// Link2 disable automatic filtering of the outer gif source
+	Link2 *bool `json:"link2,omitempty"`
+
+	// RemoteAddr address of the remote peer
+	RemoteAddr *string `json:"remote_addr,omitempty"`
+
+	// TunnelLocalAddr local tunnel address
+	TunnelLocalAddr *string `json:"tunnel_local_addr,omitempty"`
+
+	// TunnelRemoteAddr remote tunnel address
+	TunnelRemoteAddr *string `json:"tunnel_remote_addr,omitempty"`
+
+	// TunnelRemoteNet remote tunnel address subnet
+	TunnelRemoteNet *int `json:"tunnel_remote_net,omitempty"`
+}
+
+// GIFInterfaces defines model for GIFInterfaces.
+type GIFInterfaces struct {
+	GifCapableIfs *[]GIFCapableInterface `json:"gif_capable_ifs,omitempty"`
+	Interfaces    *[]GIFInterface        `json:"interfaces,omitempty"`
+}
+
+// GRECapableInterface defines model for GRECapableInterface.
+type GRECapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfIdentity     *string `json:"if_identity,omitempty"`
+}
+
+// GREInterface defines model for GREInterface.
+type GREInterface struct {
+	// Descr description
+	Descr *string `json:"descr,omitempty"`
+
+	// Greif generated by system when create gre
+	Greif *string `json:"greif,omitempty"`
+
+	// IfIdentity identity name of the parent interface
+	IfIdentity string `json:"if_identity"`
+
+	// Link1 add an explicit static route for the remote inner tunnel
+	Link1 *bool `json:"link1,omitempty"`
+
+	// RemoteAddr address of the remote peer
+	RemoteAddr *string `json:"remote_addr,omitempty"`
+
+	// TunnelLocalAddr local ipv4 tunnel address
+	TunnelLocalAddr *string `json:"tunnel_local_addr,omitempty"`
+
+	// TunnelLocalAddr6 local ipv6 tunnel address
+	TunnelLocalAddr6 *string `json:"tunnel_local_addr6,omitempty"`
+
+	// TunnelRemoteAddr remote ipv4 tunnel address
+	TunnelRemoteAddr *string `json:"tunnel_remote_addr,omitempty"`
+
+	// TunnelRemoteAddr6 remote ipv6 tunnel address
+	TunnelRemoteAddr6 *string `json:"tunnel_remote_addr6,omitempty"`
+
+	// TunnelRemoteNet remote ipv4 tunnel address subnet
+	TunnelRemoteNet *int `json:"tunnel_remote_net,omitempty"`
+
+	// TunnelRemoteNet6 remote ipv6 tunnel address subnet
+	TunnelRemoteNet6 *int `json:"tunnel_remote_net6,omitempty"`
+}
+
+// GREInterfaces defines model for GREInterfaces.
+type GREInterfaces struct {
+	GreCapableIfs *[]GRECapableInterface `json:"gre_capable_ifs,omitempty"`
+	Interfaces    *[]GREInterface        `json:"interfaces,omitempty"`
+}
+
+// Gateway defines model for Gateway.
+type Gateway struct {
+	ActionDisable *bool            `json:"action_disable,omitempty"`
+	AlertInterval *int             `json:"alert_interval,omitempty"`
+	Attribute     *string          `json:"attribute,omitempty"`
+	DataPayload   *int             `json:"data_payload,omitempty"`
+	Defaults      *GatewayDefaults `json:"defaults,omitempty"`
+	Descr         *string          `json:"descr,omitempty"`
+	Disabled      *bool            `json:"disabled,omitempty"`
+	Dynamic       *bool            `json:"dynamic,omitempty"`
+
+	// Friendlyiface obsolete - use interface_identity
+	Friendlyiface *string `json:"friendlyiface,omitempty"`
+
+	// Friendlyifdescr obsolete - use interface_assigned
+	Friendlyifdescr  *string `json:"friendlyifdescr,omitempty"`
+	Gateway          string  `json:"gateway"`
+	GwDownKillStates *string `json:"gw_down_kill_states,omitempty"`
+
+	// Interface obsolete - use interface_device
+	Interface         *string `json:"interface,omitempty"`
+	InterfaceAssigned *string `json:"interface_assigned,omitempty"`
+	InterfaceDevice   *string `json:"interface_device,omitempty"`
+	InterfaceIdentity *string `json:"interface_identity,omitempty"`
+	Interval          *int    `json:"interval,omitempty"`
+	Ipprotocol        *string `json:"ipprotocol,omitempty"`
+	Isdefaultgw       *bool   `json:"isdefaultgw,omitempty"`
+	Latencyhigh       *int    `json:"latencyhigh,omitempty"`
+	Latencylow        *int    `json:"latencylow,omitempty"`
+	LossInterval      *int    `json:"loss_interval,omitempty"`
+	Losshigh          *int    `json:"losshigh,omitempty"`
+	Losslow           *int    `json:"losslow,omitempty"`
+	Monitor           *string `json:"monitor,omitempty"`
+	MonitorDisable    *bool   `json:"monitor_disable,omitempty"`
+	Name              *string `json:"name,omitempty"`
+	Nonlocalgateway   *bool   `json:"nonlocalgateway,omitempty"`
+	Tiername          *string `json:"tiername,omitempty"`
+	TimePeriod        *int    `json:"time_period,omitempty"`
+	Weight            *int    `json:"weight,omitempty"`
+}
+
+// GatewayDefaults defines model for GatewayDefaults.
+type GatewayDefaults struct {
+	Defaultgw4 *string `json:"defaultgw4,omitempty"`
+	Defaultgw6 *string `json:"defaultgw6,omitempty"`
+}
+
+// Gateways defines model for Gateways.
+type Gateways struct {
+	DefaultAssignableGw4 *[]TextValue     `json:"default_assignable_gw4,omitempty"`
+	DefaultAssignableGw6 *[]TextValue     `json:"default_assignable_gw6,omitempty"`
+	Defaults             *GatewayDefaults `json:"defaults,omitempty"`
+	Gateways             *[]Gateway       `json:"gateways,omitempty"`
+}
+
+// IfGroupCapableInterface defines model for IfGroupCapableInterface.
+type IfGroupCapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfDevice       *string `json:"if_device,omitempty"`
+	IfIdentity     *string `json:"if_identity,omitempty"`
+}
+
+// InterfaceAssignedName defines model for InterfaceAssignedName.
+type InterfaceAssignedName struct {
+	// Assigned user assigned name, e.g. WAN, LAN, MYLAN
+	Assigned *string `json:"assigned,omitempty"`
+
+	// Device interface device, e.g. igbe0
+	Device *string `json:"device,omitempty"`
+
+	// Ident identity, e.g. wan, lan, opt1
+	Ident *string `json:"ident,omitempty"`
+}
+
+// InterfaceAssignments defines model for InterfaceAssignments.
+type InterfaceAssignments struct {
+	Interfaces *[]InterfaceAssignedName `json:"interfaces,omitempty"`
+}
+
+// InterfaceDescriptors defines model for InterfaceDescriptors.
+type InterfaceDescriptors struct {
+	// Descriptors Mapping of interface names to their descriptions.
+	Descriptors *InterfaceDescriptorsInfo `json:"descriptors,omitempty"`
+}
+
+// InterfaceDescriptorsInfo Mapping of interface names to their descriptions.
+type InterfaceDescriptorsInfo struct {
+	Bridges  *map[string]string `json:"bridges,omitempty"`
+	Gif      *map[string]string `json:"gif,omitempty"`
+	Gre      *map[string]string `json:"gre,omitempty"`
+	Lagg     *map[string]string `json:"lagg,omitempty"`
+	Physical *map[string]string `json:"physical,omitempty"`
+	Ppp      *map[string]string `json:"ppp,omitempty"`
+	Qinq     *map[string]string `json:"qinq,omitempty"`
+	Vlan     *map[string]string `json:"vlan,omitempty"`
+	Vxlan    *map[string]string `json:"vxlan,omitempty"`
+}
+
+// InterfaceGroup defines model for InterfaceGroup.
+type InterfaceGroup struct {
+	Descr *string `json:"descr,omitempty"`
+
+	// Ifname interface group name
+	Ifname  *string   `json:"ifname,omitempty"`
+	Members *[]string `json:"members,omitempty"`
+}
+
+// InterfaceGroups defines model for InterfaceGroups.
+type InterfaceGroups struct {
+	Groups           *[]InterfaceGroup          `json:"groups,omitempty"`
+	GroupsCapableIfs *[]IfGroupCapableInterface `json:"groups_capable_ifs,omitempty"`
+}
+
+// InterfaceLabel defines model for InterfaceLabel.
+type InterfaceLabel struct {
+	Assigned *string `json:"assigned,omitempty"`
+	Device   *string `json:"device,omitempty"`
+	Ident    *string `json:"ident,omitempty"`
+
+	// Type interface type - device, group, vpn, other
+	Type *string `json:"type,omitempty"`
+}
+
+// InterfaceSimple Basic interface details.
+type InterfaceSimple struct {
+	Addresses *[]string `json:"addresses,omitempty"`
+
+	// Assigned assigned interface name
+	Assigned *string `json:"assigned,omitempty"`
+
+	// Descr interface description
+	Descr  *string `json:"descr,omitempty"`
+	Enable *bool   `json:"enable,omitempty"`
+
+	// Identity interface identity
+	Identity *string `json:"identity,omitempty"`
+
+	// If operating system device name
+	If       *string `json:"if,omitempty"`
+	Ipaddr   *string `json:"ipaddr,omitempty"`
+	Ipaddrv6 *string `json:"ipaddrv6,omitempty"`
+	Mac      *string `json:"mac,omitempty"`
+	Member   *string `json:"member,omitempty"`
+
+	// Name alias to identity
+	Name string `json:"name"`
+	Tag  *int   `json:"tag,omitempty"`
+}
+
+// InterfacesSimple defines model for InterfacesSimple.
+type InterfacesSimple struct {
+	Interfaces *[]InterfaceSimple `json:"interfaces,omitempty"`
+}
+
+// LAGGCapableInterface defines model for LAGGCapableInterface.
+type LAGGCapableInterface struct {
+	IfDevice *string `json:"if_device,omitempty"`
+	Mac      *string `json:"mac,omitempty"`
+}
+
+// LAGGCapableInterfaces defines model for LAGGCapableInterfaces.
+type LAGGCapableInterfaces struct {
+	CapableIfs  *[]LAGGCapableInterface `json:"capable_ifs,omitempty"`
+	LaggMembers *[]LAGGCapableInterface `json:"lagg_members,omitempty"`
+}
+
+// LAGGInterface defines model for LAGGInterface.
+type LAGGInterface struct {
+	// Descr description
+	Descr *string `json:"descr,omitempty"`
+
+	// Failovermaster (for proto=failover only) failover master interface
+	Failovermaster *string `json:"failovermaster,omitempty"`
+
+	// Lacptimeout (for proto=lacp only) LACP Timeout Mode
+	// valid value = slow, fast
+	Lacptimeout *LAGGInterfaceLacptimeout `json:"lacptimeout,omitempty"`
+
+	// Lagghash (for proto=lacp or loadbalance) hash algorithms for the packet layers
+	// valid value = "l2,l3,l4", "l2", "l3", "l4", "l2,l3", "l3,l4", "l2,l4"
+	Lagghash *string `json:"lagghash,omitempty"`
+
+	// LaggifDevice generated by system when create lagg
+	LaggifDevice *string  `json:"laggif_device,omitempty"`
+	Members      []string `json:"members"`
+
+	// Proto lagg protocol
+	// valid value = none, lacp, failover, loadbalance, roundrobin
+	Proto *LAGGInterfaceProto `json:"proto,omitempty"`
+}
+
+// LAGGInterfaceLacptimeout (for proto=lacp only) LACP Timeout Mode
+// valid value = slow, fast
+type LAGGInterfaceLacptimeout string
+
+// LAGGInterfaceProto lagg protocol
+// valid value = none, lacp, failover, loadbalance, roundrobin
+type LAGGInterfaceProto string
+
+// LAGGInterfaces defines model for LAGGInterfaces.
+type LAGGInterfaces struct {
+	Interfaces     *[]LAGGInterface       `json:"interfaces,omitempty"`
+	LaggCapableIfs *LAGGCapableInterfaces `json:"lagg_capable_ifs,omitempty"`
+}
+
+// Limiter defines model for Limiter.
+type Limiter struct {
+	// Aqm active queue management (AQM) algorithm
+	// valid values = droptail, codel, pie, red, gred
+	Aqm       *LimiterAqm         `json:"aqm,omitempty"`
+	Bandwidth *[]LimiterBandwidth `json:"bandwidth,omitempty"`
+
+	// Buckets bucket Size, specified in slots, sets the size of the hash table used for queue storage
+	Buckets *int `json:"buckets,omitempty"`
+
+	// Delay introduces an artificial delay (latency), specified in milliseconds
+	Delay       *int    `json:"delay,omitempty"`
+	Description *string `json:"description,omitempty"`
+
+	// Ecn (for sched=fq_codel or fq_pie only) explicit congestion notification
+	Ecn     *bool `json:"ecn,omitempty"`
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// Mask controls how the limiter will mask addresses in the limiter
+	// valid values = none, srcaddress, dstaddress
+	Mask *LimiterMask `json:"mask,omitempty"`
+
+	// Maskbits address masking for ipv4
+	Maskbits *int `json:"maskbits,omitempty"`
+
+	// Maskbitsv6 address masking for ipv6
+	Maskbitsv6 *int `json:"maskbitsv6,omitempty"`
+
+	// Name name of the limiter, it will appear for selection on firewall rules
+	Name string `json:"name"`
+
+	// Number generated by system when create limiter
+	Number *int `json:"number,omitempty"`
+
+	// ParamCodelInterval (for aqm=codel only) codel interval in ms (set to "" to use default value)
+	ParamCodelInterval *string `json:"param_codel_interval,omitempty"`
+
+	// ParamCodelTarget (for aqm=codel only) codel target delay in ms (set to "" to use default value)
+	ParamCodelTarget *string `json:"param_codel_target,omitempty"`
+
+	// ParamFqCodelFlows (for sched=fq_codel only) flows (set to "" to use default value)
+	ParamFqCodelFlows *string `json:"param_fq_codel_flows,omitempty"`
+
+	// ParamFqCodelInterval (for sched=fq_codel only) interval in ms (set to "" to use default value)
+	ParamFqCodelInterval *string `json:"param_fq_codel_interval,omitempty"`
+
+	// ParamFqCodelLimit (for sched=fq_codel only) limit (set to "" to use default value)
+	ParamFqCodelLimit *string `json:"param_fq_codel_limit,omitempty"`
+
+	// ParamFqCodelQuantum (for sched=fq_codel only) quantum (set to "" to use default value)
+	ParamFqCodelQuantum *string `json:"param_fq_codel_quantum,omitempty"`
+
+	// ParamFqCodelTarget (for sched=fq_codel only) target delay in ms (set to "" to use default value)
+	ParamFqCodelTarget *string `json:"param_fq_codel_target,omitempty"`
+
+	// ParamFqPieAlpha (for sched=fq_pie only) alpha (set to "" to use default value)
+	ParamFqPieAlpha *string `json:"param_fq_pie_alpha,omitempty"`
+
+	// ParamFqPieBeta (for sched=fq_pie only) beta (set to "" to use default value)
+	ParamFqPieBeta *string `json:"param_fq_pie_beta,omitempty"`
+
+	// ParamFqPieFlows (for sched=fq_pie only) flows (set to "" to use default value)
+	ParamFqPieFlows *string `json:"param_fq_pie_flows,omitempty"`
+
+	// ParamFqPieLimit (for sched=fq_pie only) limit (set to "" to use default value)
+	ParamFqPieLimit *string `json:"param_fq_pie_limit,omitempty"`
+
+	// ParamFqPieMaxBurst (for sched=fq_pie only) max burst (set to "" to use default value)
+	ParamFqPieMaxBurst *string `json:"param_fq_pie_max_burst,omitempty"`
+
+	// ParamFqPieMaxEcnth (for sched=fq_pie only) max ecnth (set to "" to use default value)
+	ParamFqPieMaxEcnth *string `json:"param_fq_pie_max_ecnth,omitempty"`
+
+	// ParamFqPieQuantum (for sched=fq_pie only) quantum (set to "" to use default value)
+	ParamFqPieQuantum *string `json:"param_fq_pie_quantum,omitempty"`
+
+	// ParamFqPieTarget (for sched=fq_pie only) target delay in ms (set to "" to use default value)
+	ParamFqPieTarget *string `json:"param_fq_pie_target,omitempty"`
+
+	// ParamFqPieTupdate (for sched=fq_pie only) interval in ms (set to "" to use default value)
+	ParamFqPieTupdate *string `json:"param_fq_pie_tupdate,omitempty"`
+
+	// ParamGredMaxP (for aqm=gred only) max_p (set to "" to use default value)
+	ParamGredMaxP *string `json:"param_gred_max_p,omitempty"`
+
+	// ParamGredMaxTh (for aqm=gred only) max_th (set to "" to use default value)
+	ParamGredMaxTh *string `json:"param_gred_max_th,omitempty"`
+
+	// ParamGredMinTh (for aqm=gred only) min_th (set to "" to use default value)
+	ParamGredMinTh *string `json:"param_gred_min_th,omitempty"`
+
+	// ParamGredWQ (for aqm=gred only) w_q (set to "" to use default value)
+	ParamGredWQ *string `json:"param_gred_w_q,omitempty"`
+
+	// ParamPieAlpha (for aqm=pie only) alpha (set to "" to use default value)
+	ParamPieAlpha *string `json:"param_pie_alpha,omitempty"`
+
+	// ParamPieBeta (for aqm=pie only) beta (set to "" to use default value)
+	ParamPieBeta *string `json:"param_pie_beta,omitempty"`
+
+	// ParamPieMaxBurst (for aqm=pie only) max burst (set to "" to use default value)
+	ParamPieMaxBurst *string `json:"param_pie_max_burst,omitempty"`
+
+	// ParamPieMaxEcnth (for aqm=pie only) max ecnth (set to "" to use default value)
+	ParamPieMaxEcnth *string `json:"param_pie_max_ecnth,omitempty"`
+
+	// ParamPieTarget (for aqm=pie only) target delay in ms (set to "" to use default value)
+	ParamPieTarget *string `json:"param_pie_target,omitempty"`
+
+	// ParamPieTupdate (for aqm=pie only) interval in ms (set to "" to use default value)
+	ParamPieTupdate *string `json:"param_pie_tupdate,omitempty"`
+
+	// ParamRedMaxP (for aqm=red only) max_p (set to "" to use default value)
+	ParamRedMaxP *string `json:"param_red_max_p,omitempty"`
+
+	// ParamRedMaxTh (for aqm=red only) max_th (set to "" to use default value)
+	ParamRedMaxTh *string `json:"param_red_max_th,omitempty"`
+
+	// ParamRedMinTh (for aqm=red only) min_th (set to "" to use default value)
+	ParamRedMinTh *string `json:"param_red_min_th,omitempty"`
+
+	// ParamRedWQ (for aqm=red only) w_q (set to "" to use default value)
+	ParamRedWQ *string `json:"param_red_w_q,omitempty"`
+
+	// PieCapdrop (for sched=fq_pie only) cap drop adjustment
+	PieCapdrop *bool `json:"pie_capdrop,omitempty"`
+
+	// PieOnoff (for sched=fq_pie only) turning pie on and off depending on queue load
+	PieOnoff *bool `json:"pie_onoff,omitempty"`
+
+	// PiePderand (for sched=fq_pie only) drop probability de-randomisation
+	PiePderand *bool `json:"pie_pderand,omitempty"`
+
+	// PieQdelay (for sched=fq_pie only) set queue delay type to timestamps (true) or departure rate estimation (false)
+	PieQdelay *bool `json:"pie_qdelay,omitempty"`
+
+	// Plr packet loss rate can be configured to drop a certain fraction of packets that enter the limiter
+	// valid value between 0 and 1
+	// a value of 0.001 means one packet in 1000 gets dropped
+	Plr *float32 `json:"plr,omitempty"`
+
+	// Qlimit specifies the length of the limiter's queue, which the scheduler and AQM are responsible for
+	Qlimit *int            `json:"qlimit,omitempty"`
+	Queue  *[]LimiterQueue `json:"queue,omitempty"`
+
+	// Sched scheduler manages the sequence of network packets in the limiter's queue
+	// valid values = wf2q+, fifo, qfq, rr, prio, fq_codel, fq_pie
+	Sched *LimiterSched `json:"sched,omitempty"`
+}
+
+// LimiterAqm active queue management (AQM) algorithm
+// valid values = droptail, codel, pie, red, gred
+type LimiterAqm string
+
+// LimiterMask controls how the limiter will mask addresses in the limiter
+// valid values = none, srcaddress, dstaddress
+type LimiterMask string
+
+// LimiterSched scheduler manages the sequence of network packets in the limiter's queue
+// valid values = wf2q+, fifo, qfq, rr, prio, fq_codel, fq_pie
+type LimiterSched string
+
+// LimiterBandwidth defines model for LimiterBandwidth.
+type LimiterBandwidth struct {
+	// Bw bandwidth value for the limiter
+	Bw *int `json:"bw,omitempty"`
+
+	// Bwscale units for the bw
+	// valid value = Kb, Mb, b
+	Bwscale *string `json:"bwscale,omitempty"`
+
+	// Bwsched schedule (Time Based Rules) to apply this bandwidth
+	Bwsched *string `json:"bwsched,omitempty"`
+}
+
+// LimiterQueue defines model for LimiterQueue.
+type LimiterQueue struct {
+	// Aqm active queue management (AQM) algorithm
+	// valid values = droptail, codel, pie, red, gred
+	Aqm *LimiterQueueAqm `json:"aqm,omitempty"`
+
+	// Buckets bucket Size, specified in slots, sets the size of the hash table used for queue storage
+	Buckets     *int    `json:"buckets,omitempty"`
+	Description *string `json:"description,omitempty"`
+
+	// Ecn (for aqm=codel, pie, red, or gred only) explicit congestion notification
+	Ecn     *bool `json:"ecn,omitempty"`
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// Mask controls how the limiter will mask addresses in the queue
+	// valid values = none, srcaddress, dstaddress
+	Mask *LimiterQueueMask `json:"mask,omitempty"`
+
+	// Maskbits address masking for ipv4
+	Maskbits *int `json:"maskbits,omitempty"`
+
+	// Maskbitsv6 address masking for ipv6
+	Maskbitsv6 *int `json:"maskbitsv6,omitempty"`
+
+	// Name name of the limiter, it will appear for selection on firewall rules
+	Name string `json:"name"`
+
+	// Number generated by system when create limiter queue
+	Number *int `json:"number,omitempty"`
+
+	// ParamCodelInterval (for aqm=codel only) codel interval in ms (set to "" to use default value)
+	ParamCodelInterval *string `json:"param_codel_interval,omitempty"`
+
+	// ParamCodelTarget (for aqm=codel only) codel target delay in ms (set to "" to use default value)
+	ParamCodelTarget *string `json:"param_codel_target,omitempty"`
+
+	// ParamGredMaxP (for aqm=gred only) max_p (set to "" to use default value)
+	ParamGredMaxP *string `json:"param_gred_max_p,omitempty"`
+
+	// ParamGredMaxTh (for aqm=gred only) max_th (set to "" to use default value)
+	ParamGredMaxTh *string `json:"param_gred_max_th,omitempty"`
+
+	// ParamGredMinTh (for aqm=gred only) min_th (set to "" to use default value)
+	ParamGredMinTh *string `json:"param_gred_min_th,omitempty"`
+
+	// ParamGredWQ (for aqm=gred only) w_q (set to "" to use default value)
+	ParamGredWQ *string `json:"param_gred_w_q,omitempty"`
+
+	// ParamPieAlpha (for aqm=pie only) alpha (set to "" to use default value)
+	ParamPieAlpha *string `json:"param_pie_alpha,omitempty"`
+
+	// ParamPieBeta (for aqm=pie only) beta (set to "" to use default value)
+	ParamPieBeta *string `json:"param_pie_beta,omitempty"`
+
+	// ParamPieMaxBurst (for aqm=pie only) max burst (set to "" to use default value)
+	ParamPieMaxBurst *string `json:"param_pie_max_burst,omitempty"`
+
+	// ParamPieMaxEcnth (for aqm=pie only) max ecnth (set to "" to use default value)
+	ParamPieMaxEcnth *string `json:"param_pie_max_ecnth,omitempty"`
+
+	// ParamPieTarget (for aqm=pie only) target delay in ms (set to "" to use default value)
+	ParamPieTarget *string `json:"param_pie_target,omitempty"`
+
+	// ParamPieTupdate (for aqm=pie only) interval in ms (set to "" to use default value)
+	ParamPieTupdate *string `json:"param_pie_tupdate,omitempty"`
+
+	// ParamRedMaxP (for aqm=red only) max_p (set to "" to use default value)
+	ParamRedMaxP *string `json:"param_red_max_p,omitempty"`
+
+	// ParamRedMaxTh (for aqm=red only) max_th (set to "" to use default value)
+	ParamRedMaxTh *string `json:"param_red_max_th,omitempty"`
+
+	// ParamRedMinTh (for aqm=red only) min_th (set to "" to use default value)
+	ParamRedMinTh *string `json:"param_red_min_th,omitempty"`
+
+	// ParamRedWQ (for aqm=red only) w_q (set to "" to use default value)
+	ParamRedWQ *string `json:"param_red_w_q,omitempty"`
+
+	// PieCapdrop (for aqm=pie only) cap drop adjustment
+	PieCapdrop *bool `json:"pie_capdrop,omitempty"`
+
+	// PieOnoff (for aqm=pie only) turning pie on and off depending on queue load
+	PieOnoff *bool `json:"pie_onoff,omitempty"`
+
+	// PiePderand (for aqm=pie only) drop probability de-randomisation
+	PiePderand *bool `json:"pie_pderand,omitempty"`
+
+	// PieQdelay (for aqm=pie only) set queue delay type to timestamps (true) or departure rate estimation (false)
+	PieQdelay *bool `json:"pie_qdelay,omitempty"`
+
+	// Plr packet loss rate can be configured to drop a certain fraction of packets that enter the limiter
+	// valid value between 0 and 1
+	// a value of 0.001 means one packet in 1000 gets dropped
+	Plr *float32 `json:"plr,omitempty"`
+
+	// Qlimit specifies the length of this queue, which the AQM is responsible for
+	Qlimit *int `json:"qlimit,omitempty"`
+
+	// Weight this value can range from 1 to 100, higher values give more precedence to packets in a given queue
+	Weight *int `json:"weight,omitempty"`
+}
+
+// LimiterQueueAqm active queue management (AQM) algorithm
+// valid values = droptail, codel, pie, red, gred
+type LimiterQueueAqm string
+
+// LimiterQueueMask controls how the limiter will mask addresses in the queue
+// valid values = none, srcaddress, dstaddress
+type LimiterQueueMask string
+
+// Limiters defines model for Limiters.
+type Limiters struct {
+	Limiter *[]Limiter `json:"limiter,omitempty"`
 }
 
 // LoginCredentials defines model for LoginCredentials.
@@ -364,6 +1569,335 @@ type LoginResponse struct {
 	Token   *string   `json:"token,omitempty"`
 	User    *string   `json:"user,omitempty"`
 	Version *string   `json:"version,omitempty"`
+}
+
+// NAT1To1Rule defines model for NAT1To1Rule.
+type NAT1To1Rule struct {
+	Descr       *string      `json:"descr,omitempty"`
+	Destination *NATAddrPort `json:"destination,omitempty"`
+	Disabled    *bool        `json:"disabled,omitempty"`
+	External    *NATAddrPort `json:"external,omitempty"`
+	Id          *string      `json:"id,omitempty"`
+	Interface   *string      `json:"interface,omitempty"`
+	Ipprotocol  *string      `json:"ipprotocol,omitempty"`
+	Nobinat     *bool        `json:"nobinat,omitempty"`
+	Source      *NATAddrPort `json:"source,omitempty"`
+}
+
+// NAT1To1Rules defines model for NAT1To1Rules.
+type NAT1To1Rules struct {
+	Aliases       *[]FWAlias         `json:"aliases,omitempty"`
+	Destlist      *[]SimpleInterface `json:"destlist,omitempty"`
+	Extlist       *[]SimpleInterface `json:"extlist,omitempty"`
+	Interfacelist *[]SimpleInterface `json:"interfacelist,omitempty"`
+	Rules         *[]NAT1To1Rule     `json:"rules,omitempty"`
+	Srclist       *[]SimpleInterface `json:"srclist,omitempty"`
+	Sysaliases    *[]FWSystemAlias   `json:"sysaliases,omitempty"`
+}
+
+// NATAddrPort defines model for NATAddrPort.
+type NATAddrPort struct {
+	Address *string `json:"address,omitempty"`
+	Not     *bool   `json:"not,omitempty"`
+	Port    *string `json:"port,omitempty"`
+	Type    *string `json:"type,omitempty"`
+}
+
+// NATAutoAddr defines model for NATAutoAddr.
+type NATAutoAddr struct {
+	Any     *bool   `json:"any,omitempty"`
+	Network *string `json:"network,omitempty"`
+}
+
+// NATAutoRule defines model for NATAutoRule.
+type NATAutoRule struct {
+	Descr         *string      `json:"descr,omitempty"`
+	Destination   *NATAutoAddr `json:"destination,omitempty"`
+	Dstaddr       *string      `json:"dstaddr,omitempty"`
+	Dstany        *bool        `json:"dstany,omitempty"`
+	Dstport       *string      `json:"dstport,omitempty"`
+	Id            *string      `json:"id,omitempty"`
+	Interface     *string      `json:"interface,omitempty"`
+	Source        *NATAutoAddr `json:"source,omitempty"`
+	Srcaddr       *string      `json:"srcaddr,omitempty"`
+	Srcany        *bool        `json:"srcany,omitempty"`
+	Staticnatport *bool        `json:"staticnatport,omitempty"`
+	Target        *string      `json:"target,omitempty"`
+}
+
+// NATNptAddr defines model for NATNptAddr.
+type NATNptAddr struct {
+	Address *string `json:"address,omitempty"`
+	Not     *bool   `json:"not,omitempty"`
+	Type    *string `json:"type,omitempty"`
+}
+
+// NATNptRule defines model for NATNptRule.
+type NATNptRule struct {
+	Descr       *string     `json:"descr,omitempty"`
+	Destination *NATNptAddr `json:"destination,omitempty"`
+	Disabled    *bool       `json:"disabled,omitempty"`
+	Id          *string     `json:"id,omitempty"`
+	Interface   *string     `json:"interface,omitempty"`
+	Source      *NATNptAddr `json:"source,omitempty"`
+}
+
+// NATNptRules defines model for NATNptRules.
+type NATNptRules struct {
+	Interfacelist *[]SimpleInterface `json:"interfacelist,omitempty"`
+	Rules         *[]NATNptRule      `json:"rules,omitempty"`
+}
+
+// NATOutboundRule defines model for NATOutboundRule.
+type NATOutboundRule struct {
+	Created       *FWUserTimestamp `json:"created,omitempty"`
+	Descr         *string          `json:"descr,omitempty"`
+	Destination   *NATAddrPort     `json:"destination,omitempty"`
+	Disabled      *bool            `json:"disabled,omitempty"`
+	Eimnat        *bool            `json:"eimnat,omitempty"`
+	Id            *string          `json:"id,omitempty"`
+	Interface     *string          `json:"interface,omitempty"`
+	Ipprotocol    *string          `json:"ipprotocol,omitempty"`
+	Nonat         *bool            `json:"nonat,omitempty"`
+	Nosync        *bool            `json:"nosync,omitempty"`
+	Poolopts      *string          `json:"poolopts,omitempty"`
+	Protocol      *string          `json:"protocol,omitempty"`
+	Source        *NATAddrPort     `json:"source,omitempty"`
+	SourceHashKey *string          `json:"source-hash-key,omitempty"`
+	Staticnatport *bool            `json:"staticnatport,omitempty"`
+	Target        *NATAddrPort     `json:"target,omitempty"`
+	Updated       *FWUserTimestamp `json:"updated,omitempty"`
+}
+
+// NATOutboundRules defines model for NATOutboundRules.
+type NATOutboundRules struct {
+	Aliases        *[]FWAlias         `json:"aliases,omitempty"`
+	AutomaticRules *[]NATAutoRule     `json:"automatic_rules,omitempty"`
+	Destlist       *[]SimpleInterface `json:"destlist,omitempty"`
+	Interfacelist  *[]SimpleInterface `json:"interfacelist,omitempty"`
+	Locallist      *[]SimpleInterface `json:"locallist,omitempty"`
+	Mode           *string            `json:"mode,omitempty"`
+	Rules          *[]NATOutboundRule `json:"rules,omitempty"`
+	Srclist        *[]SimpleInterface `json:"srclist,omitempty"`
+	Sysaliases     *[]FWSystemAlias   `json:"sysaliases,omitempty"`
+}
+
+// NATRule defines model for NATRule.
+type NATRule struct {
+	AssociatedRuleId      *string          `json:"associated_rule_id,omitempty"`
+	Created               *FWUserTimestamp `json:"created,omitempty"`
+	Descr                 *string          `json:"descr,omitempty"`
+	Destination           *NATAddrPort     `json:"destination,omitempty"`
+	Disabled              *bool            `json:"disabled,omitempty"`
+	FilterRuleAssociation *string          `json:"filter_rule_association,omitempty"`
+	Id                    *string          `json:"id,omitempty"`
+	Interface             *string          `json:"interface,omitempty"`
+	Ipprotocol            *string          `json:"ipprotocol,omitempty"`
+	Natreflection         *string          `json:"natreflection,omitempty"`
+	Nordr                 *bool            `json:"nordr,omitempty"`
+	Nosync                *bool            `json:"nosync,omitempty"`
+	Protocol              *string          `json:"protocol,omitempty"`
+	Source                *NATAddrPort     `json:"source,omitempty"`
+	Target                *NATAddrPort     `json:"target,omitempty"`
+	Updated               *FWUserTimestamp `json:"updated,omitempty"`
+}
+
+// NATRules defines model for NATRules.
+type NATRules struct {
+	Aliases       *[]FWAlias         `json:"aliases,omitempty"`
+	Destlist      *[]SimpleInterface `json:"destlist,omitempty"`
+	Interfacelist *[]SimpleInterface `json:"interfacelist,omitempty"`
+	Locallist     *[]SimpleInterface `json:"locallist,omitempty"`
+	Rules         *[]NATRulesEntry   `json:"rules,omitempty"`
+	Srclist       *[]SimpleInterface `json:"srclist,omitempty"`
+	Sysaliases    *[]FWSystemAlias   `json:"sysaliases,omitempty"`
+}
+
+// NATRulesEntry defines model for NATRulesEntry.
+type NATRulesEntry struct {
+	Rule      *NATRule   `json:"rule,omitempty"`
+	Separator *Separator `json:"separator,omitempty"`
+}
+
+// NameDescr generic (name, description) pair
+type NameDescr struct {
+	Descr *string `json:"descr,omitempty"`
+	Name  *string `json:"name,omitempty"`
+}
+
+// NetIf Network interface descriptor. By default, the assigned name of the interface
+// is the same as the identity. Both the assigned and identity names can be
+// changed in the configuration. The device_name can be changed if the driver
+// supports it.
+type NetIf struct {
+	Addr *NetIfAddr `json:"addr,omitempty"`
+
+	// Addr6Type one of (slaac, dhcp6, 6to4, 6rd, ipaddrv6, none)
+	Addr6Type *string `json:"addr6_type,omitempty"`
+
+	// AddrType one of (dhcp, ipaddr)
+	AddrType *string `json:"addr_type,omitempty"`
+
+	// AssignedName user assigned name, e.g. MYLAN
+	AssignedName *string `json:"assigned_name,omitempty"`
+
+	// Descr user provided interface description
+	Descr        *string         `json:"descr,omitempty"`
+	DeviceConfig *NetIfDevConfig `json:"device_config,omitempty"`
+
+	// DeviceName host device name, e.g. ix1
+	DeviceName *string    `json:"device_name,omitempty"`
+	Dhcp       *NetIfDhcp `json:"dhcp,omitempty"`
+
+	// Enable interface is enabled
+	Enable *bool `json:"enable,omitempty"`
+
+	// Identity identity of device, e.g. opt1
+	Identity *string `json:"identity,omitempty"`
+
+	// Info Information about the interface as identified on the host
+	Info    *NetIfInfo    `json:"info,omitempty"`
+	Ipv6rd  *NetIfIpv6RD  `json:"ipv6rd,omitempty"`
+	Options *NetIfOptions `json:"options,omitempty"`
+
+	// Ownership An interface can be owned by different OS subsystems: host, vpp,
+	// container or vm (virtual machine). Other than a host-owner, each
+	// owner has a unique ID and linked to its associated configuraton.
+	Ownership *NetIfOwner `json:"ownership,omitempty"`
+
+	// Pseudo logical interface, such as a PPP tunnel
+	Pseudo *bool `json:"pseudo,omitempty"`
+}
+
+// NetIfAddr defines model for NetIfAddr.
+type NetIfAddr struct {
+	AliasAddress    *string `json:"alias_address,omitempty"`
+	DefaultGw6      *bool   `json:"default_gw6,omitempty"`
+	GatewayDescr6   *string `json:"gateway_descr6,omitempty"`
+	GatewayIp       *string `json:"gateway_ip,omitempty"`
+	GatewayIp6      *string `json:"gateway_ip6,omitempty"`
+	GatewayName     *string `json:"gateway_name,omitempty"`
+	GatewayName6    *string `json:"gateway_name6,omitempty"`
+	Ipaddr          *string `json:"ipaddr,omitempty"`
+	Ipaddrv6        *string `json:"ipaddrv6,omitempty"`
+	Ipv6Usev4Iface  *bool   `json:"ipv6_usev4_iface,omitempty"`
+	SlaacUsev4Iface *bool   `json:"slaac_usev4_iface,omitempty"`
+}
+
+// NetIfDevConfig defines model for NetIfDevConfig.
+type NetIfDevConfig struct {
+	// BusPath BUS path of the device
+	BusPath *string `json:"bus_path,omitempty"`
+
+	// Device original name of the device
+	Device *string `json:"device,omitempty"`
+
+	// Iftype interface type
+	Iftype *string `json:"iftype,omitempty"`
+
+	// Mac original MAC address
+	Mac     *string   `json:"mac,omitempty"`
+	Members *[]string `json:"members,omitempty"`
+
+	// ParentDevice parent device
+	ParentDevice *string `json:"parent_device,omitempty"`
+
+	// ParentPath parent device bus path
+	ParentPath *string `json:"parent_path,omitempty"`
+}
+
+// NetIfDhcp defines model for NetIfDhcp.
+type NetIfDhcp struct {
+	Dhcp6Advanced     *Dhcp6AdvancedOptions `json:"dhcp6_advanced,omitempty"`
+	Dhcp6Debug        *bool                 `json:"dhcp6_debug,omitempty"`
+	Dhcp6IaPdSendHint *bool                 `json:"dhcp6_ia_pd_send_hint,omitempty"`
+	Dhcp6NoRelease    *bool                 `json:"dhcp6_no_release,omitempty"`
+	Dhcp6PrefixOnly   *bool                 `json:"dhcp6_prefix_only,omitempty"`
+	Dhcp6Usev4Iface   *bool                 `json:"dhcp6_usev4_iface,omitempty"`
+	Dhcp6VlanPriority *int                  `json:"dhcp6_vlan_priority,omitempty"`
+	Dhcp6WithoutRa    *bool                 `json:"dhcp6_without_ra,omitempty"`
+	DhcpAdvanced      *DhcpAdvancedOptions  `json:"dhcp_advanced,omitempty"`
+	DhcpHostname      *string               `json:"dhcp_hostname,omitempty"`
+	DhcpRejectFrom    *[]string             `json:"dhcp_reject_from,omitempty"`
+	DhcpVlanEnable    *bool                 `json:"dhcp_vlan_enable,omitempty"`
+	DhcpVlanPriority  *int                  `json:"dhcp_vlan_priority,omitempty"`
+
+	// EnableAdv6Opt enable DHCP v6 advanced options
+	EnableAdv6Opt *bool `json:"enable_adv6_opt,omitempty"`
+
+	// EnableAdvOpt enable DHCP v4 advanced options
+	EnableAdvOpt *bool `json:"enable_adv_opt,omitempty"`
+}
+
+// NetIfInfo Information about the interface as identified on the host
+type NetIfInfo struct {
+	Media *string `json:"media,omitempty"`
+	State *string `json:"state,omitempty"`
+}
+
+// NetIfIpv6RD defines model for NetIfIpv6RD.
+type NetIfIpv6RD struct {
+	Gateway6rd        *string `json:"gateway_6rd,omitempty"`
+	Prefix6rd         *string `json:"prefix_6rd,omitempty"`
+	Prefix6rdV4plen   *string `json:"prefix_6rd_v4plen,omitempty"`
+	Track6Interface   *string `json:"track6_interface,omitempty"`
+	Track6PrefixIdHex *string `json:"track6_prefix_id_hex,omitempty"`
+}
+
+// NetIfOptions defines model for NetIfOptions.
+type NetIfOptions struct {
+	Blockbogons *bool   `json:"blockbogons,omitempty"`
+	Blockpriv   *bool   `json:"blockpriv,omitempty"`
+	Mac         *string `json:"mac,omitempty"`
+	Mediaopt    *string `json:"mediaopt,omitempty"`
+	Member      *string `json:"member,omitempty"`
+	Mss         *int    `json:"mss,omitempty"`
+	Mtu         *int    `json:"mtu,omitempty"`
+	Pcp         *int    `json:"pcp,omitempty"`
+	Promisc     *bool   `json:"promisc,omitempty"`
+	Spoofmac    *string `json:"spoofmac,omitempty"`
+	Tag         *int    `json:"tag,omitempty"`
+}
+
+// NetIfOwner An interface can be owned by different OS subsystems: host, vpp,
+// container or vm (virtual machine). Other than a host-owner, each
+// owner has a unique ID and linked to its associated configuraton.
+type NetIfOwner struct {
+	ContainerConfig *NetIfOwnerContainer `json:"container_config,omitempty"`
+	HostConfig      *NetIfOwnerHost      `json:"host_config,omitempty"`
+	OwnerId         *string              `json:"owner_id,omitempty"`
+	OwnerType       *string              `json:"owner_type,omitempty"`
+	VmConfig        *NetIfOwnerVM        `json:"vm_config,omitempty"`
+	VppConfig       *NetIfOwnerVPP       `json:"vpp_config,omitempty"`
+}
+
+// NetIfOwnerContainer defines model for NetIfOwnerContainer.
+type NetIfOwnerContainer struct {
+	// CtnId ID of container
+	CtnId *string `json:"ctn_id,omitempty"`
+}
+
+// NetIfOwnerHost defines model for NetIfOwnerHost.
+type NetIfOwnerHost struct {
+	// HwFlags comma-separated flags configured on interface, e.g. TSO, LRO, etc
+	HwFlags *string `json:"hw_flags,omitempty"`
+	Wol     *bool   `json:"wol,omitempty"`
+}
+
+// NetIfOwnerVM defines model for NetIfOwnerVM.
+type NetIfOwnerVM struct {
+	VmId *string `json:"vm_id,omitempty"`
+}
+
+// NetIfOwnerVPP defines model for NetIfOwnerVPP.
+type NetIfOwnerVPP struct {
+	// Name interface name set in VPP
+	Name *string `json:"name,omitempty"`
+}
+
+// NetIfs defines model for NetIfs.
+type NetIfs struct {
+	Interfaces *[]NetIf `json:"interfaces,omitempty"`
 }
 
 // PfsenseResult defines model for PfsenseResult.
@@ -388,6 +1922,32 @@ type PfsenseResult struct {
 	Status *string `json:"status,omitempty"`
 }
 
+// QinQInterface defines model for QinQInterface.
+type QinQInterface struct {
+	// Autogroup adds interface to QinQ interface groups
+	Autogroup *bool `json:"autogroup,omitempty"`
+
+	// Descr description
+	Descr *string `json:"descr,omitempty"`
+
+	// IfDevice parent interface
+	IfDevice string    `json:"if_device"`
+	Members  *[]string `json:"members,omitempty"`
+
+	// Tag first level VLAN tag
+	Tag     int     `json:"tag"`
+	TagType *string `json:"tag_type,omitempty"`
+
+	// Vlanif generated by system when a QinQ is created
+	Vlanif *string `json:"vlanif,omitempty"`
+}
+
+// QinQInterfaces defines model for QinQInterfaces.
+type QinQInterfaces struct {
+	Interfaces     *[]QinQInterface        `json:"interfaces,omitempty"`
+	VlanCapableIfs *[]VLANCapableInterface `json:"vlan_capable_ifs,omitempty"`
+}
+
 // RefreshTokenParam defines model for RefreshTokenParam.
 type RefreshTokenParam struct {
 	Username *string `json:"username,omitempty"`
@@ -396,6 +1956,128 @@ type RefreshTokenParam struct {
 // Result defines model for Result.
 type Result struct {
 	Result *string `json:"result,omitempty"`
+}
+
+// Separator defines model for Separator.
+type Separator struct {
+	Color *string `json:"color,omitempty"`
+	Id    *string `json:"id,omitempty"`
+	If    *string `json:"if,omitempty"`
+	Row   *string `json:"row,omitempty"`
+	Text  *string `json:"text,omitempty"`
+}
+
+// SimpleInterface defines model for SimpleInterface.
+type SimpleInterface struct {
+	Text  *string `json:"text,omitempty"`
+	Value *string `json:"value,omitempty"`
+}
+
+// StaticRoute defines model for StaticRoute.
+type StaticRoute struct {
+	Descr    *string `json:"descr,omitempty"`
+	Disabled *bool   `json:"disabled,omitempty"`
+	Gateway  string  `json:"gateway"`
+
+	// GatewayEncoded base64 encoded gateway; read-only
+	GatewayEncoded *string `json:"gateway_encoded,omitempty"`
+	Interface      *string `json:"interface,omitempty"`
+	Network        string  `json:"network"`
+
+	// NetworkEncoded base64 encoded network; read-only
+	NetworkEncoded *string `json:"network_encoded,omitempty"`
+}
+
+// StaticRoutes defines model for StaticRoutes.
+type StaticRoutes struct {
+	Routes *[]StaticRoute `json:"routes,omitempty"`
+}
+
+// TCPFlags defines model for TCPFlags.
+type TCPFlags struct {
+	Ack *bool `json:"ack,omitempty"`
+	Cwr *bool `json:"cwr,omitempty"`
+	Ece *bool `json:"ece,omitempty"`
+	Fin *bool `json:"fin,omitempty"`
+	Psh *bool `json:"psh,omitempty"`
+	Rst *bool `json:"rst,omitempty"`
+	Syn *bool `json:"syn,omitempty"`
+	Urg *bool `json:"urg,omitempty"`
+}
+
+// TextValue generic (value -> text description) pair
+type TextValue struct {
+	Text  *string `json:"text,omitempty"`
+	Value *string `json:"value,omitempty"`
+}
+
+// TrafficShapers defines model for TrafficShapers.
+type TrafficShapers struct {
+	Altq           *[]ALTQRootQueue        `json:"altq,omitempty"`
+	AltqCapableIfs *[]ALTQCapableInterface `json:"altq_capable_ifs,omitempty"`
+	Limiter        *[]Limiter              `json:"limiter,omitempty"`
+}
+
+// VLANCapableInterface defines model for VLANCapableInterface.
+type VLANCapableInterface struct {
+	Dmesg          *string `json:"dmesg,omitempty"`
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfDevice       *string `json:"if_device,omitempty"`
+	Ipaddr         *string `json:"ipaddr,omitempty"`
+	Mac            *string `json:"mac,omitempty"`
+	Up             *bool   `json:"up,omitempty"`
+}
+
+// VLANInterface defines model for VLANInterface.
+type VLANInterface struct {
+	// Descr description
+	Descr *string `json:"descr,omitempty"`
+
+	// IfDevice parent interface of the VLAN
+	IfDevice string `json:"if_device"`
+
+	// Pcp 802.1Q VLAN Priority (between 0 and 7)
+	Pcp *int `json:"pcp,omitempty"`
+
+	// Tag 802.1Q VLAN tag (between 1 and 4094)
+	Tag *int `json:"tag,omitempty"`
+
+	// TagType ctag or stag
+	TagType *string `json:"tag_type,omitempty"`
+
+	// Vlanif generated by system when a VLAN is created
+	Vlanif *string `json:"vlanif,omitempty"`
+}
+
+// VLANInterfaces defines model for VLANInterfaces.
+type VLANInterfaces struct {
+	Interfaces     *[]VLANInterface        `json:"interfaces,omitempty"`
+	VlanCapableIfs *[]VLANCapableInterface `json:"vlan_capable_ifs,omitempty"`
+}
+
+// VXLANCapableInterface defines model for VXLANCapableInterface.
+type VXLANCapableInterface struct {
+	IfAssignedName *string `json:"if_assigned_name,omitempty"`
+	IfDevice       *string `json:"if_device,omitempty"`
+}
+
+// VXLANInterface defines model for VXLANInterface.
+type VXLANInterface struct {
+	Descr      *string `json:"descr,omitempty"`
+	Id         *int    `json:"id,omitempty"`
+	IfDevice   string  `json:"if_device"`
+	Learn      *bool   `json:"learn,omitempty"`
+	LocalPort  *int    `json:"local_port,omitempty"`
+	RemoteAddr *string `json:"remote_addr,omitempty"`
+	RemotePort *int    `json:"remote_port,omitempty"`
+	Ttl        *int    `json:"ttl,omitempty"`
+	Vxlanif    *string `json:"vxlanif,omitempty"`
+}
+
+// VXLANInterfaces defines model for VXLANInterfaces.
+type VXLANInterfaces struct {
+	Interfaces      *[]VXLANInterface        `json:"interfaces,omitempty"`
+	VxlanCapableIfs *[]VXLANCapableInterface `json:"vxlan_capable_ifs,omitempty"`
 }
 
 // FirewallGetAliasesParams defines parameters for FirewallGetAliases.
@@ -533,6 +2215,116 @@ type ClientInterface interface {
 	// Corresponds with POST /aliases/{id} (the `FirewallUpdateAlias` operationId).
 	FirewallUpdateAlias(ctx context.Context, id string, body FirewallUpdateAliasJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// FirewallGetNATNpt Get NPt (IPv6 Network Prefix Translation) Rules
+	//
+	// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
+	FirewallGetNATNpt(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetNAT1To1Rules Get NAT 1:1 rules
+	//
+	// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
+	FirewallGetNAT1To1Rules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetNATOut Get NAT Outbound Rules
+	//
+	// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
+	FirewallGetNATOut(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetNAT Get NAT Rules
+	//
+	// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
+	FirewallGetNAT(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetFWInterfaces Get list of firewall interfaces
+	//
+	// Corresponds with GET /firewall/rules/interface (the `GetFWInterfaces` operationId).
+	GetFWInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetFirewallRules Query rules and separators
+	//
+	// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
+	GetFirewallRules(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetSchedules Get Firewall Schedules
+	//
+	// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
+	FirewallGetSchedules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetTrafficShaper Get Traffic Shapers
+	//
+	// Corresponds with GET /firewall/traffic-shaper (the `FirewallGetTrafficShaper` operationId).
+	FirewallGetTrafficShaper(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetALTQ Get ALTQ
+	//
+	// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
+	FirewallGetALTQ(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetLimiter Get Limiters
+	//
+	// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
+	FirewallGetLimiter(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfaces Get network interfaces
+	//
+	// Corresponds with GET /interfaces (the `GetInterfaces` operationId).
+	GetInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfaceAssignments Get interface assigned names
+	//
+	// Corresponds with GET /interfaces/assigned (the `GetInterfaceAssignments` operationId).
+	GetInterfaceAssignments(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBridgeInterfaces Get Bridges
+	//
+	// Corresponds with GET /interfaces/bridge (the `GetBridgeInterfaces` operationId).
+	GetBridgeInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetHostInterfaces Get all host interfaces
+	//
+	// Corresponds with GET /interfaces/by-device (the `GetHostInterfaces` operationId).
+	GetHostInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfaceDescriptors Get a interface descriptors
+	//
+	// Corresponds with GET /interfaces/descriptors (the `GetInterfaceDescriptors` operationId).
+	GetInterfaceDescriptors(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGIFs Get GIF interfaces
+	//
+	// Corresponds with GET /interfaces/gif (the `GetGIFs` operationId).
+	GetGIFs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGREs Get GRE interfaces
+	//
+	// Corresponds with GET /interfaces/gre (the `GetGREs` operationId).
+	GetGREs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInterfaceGroups Get interface groups
+	//
+	// Corresponds with GET /interfaces/groups (the `GetInterfaceGroups` operationId).
+	GetInterfaceGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLAGGs Get LAGG interfaces
+	//
+	// Corresponds with GET /interfaces/lagg (the `GetLAGGs` operationId).
+	GetLAGGs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetQinQs Get QinQs
+	//
+	// Corresponds with GET /interfaces/qinq (the `GetQinQs` operationId).
+	GetQinQs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetVLANs Get VLANs
+	//
+	// Corresponds with GET /interfaces/vlan (the `GetVLANs` operationId).
+	GetVLANs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetVXLANs Get VXLANs
+	//
+	// Corresponds with GET /interfaces/vxlan (the `GetVXLANs` operationId).
+	GetVXLANs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// LoginWithBody Authenticate with the controller.
 	//
 	// Login to pfSense. If the JWT access token is not provided, then a new
@@ -582,6 +2374,16 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /system/filterreload/status (the `GetFilterReloadStatus` operationId).
 	GetFilterReloadStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGateways List gateways
+	//
+	// Corresponds with GET /system/gateways (the `GetGateways` operationId).
+	GetGateways(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetStaticRoutes Get static routes
+	//
+	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
+	GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 // FirewallGetAliases Get firewall aliases
@@ -697,6 +2499,336 @@ func (c *Client) FirewallUpdateAlias(ctx context.Context, id string, body Firewa
 	return c.Client.Do(req)
 }
 
+// FirewallGetNATNpt Get NPt (IPv6 Network Prefix Translation) Rules
+//
+// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
+func (c *Client) FirewallGetNATNpt(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetNATNptRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetNAT1To1Rules Get NAT 1:1 rules
+//
+// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
+func (c *Client) FirewallGetNAT1To1Rules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetNAT1To1RulesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetNATOut Get NAT Outbound Rules
+//
+// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
+func (c *Client) FirewallGetNATOut(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetNATOutRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetNAT Get NAT Rules
+//
+// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
+func (c *Client) FirewallGetNAT(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetNATRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetFWInterfaces Get list of firewall interfaces
+//
+// Corresponds with GET /firewall/rules/interface (the `GetFWInterfaces` operationId).
+func (c *Client) GetFWInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFWInterfacesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetFirewallRules Query rules and separators
+//
+// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
+func (c *Client) GetFirewallRules(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFirewallRulesRequest(c.Server, pInterface)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetSchedules Get Firewall Schedules
+//
+// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
+func (c *Client) FirewallGetSchedules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetSchedulesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetTrafficShaper Get Traffic Shapers
+//
+// Corresponds with GET /firewall/traffic-shaper (the `FirewallGetTrafficShaper` operationId).
+func (c *Client) FirewallGetTrafficShaper(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetTrafficShaperRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetALTQ Get ALTQ
+//
+// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
+func (c *Client) FirewallGetALTQ(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetALTQRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetLimiter Get Limiters
+//
+// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
+func (c *Client) FirewallGetLimiter(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetLimiterRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfaces Get network interfaces
+//
+// Corresponds with GET /interfaces (the `GetInterfaces` operationId).
+func (c *Client) GetInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfacesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfaceAssignments Get interface assigned names
+//
+// Corresponds with GET /interfaces/assigned (the `GetInterfaceAssignments` operationId).
+func (c *Client) GetInterfaceAssignments(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfaceAssignmentsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetBridgeInterfaces Get Bridges
+//
+// Corresponds with GET /interfaces/bridge (the `GetBridgeInterfaces` operationId).
+func (c *Client) GetBridgeInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBridgeInterfacesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetHostInterfaces Get all host interfaces
+//
+// Corresponds with GET /interfaces/by-device (the `GetHostInterfaces` operationId).
+func (c *Client) GetHostInterfaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetHostInterfacesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfaceDescriptors Get a interface descriptors
+//
+// Corresponds with GET /interfaces/descriptors (the `GetInterfaceDescriptors` operationId).
+func (c *Client) GetInterfaceDescriptors(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfaceDescriptorsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGIFs Get GIF interfaces
+//
+// Corresponds with GET /interfaces/gif (the `GetGIFs` operationId).
+func (c *Client) GetGIFs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGIFsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGREs Get GRE interfaces
+//
+// Corresponds with GET /interfaces/gre (the `GetGREs` operationId).
+func (c *Client) GetGREs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGREsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInterfaceGroups Get interface groups
+//
+// Corresponds with GET /interfaces/groups (the `GetInterfaceGroups` operationId).
+func (c *Client) GetInterfaceGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInterfaceGroupsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetLAGGs Get LAGG interfaces
+//
+// Corresponds with GET /interfaces/lagg (the `GetLAGGs` operationId).
+func (c *Client) GetLAGGs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLAGGsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetQinQs Get QinQs
+//
+// Corresponds with GET /interfaces/qinq (the `GetQinQs` operationId).
+func (c *Client) GetQinQs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetQinQsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetVLANs Get VLANs
+//
+// Corresponds with GET /interfaces/vlan (the `GetVLANs` operationId).
+func (c *Client) GetVLANs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVLANsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetVXLANs Get VXLANs
+//
+// Corresponds with GET /interfaces/vxlan (the `GetVXLANs` operationId).
+func (c *Client) GetVXLANs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVXLANsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // LoginWithBody Authenticate with the controller.
 //
 // Login to pfSense. If the JWT access token is not provided, then a new
@@ -797,6 +2929,36 @@ func (c *Client) DoFilterReload(ctx context.Context, reqEditors ...RequestEditor
 // Corresponds with GET /system/filterreload/status (the `GetFilterReloadStatus` operationId).
 func (c *Client) GetFilterReloadStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetFilterReloadStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGateways List gateways
+//
+// Corresponds with GET /system/gateways (the `GetGateways` operationId).
+func (c *Client) GetGateways(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGatewaysRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetStaticRoutes Get static routes
+//
+// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
+func (c *Client) GetStaticRoutes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetStaticRoutesRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1016,6 +3178,607 @@ func NewFirewallUpdateAliasRequestWithBody(server string, id string, contentType
 	return req, nil
 }
 
+// NewFirewallGetNATNptRequest constructs an http.Request for the FirewallGetNATNpt method
+func NewFirewallGetNATNptRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetNAT1To1RulesRequest constructs an http.Request for the FirewallGetNAT1To1Rules method
+func NewFirewallGetNAT1To1RulesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetNATOutRequest constructs an http.Request for the FirewallGetNATOut method
+func NewFirewallGetNATOutRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetNATRequest constructs an http.Request for the FirewallGetNAT method
+func NewFirewallGetNATRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetFWInterfacesRequest constructs an http.Request for the GetFWInterfaces method
+func NewGetFWInterfacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetFirewallRulesRequest constructs an http.Request for the GetFirewallRules method
+func NewGetFirewallRulesRequest(server string, pInterface string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetSchedulesRequest constructs an http.Request for the FirewallGetSchedules method
+func NewFirewallGetSchedulesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/schedules")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetTrafficShaperRequest constructs an http.Request for the FirewallGetTrafficShaper method
+func NewFirewallGetTrafficShaperRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetALTQRequest constructs an http.Request for the FirewallGetALTQ method
+func NewFirewallGetALTQRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallGetLimiterRequest constructs an http.Request for the FirewallGetLimiter method
+func NewFirewallGetLimiterRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfacesRequest constructs an http.Request for the GetInterfaces method
+func NewGetInterfacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfaceAssignmentsRequest constructs an http.Request for the GetInterfaceAssignments method
+func NewGetInterfaceAssignmentsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/assigned")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetBridgeInterfacesRequest constructs an http.Request for the GetBridgeInterfaces method
+func NewGetBridgeInterfacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/bridge")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetHostInterfacesRequest constructs an http.Request for the GetHostInterfaces method
+func NewGetHostInterfacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/by-device")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfaceDescriptorsRequest constructs an http.Request for the GetInterfaceDescriptors method
+func NewGetInterfaceDescriptorsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/descriptors")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGIFsRequest constructs an http.Request for the GetGIFs method
+func NewGetGIFsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/gif")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGREsRequest constructs an http.Request for the GetGREs method
+func NewGetGREsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/gre")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInterfaceGroupsRequest constructs an http.Request for the GetInterfaceGroups method
+func NewGetInterfaceGroupsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLAGGsRequest constructs an http.Request for the GetLAGGs method
+func NewGetLAGGsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/lagg")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetQinQsRequest constructs an http.Request for the GetQinQs method
+func NewGetQinQsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/qinq")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetVLANsRequest constructs an http.Request for the GetVLANs method
+func NewGetVLANsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/vlan")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetVXLANsRequest constructs an http.Request for the GetVXLANs method
+func NewGetVXLANsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/interfaces/vxlan")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewLoginRequest calls the generic Login builder with application/json body
 func NewLoginRequest(server string, body LoginJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -1150,6 +3913,60 @@ func NewGetFilterReloadStatusRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetGatewaysRequest constructs an http.Request for the GetGateways method
+func NewGetGatewaysRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/gateways")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetStaticRoutesRequest constructs an http.Request for the GetStaticRoutes method
+func NewGetStaticRoutesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/system/routes/static")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -1243,6 +4060,160 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /aliases/{id} (the `FirewallUpdateAlias` operationId).
 	FirewallUpdateAliasWithResponse(ctx context.Context, id string, body FirewallUpdateAliasJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateAliasAPIResponse, error)
 
+	// FirewallGetNATNptWithResponse Get NPt (IPv6 Network Prefix Translation) Rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
+	FirewallGetNATNptWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATNptAPIResponse, error)
+
+	// FirewallGetNAT1To1RulesWithResponse Get NAT 1:1 rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
+	FirewallGetNAT1To1RulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNAT1To1RulesAPIResponse, error)
+
+	// FirewallGetNATOutWithResponse Get NAT Outbound Rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
+	FirewallGetNATOutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATOutAPIResponse, error)
+
+	// FirewallGetNATWithResponse Get NAT Rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
+	FirewallGetNATWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATAPIResponse, error)
+
+	// GetFWInterfacesWithResponse Get list of firewall interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/rules/interface (the `GetFWInterfaces` operationId).
+	GetFWInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFWInterfacesAPIResponse, error)
+
+	// GetFirewallRulesWithResponse Query rules and separators
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
+	GetFirewallRulesWithResponse(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*GetFirewallRulesAPIResponse, error)
+
+	// FirewallGetSchedulesWithResponse Get Firewall Schedules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
+	FirewallGetSchedulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetSchedulesAPIResponse, error)
+
+	// FirewallGetTrafficShaperWithResponse Get Traffic Shapers
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/traffic-shaper (the `FirewallGetTrafficShaper` operationId).
+	FirewallGetTrafficShaperWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetTrafficShaperAPIResponse, error)
+
+	// FirewallGetALTQWithResponse Get ALTQ
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
+	FirewallGetALTQWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetALTQAPIResponse, error)
+
+	// FirewallGetLimiterWithResponse Get Limiters
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
+	FirewallGetLimiterWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetLimiterAPIResponse, error)
+
+	// GetInterfacesWithResponse Get network interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces (the `GetInterfaces` operationId).
+	GetInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesAPIResponse, error)
+
+	// GetInterfaceAssignmentsWithResponse Get interface assigned names
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/assigned (the `GetInterfaceAssignments` operationId).
+	GetInterfaceAssignmentsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceAssignmentsAPIResponse, error)
+
+	// GetBridgeInterfacesWithResponse Get Bridges
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/bridge (the `GetBridgeInterfaces` operationId).
+	GetBridgeInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetBridgeInterfacesAPIResponse, error)
+
+	// GetHostInterfacesWithResponse Get all host interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/by-device (the `GetHostInterfaces` operationId).
+	GetHostInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHostInterfacesAPIResponse, error)
+
+	// GetInterfaceDescriptorsWithResponse Get a interface descriptors
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/descriptors (the `GetInterfaceDescriptors` operationId).
+	GetInterfaceDescriptorsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceDescriptorsAPIResponse, error)
+
+	// GetGIFsWithResponse Get GIF interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/gif (the `GetGIFs` operationId).
+	GetGIFsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGIFsAPIResponse, error)
+
+	// GetGREsWithResponse Get GRE interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/gre (the `GetGREs` operationId).
+	GetGREsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGREsAPIResponse, error)
+
+	// GetInterfaceGroupsWithResponse Get interface groups
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/groups (the `GetInterfaceGroups` operationId).
+	GetInterfaceGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceGroupsAPIResponse, error)
+
+	// GetLAGGsWithResponse Get LAGG interfaces
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/lagg (the `GetLAGGs` operationId).
+	GetLAGGsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetLAGGsAPIResponse, error)
+
+	// GetQinQsWithResponse Get QinQs
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/qinq (the `GetQinQs` operationId).
+	GetQinQsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetQinQsAPIResponse, error)
+
+	// GetVLANsWithResponse Get VLANs
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/vlan (the `GetVLANs` operationId).
+	GetVLANsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVLANsAPIResponse, error)
+
+	// GetVXLANsWithResponse Get VXLANs
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /interfaces/vxlan (the `GetVXLANs` operationId).
+	GetVXLANsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVXLANsAPIResponse, error)
+
 	// LoginWithBodyWithResponse Authenticate with the controller.
 	//
 	// Login to pfSense. If the JWT access token is not provided, then a new
@@ -1296,6 +4267,20 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /system/filterreload/status (the `GetFilterReloadStatus` operationId).
 	GetFilterReloadStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFilterReloadStatusAPIResponse, error)
+
+	// GetGatewaysWithResponse List gateways
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/gateways (the `GetGateways` operationId).
+	GetGatewaysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewaysAPIResponse, error)
+
+	// GetStaticRoutesWithResponse Get static routes
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
+	GetStaticRoutesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStaticRoutesAPIResponse, error)
 }
 
 type FirewallGetAliasesAPIResponse struct {
@@ -1538,6 +4523,1062 @@ func (r FirewallUpdateAliasAPIResponse) ContentType() string {
 	return ""
 }
 
+type FirewallGetNATNptAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATNptRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetNATNptAPIResponse) GetJSON200() *NATNptRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetNATNptAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetNATNptAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetNATNptAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetNATNptAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetNATNptAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetNAT1To1RulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NAT1To1Rules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetNAT1To1RulesAPIResponse) GetJSON200() *NAT1To1Rules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetNAT1To1RulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetNAT1To1RulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetNAT1To1RulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetNAT1To1RulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetNAT1To1RulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetNATOutAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATOutboundRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetNATOutAPIResponse) GetJSON200() *NATOutboundRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetNATOutAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetNATOutAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetNATOutAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetNATOutAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetNATOutAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetNATAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetNATAPIResponse) GetJSON200() *NATRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetNATAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetNATAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetNATAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetNATAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetNATAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetFWInterfacesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWFirewallInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetFWInterfacesAPIResponse) GetJSON200() *FWFirewallInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetFWInterfacesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetFWInterfacesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFWInterfacesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFWInterfacesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetFWInterfacesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetFirewallRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetFirewallRulesAPIResponse) GetJSON200() *FWRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetFirewallRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetFirewallRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFirewallRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFirewallRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetFirewallRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetSchedulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWSchedules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetSchedulesAPIResponse) GetJSON200() *FWSchedules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetSchedulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetSchedulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetSchedulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetSchedulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetSchedulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetTrafficShaperAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TrafficShapers
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetTrafficShaperAPIResponse) GetJSON200() *TrafficShapers {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetTrafficShaperAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetTrafficShaperAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetTrafficShaperAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetTrafficShaperAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetTrafficShaperAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetALTQAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ALTQRootQueues
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetALTQAPIResponse) GetJSON200() *ALTQRootQueues {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetALTQAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetALTQAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetALTQAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetALTQAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetALTQAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetLimiterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Limiters
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetLimiterAPIResponse) GetJSON200() *Limiters {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetLimiterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetLimiterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetLimiterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetLimiterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetLimiterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfacesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfacesSimple
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfacesAPIResponse) GetJSON200() *InterfacesSimple {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfacesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfacesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfacesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfacesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfacesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfaceAssignmentsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceAssignments
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfaceAssignmentsAPIResponse) GetJSON200() *InterfaceAssignments {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfaceAssignmentsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfaceAssignmentsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfaceAssignmentsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfaceAssignmentsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfaceAssignmentsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetBridgeInterfacesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BridgeInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetBridgeInterfacesAPIResponse) GetJSON200() *BridgeInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetBridgeInterfacesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetBridgeInterfacesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBridgeInterfacesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBridgeInterfacesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetBridgeInterfacesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetHostInterfacesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NetIfs
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetHostInterfacesAPIResponse) GetJSON200() *NetIfs {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetHostInterfacesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetHostInterfacesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetHostInterfacesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetHostInterfacesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetHostInterfacesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfaceDescriptorsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceDescriptors
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfaceDescriptorsAPIResponse) GetJSON200() *InterfaceDescriptors {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfaceDescriptorsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfaceDescriptorsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfaceDescriptorsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfaceDescriptorsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfaceDescriptorsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGIFsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GIFInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGIFsAPIResponse) GetJSON200() *GIFInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGIFsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGIFsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGIFsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGIFsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGIFsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGREsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GREInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGREsAPIResponse) GetJSON200() *GREInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGREsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGREsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGREsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGREsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGREsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInterfaceGroupsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *InterfaceGroups
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInterfaceGroupsAPIResponse) GetJSON200() *InterfaceGroups {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetInterfaceGroupsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInterfaceGroupsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInterfaceGroupsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInterfaceGroupsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInterfaceGroupsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetLAGGsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *LAGGInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetLAGGsAPIResponse) GetJSON200() *LAGGInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetLAGGsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetLAGGsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetLAGGsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLAGGsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetLAGGsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetQinQsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *QinQInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetQinQsAPIResponse) GetJSON200() *QinQInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetQinQsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetQinQsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetQinQsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetQinQsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetQinQsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetVLANsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VLANInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVLANsAPIResponse) GetJSON200() *VLANInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetVLANsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVLANsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVLANsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVLANsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVLANsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetVXLANsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VXLANInterfaces
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVXLANsAPIResponse) GetJSON200() *VXLANInterfaces {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetVXLANsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVXLANsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVXLANsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVXLANsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVXLANsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type LoginAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1730,6 +5771,102 @@ func (r GetFilterReloadStatusAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetGatewaysAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Gateways
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGatewaysAPIResponse) GetJSON200() *Gateways {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetGatewaysAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGatewaysAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGatewaysAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGatewaysAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGatewaysAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetStaticRoutesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StaticRoutes
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetStaticRoutesAPIResponse) GetJSON200() *StaticRoutes {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetStaticRoutesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetStaticRoutesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetStaticRoutesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetStaticRoutesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetStaticRoutesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 // FirewallGetAliasesWithResponse Get firewall aliases
 //
 // Returns a wrapper object for the known response body format(s).
@@ -1821,6 +5958,292 @@ func (c *ClientWithResponses) FirewallUpdateAliasWithResponse(ctx context.Contex
 	return ParseFirewallUpdateAliasAPIResponse(rsp)
 }
 
+// FirewallGetNATNptWithResponse Get NPt (IPv6 Network Prefix Translation) Rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
+func (c *ClientWithResponses) FirewallGetNATNptWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATNptAPIResponse, error) {
+	rsp, err := c.FirewallGetNATNpt(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetNATNptAPIResponse(rsp)
+}
+
+// FirewallGetNAT1To1RulesWithResponse Get NAT 1:1 rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallGetNAT1To1RulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallGetNAT1To1Rules(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallGetNATOutWithResponse Get NAT Outbound Rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
+func (c *ClientWithResponses) FirewallGetNATOutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATOutAPIResponse, error) {
+	rsp, err := c.FirewallGetNATOut(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetNATOutAPIResponse(rsp)
+}
+
+// FirewallGetNATWithResponse Get NAT Rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
+func (c *ClientWithResponses) FirewallGetNATWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATAPIResponse, error) {
+	rsp, err := c.FirewallGetNAT(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetNATAPIResponse(rsp)
+}
+
+// GetFWInterfacesWithResponse Get list of firewall interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/rules/interface (the `GetFWInterfaces` operationId).
+func (c *ClientWithResponses) GetFWInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetFWInterfacesAPIResponse, error) {
+	rsp, err := c.GetFWInterfaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFWInterfacesAPIResponse(rsp)
+}
+
+// GetFirewallRulesWithResponse Query rules and separators
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
+func (c *ClientWithResponses) GetFirewallRulesWithResponse(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*GetFirewallRulesAPIResponse, error) {
+	rsp, err := c.GetFirewallRules(ctx, pInterface, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFirewallRulesAPIResponse(rsp)
+}
+
+// FirewallGetSchedulesWithResponse Get Firewall Schedules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
+func (c *ClientWithResponses) FirewallGetSchedulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetSchedulesAPIResponse, error) {
+	rsp, err := c.FirewallGetSchedules(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetSchedulesAPIResponse(rsp)
+}
+
+// FirewallGetTrafficShaperWithResponse Get Traffic Shapers
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/traffic-shaper (the `FirewallGetTrafficShaper` operationId).
+func (c *ClientWithResponses) FirewallGetTrafficShaperWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetTrafficShaperAPIResponse, error) {
+	rsp, err := c.FirewallGetTrafficShaper(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetTrafficShaperAPIResponse(rsp)
+}
+
+// FirewallGetALTQWithResponse Get ALTQ
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
+func (c *ClientWithResponses) FirewallGetALTQWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetALTQAPIResponse, error) {
+	rsp, err := c.FirewallGetALTQ(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetALTQAPIResponse(rsp)
+}
+
+// FirewallGetLimiterWithResponse Get Limiters
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
+func (c *ClientWithResponses) FirewallGetLimiterWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetLimiterAPIResponse, error) {
+	rsp, err := c.FirewallGetLimiter(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetLimiterAPIResponse(rsp)
+}
+
+// GetInterfacesWithResponse Get network interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces (the `GetInterfaces` operationId).
+func (c *ClientWithResponses) GetInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfacesAPIResponse, error) {
+	rsp, err := c.GetInterfaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfacesAPIResponse(rsp)
+}
+
+// GetInterfaceAssignmentsWithResponse Get interface assigned names
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/assigned (the `GetInterfaceAssignments` operationId).
+func (c *ClientWithResponses) GetInterfaceAssignmentsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceAssignmentsAPIResponse, error) {
+	rsp, err := c.GetInterfaceAssignments(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfaceAssignmentsAPIResponse(rsp)
+}
+
+// GetBridgeInterfacesWithResponse Get Bridges
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/bridge (the `GetBridgeInterfaces` operationId).
+func (c *ClientWithResponses) GetBridgeInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetBridgeInterfacesAPIResponse, error) {
+	rsp, err := c.GetBridgeInterfaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBridgeInterfacesAPIResponse(rsp)
+}
+
+// GetHostInterfacesWithResponse Get all host interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/by-device (the `GetHostInterfaces` operationId).
+func (c *ClientWithResponses) GetHostInterfacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHostInterfacesAPIResponse, error) {
+	rsp, err := c.GetHostInterfaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetHostInterfacesAPIResponse(rsp)
+}
+
+// GetInterfaceDescriptorsWithResponse Get a interface descriptors
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/descriptors (the `GetInterfaceDescriptors` operationId).
+func (c *ClientWithResponses) GetInterfaceDescriptorsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceDescriptorsAPIResponse, error) {
+	rsp, err := c.GetInterfaceDescriptors(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfaceDescriptorsAPIResponse(rsp)
+}
+
+// GetGIFsWithResponse Get GIF interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/gif (the `GetGIFs` operationId).
+func (c *ClientWithResponses) GetGIFsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGIFsAPIResponse, error) {
+	rsp, err := c.GetGIFs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGIFsAPIResponse(rsp)
+}
+
+// GetGREsWithResponse Get GRE interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/gre (the `GetGREs` operationId).
+func (c *ClientWithResponses) GetGREsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGREsAPIResponse, error) {
+	rsp, err := c.GetGREs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGREsAPIResponse(rsp)
+}
+
+// GetInterfaceGroupsWithResponse Get interface groups
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/groups (the `GetInterfaceGroups` operationId).
+func (c *ClientWithResponses) GetInterfaceGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInterfaceGroupsAPIResponse, error) {
+	rsp, err := c.GetInterfaceGroups(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInterfaceGroupsAPIResponse(rsp)
+}
+
+// GetLAGGsWithResponse Get LAGG interfaces
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/lagg (the `GetLAGGs` operationId).
+func (c *ClientWithResponses) GetLAGGsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetLAGGsAPIResponse, error) {
+	rsp, err := c.GetLAGGs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLAGGsAPIResponse(rsp)
+}
+
+// GetQinQsWithResponse Get QinQs
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/qinq (the `GetQinQs` operationId).
+func (c *ClientWithResponses) GetQinQsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetQinQsAPIResponse, error) {
+	rsp, err := c.GetQinQs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetQinQsAPIResponse(rsp)
+}
+
+// GetVLANsWithResponse Get VLANs
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/vlan (the `GetVLANs` operationId).
+func (c *ClientWithResponses) GetVLANsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVLANsAPIResponse, error) {
+	rsp, err := c.GetVLANs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVLANsAPIResponse(rsp)
+}
+
+// GetVXLANsWithResponse Get VXLANs
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /interfaces/vxlan (the `GetVXLANs` operationId).
+func (c *ClientWithResponses) GetVXLANsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVXLANsAPIResponse, error) {
+	rsp, err := c.GetVXLANs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVXLANsAPIResponse(rsp)
+}
+
 // LoginWithBodyWithResponse Authenticate with the controller.
 //
 // Login to pfSense. If the JWT access token is not provided, then a new
@@ -1909,6 +6332,32 @@ func (c *ClientWithResponses) GetFilterReloadStatusWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetFilterReloadStatusAPIResponse(rsp)
+}
+
+// GetGatewaysWithResponse List gateways
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/gateways (the `GetGateways` operationId).
+func (c *ClientWithResponses) GetGatewaysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetGatewaysAPIResponse, error) {
+	rsp, err := c.GetGateways(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGatewaysAPIResponse(rsp)
+}
+
+// GetStaticRoutesWithResponse Get static routes
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /system/routes/static (the `GetStaticRoutes` operationId).
+func (c *ClientWithResponses) GetStaticRoutesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetStaticRoutesAPIResponse, error) {
+	rsp, err := c.GetStaticRoutes(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetStaticRoutesAPIResponse(rsp)
 }
 
 // ParseFirewallGetAliasesAPIResponse parses an HTTP response from a FirewallGetAliasesWithResponse call
@@ -2076,6 +6525,732 @@ func ParseFirewallUpdateAliasAPIResponse(rsp *http.Response) (*FirewallUpdateAli
 	return response, nil
 }
 
+// ParseFirewallGetNATNptAPIResponse parses an HTTP response from a FirewallGetNATNptWithResponse call
+func ParseFirewallGetNATNptAPIResponse(rsp *http.Response) (*FirewallGetNATNptAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetNATNptAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATNptRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetNAT1To1RulesAPIResponse parses an HTTP response from a FirewallGetNAT1To1RulesWithResponse call
+func ParseFirewallGetNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallGetNAT1To1RulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetNAT1To1RulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NAT1To1Rules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetNATOutAPIResponse parses an HTTP response from a FirewallGetNATOutWithResponse call
+func ParseFirewallGetNATOutAPIResponse(rsp *http.Response) (*FirewallGetNATOutAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetNATOutAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATOutboundRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetNATAPIResponse parses an HTTP response from a FirewallGetNATWithResponse call
+func ParseFirewallGetNATAPIResponse(rsp *http.Response) (*FirewallGetNATAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetNATAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetFWInterfacesAPIResponse parses an HTTP response from a GetFWInterfacesWithResponse call
+func ParseGetFWInterfacesAPIResponse(rsp *http.Response) (*GetFWInterfacesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFWInterfacesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWFirewallInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetFirewallRulesAPIResponse parses an HTTP response from a GetFirewallRulesWithResponse call
+func ParseGetFirewallRulesAPIResponse(rsp *http.Response) (*GetFirewallRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFirewallRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetSchedulesAPIResponse parses an HTTP response from a FirewallGetSchedulesWithResponse call
+func ParseFirewallGetSchedulesAPIResponse(rsp *http.Response) (*FirewallGetSchedulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetSchedulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWSchedules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetTrafficShaperAPIResponse parses an HTTP response from a FirewallGetTrafficShaperWithResponse call
+func ParseFirewallGetTrafficShaperAPIResponse(rsp *http.Response) (*FirewallGetTrafficShaperAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetTrafficShaperAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TrafficShapers
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetALTQAPIResponse parses an HTTP response from a FirewallGetALTQWithResponse call
+func ParseFirewallGetALTQAPIResponse(rsp *http.Response) (*FirewallGetALTQAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetALTQAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ALTQRootQueues
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetLimiterAPIResponse parses an HTTP response from a FirewallGetLimiterWithResponse call
+func ParseFirewallGetLimiterAPIResponse(rsp *http.Response) (*FirewallGetLimiterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetLimiterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Limiters
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfacesAPIResponse parses an HTTP response from a GetInterfacesWithResponse call
+func ParseGetInterfacesAPIResponse(rsp *http.Response) (*GetInterfacesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfacesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfacesSimple
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfaceAssignmentsAPIResponse parses an HTTP response from a GetInterfaceAssignmentsWithResponse call
+func ParseGetInterfaceAssignmentsAPIResponse(rsp *http.Response) (*GetInterfaceAssignmentsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfaceAssignmentsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceAssignments
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBridgeInterfacesAPIResponse parses an HTTP response from a GetBridgeInterfacesWithResponse call
+func ParseGetBridgeInterfacesAPIResponse(rsp *http.Response) (*GetBridgeInterfacesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBridgeInterfacesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BridgeInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetHostInterfacesAPIResponse parses an HTTP response from a GetHostInterfacesWithResponse call
+func ParseGetHostInterfacesAPIResponse(rsp *http.Response) (*GetHostInterfacesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetHostInterfacesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NetIfs
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfaceDescriptorsAPIResponse parses an HTTP response from a GetInterfaceDescriptorsWithResponse call
+func ParseGetInterfaceDescriptorsAPIResponse(rsp *http.Response) (*GetInterfaceDescriptorsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfaceDescriptorsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceDescriptors
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGIFsAPIResponse parses an HTTP response from a GetGIFsWithResponse call
+func ParseGetGIFsAPIResponse(rsp *http.Response) (*GetGIFsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGIFsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GIFInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGREsAPIResponse parses an HTTP response from a GetGREsWithResponse call
+func ParseGetGREsAPIResponse(rsp *http.Response) (*GetGREsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGREsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GREInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInterfaceGroupsAPIResponse parses an HTTP response from a GetInterfaceGroupsWithResponse call
+func ParseGetInterfaceGroupsAPIResponse(rsp *http.Response) (*GetInterfaceGroupsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInterfaceGroupsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InterfaceGroups
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLAGGsAPIResponse parses an HTTP response from a GetLAGGsWithResponse call
+func ParseGetLAGGsAPIResponse(rsp *http.Response) (*GetLAGGsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLAGGsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest LAGGInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetQinQsAPIResponse parses an HTTP response from a GetQinQsWithResponse call
+func ParseGetQinQsAPIResponse(rsp *http.Response) (*GetQinQsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetQinQsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest QinQInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetVLANsAPIResponse parses an HTTP response from a GetVLANsWithResponse call
+func ParseGetVLANsAPIResponse(rsp *http.Response) (*GetVLANsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVLANsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VLANInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetVXLANsAPIResponse parses an HTTP response from a GetVXLANsWithResponse call
+func ParseGetVXLANsAPIResponse(rsp *http.Response) (*GetVXLANsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVXLANsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VXLANInterfaces
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseLoginAPIResponse parses an HTTP response from a LoginWithResponse call
 func ParseLoginAPIResponse(rsp *http.Response) (*LoginAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -2191,6 +7366,72 @@ func ParseGetFilterReloadStatusAPIResponse(rsp *http.Response) (*GetFilterReload
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest FilterReloadStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGatewaysAPIResponse parses an HTTP response from a GetGatewaysWithResponse call
+func ParseGetGatewaysAPIResponse(rsp *http.Response) (*GetGatewaysAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGatewaysAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Gateways
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetStaticRoutesAPIResponse parses an HTTP response from a GetStaticRoutesWithResponse call
+func ParseGetStaticRoutesAPIResponse(rsp *http.Response) (*GetStaticRoutesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetStaticRoutesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StaticRoutes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

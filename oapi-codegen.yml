@@ -12,5 +12,29 @@ output-options:
     - FirewallAddAlias
     - FirewallUpdateAlias
     - FirewallDeleteAlias
+    - FirewallGetNATNpt
+    - FirewallGetNAT1To1Rules
+    - FirewallGetNATOut
+    - FirewallGetNAT
+    - GetFWInterfaces
+    - GetFirewallRules
+    - FirewallGetSchedules
+    - FirewallGetTrafficShaper
+    - FirewallGetALTQ
+    - FirewallGetLimiter
+    - GetInterfaces
+    - GetInterfaceAssignments
+    - GetHostInterfaces
+    - GetInterfaceDescriptors
+    - GetGateways
+    - GetStaticRoutes
+    - GetBridgeInterfaces
+    - GetGIFs
+    - GetGREs
+    - GetInterfaceGroups
+    - GetLAGGs
+    - GetQinQs
+    - GetVLANs
+    - GetVXLANs
     - DoFilterReload
     - GetFilterReloadStatus

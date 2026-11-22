@@ -7,6 +7,7 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/client"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_firewall_aliases"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_readonly"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -84,5 +85,31 @@ func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource 
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{data_firewall_aliases.New}
+	return []func() datasource.DataSource{
+		data_firewall_aliases.New,
+		data_readonly.NewFirewallNATNpt,
+		data_readonly.NewFirewallNATOneToOne,
+		data_readonly.NewFirewallNATOutbound,
+		data_readonly.NewFirewallNATPortForward,
+		data_readonly.NewFirewallInterfaces,
+		data_readonly.NewFirewallRules,
+		data_readonly.NewFirewallSchedules,
+		data_readonly.NewFirewallTrafficShaper,
+		data_readonly.NewFirewallALTQ,
+		data_readonly.NewFirewallLimiters,
+		data_readonly.NewInterfaces,
+		data_readonly.NewInterfaceAssignments,
+		data_readonly.NewHostInterfaces,
+		data_readonly.NewInterfaceDescriptors,
+		data_readonly.NewBridgeInterfaces,
+		data_readonly.NewGIFInterfaces,
+		data_readonly.NewGREInterfaces,
+		data_readonly.NewInterfaceGroups,
+		data_readonly.NewLAGGInterfaces,
+		data_readonly.NewQinQInterfaces,
+		data_readonly.NewVLANInterfaces,
+		data_readonly.NewVXLANInterfaces,
+		data_readonly.NewGateways,
+		data_readonly.NewStaticRoutes,
+	}
 }

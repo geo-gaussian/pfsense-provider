@@ -67,7 +67,7 @@ func TestConfigure(t *testing.T) {
 			}
 		})
 	}
-	if len(p.Resources(ctx)) != 1 || len(p.DataSources(ctx)) != 1 {
-		t.Fatal("expected alias resource and data source")
+	if len(p.Resources(ctx)) != 1 || len(p.DataSources(ctx)) != 25 {
+		t.Fatal("expected alias resource and twenty-five data sources")
 	}
 }

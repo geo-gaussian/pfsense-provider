@@ -40,3 +40,8 @@ diag
 tfsdk
 tftypes
 oapi
+onetoone
+ALTQ
+LAGG
+QinQ
+VXLAN
