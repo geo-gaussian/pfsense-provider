@@ -2,14 +2,19 @@
 
 ## 🎯 Scope and status
 
-This experimental Terraform provider manages a local pfSense firewall through
-the Nexus controller API. Its provider source is
+This experimental Terraform provider manages a local pfSense firewall and
+reads selected configuration through the Nexus controller API. Its provider source is
 `geo-gaussian/pfsense-nexus`; the local Terraform provider name is `pfsense`.
 It currently offers:
 
 - `pfsense_firewall_alias`: create, read, update, delete, and import an alias.
 - `pfsense_firewall_aliases`: read user-defined alias metadata without changing
   aliases or reloading the firewall.
+- Read-only JSON data sources for firewall NAT rules, firewall interfaces and
+  rules, schedules, traffic shapers, ALTQ queues and limiters, interface
+  assignments and discovery, bridge/tunnel/VLAN interface types, static routes,
+  gateways, selected service configuration and status, VPN status, and system
+  health and discovery.
 
 Login and alias listing have been exercised on one appliance. Alias writes and
 reloads have only been tested against mock servers. Do not use the write
@@ -23,7 +28,7 @@ flowchart LR
   TF[Terraform CLI] --> Framework[Terraform Plugin Framework]
   Framework --> Provider[Provider configuration]
   Framework --> Resource[Firewall alias resource]
-  Framework --> Data[Firewall aliases data source]
+  Framework --> Data[Read-only data sources]
   Provider --> API[Generated API client]
   Resource --> API
   Data --> API
@@ -35,9 +40,10 @@ flowchart LR
 | Component | Responsibility |
 | --- | --- |
 | [main.go](main.go) | Starts the provider server and exposes its version. |
-| [internal/provider/provider.go](internal/provider/provider.go) | Defines configuration, registers the resource and data source, and supplies their API client. |
+| [internal/provider/provider.go](internal/provider/provider.go) | Defines configuration, registers resources and data sources, and supplies their API client. |
 | [Alias resource](internal/provider/resource_firewall_alias/firewall_alias_resource.go) | Maps Terraform state and plans to API requests, handles import and missing aliases, and initiates firewall reloads. |
 | [Aliases data source](internal/provider/data_firewall_aliases/firewall_aliases_data_source.go) | Reads alias metadata and reports missing or invalid responses. |
+| [Read-only data sources](internal/provider/data_readonly) | Reads selected firewall, network, service, VPN, and system configuration or status; returns the API payload as JSON, with sensitive outputs marked or projected safely. |
 | [internal/api/client_gen.go](internal/api/client_gen.go) | Generated API types, request builders, and response parsers. |
 | [internal/client/client.go](internal/client/client.go) | Validates the controller URL, manages authentication, and serializes HTTP requests. |
 
@@ -83,17 +89,24 @@ An uncertain create response may require importing the existing alias.
 A read removes the resource from Terraform state when the API confirms the
 alias is absent. If the API returns HTTP 400, the provider checks the alias
 list before treating it as absent. It rejects truncated alias details rather
-than saving incomplete resource state. The data source returns metadata only;
-an omitted alias list produces a warning and null, rather than an empty list.
+than saving incomplete resource state. The alias data source returns metadata only; an omitted alias list produces a
+warning and null, rather than an empty list. The additional read-only data
+sources expose the selected API payload as a computed JSON string so callers
+can inspect fields with Terraform's `jsondecode()`. They intentionally exclude
+diagnostic actions and downloads. Outputs that may contain arbitrary
+configuration are marked sensitive; WireGuard status is projected to omit
+private keys, preshared keys, and configuration objects. These endpoints are
+mock-tested but have not been validated against a live appliance.
 
 ## ⚙️ Generation and development
 
 [docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) is the included Netgate API
 specification. `make generate` uses [generator_config.yml](generator_config.yml)
-to generate the alias schema and [oapi-codegen.yml](oapi-codegen.yml) to
-generate the Go API client. The generated `*_gen.go` files are not hand-edited;
-CRUD, authentication, and reload handling are custom code. Review generated
-changes alongside custom integration when updating the specification.
+to generate the alias resource schema and [oapi-codegen.yml](oapi-codegen.yml)
+to generate the Go API client methods selected for resources and data sources.
+The generated `*_gen.go` files are not hand-edited; CRUD, authentication,
+reload handling, and Terraform data-source behaviour are custom code. Review
+generated changes alongside custom integration when updating the specification.
 
 Tests use mock HTTP servers; when Terraform is available, tests also exercise
 the provider protocol. The pre-commit hook runs lint and race tests. CI runs

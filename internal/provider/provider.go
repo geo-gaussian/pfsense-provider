@@ -7,6 +7,7 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/client"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_firewall_aliases"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_readonly"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -84,5 +85,62 @@ func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource 
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{data_firewall_aliases.New}
+	return []func() datasource.DataSource{
+		data_firewall_aliases.New,
+		data_readonly.NewFirewallNATNpt,
+		data_readonly.NewFirewallNATOneToOne,
+		data_readonly.NewFirewallNATOutbound,
+		data_readonly.NewFirewallNATPortForward,
+		data_readonly.NewFirewallInterfaces,
+		data_readonly.NewFirewallRules,
+		data_readonly.NewFirewallSchedules,
+		data_readonly.NewFirewallTrafficShaper,
+		data_readonly.NewFirewallALTQ,
+		data_readonly.NewFirewallLimiters,
+		data_readonly.NewInterfaces,
+		data_readonly.NewInterfaceAssignments,
+		data_readonly.NewHostInterfaces,
+		data_readonly.NewInterfaceDescriptors,
+		data_readonly.NewBridgeInterfaces,
+		data_readonly.NewGIFInterfaces,
+		data_readonly.NewGREInterfaces,
+		data_readonly.NewInterfaceGroups,
+		data_readonly.NewLAGGInterfaces,
+		data_readonly.NewQinQInterfaces,
+		data_readonly.NewVLANInterfaces,
+		data_readonly.NewVXLANInterfaces,
+		data_readonly.NewGateways,
+		data_readonly.NewStaticRoutes,
+		data_readonly.NewDNSForwarder,
+		data_readonly.NewIGMPProxies,
+		data_readonly.NewMDNS,
+		data_readonly.NewDHCPv4Relay,
+		data_readonly.NewDHCPv6Relay,
+		data_readonly.NewRouterAdvertisements,
+		data_readonly.NewIPSecWidget,
+		data_readonly.NewOpenVPNStatus,
+		data_readonly.NewWireGuardStatus,
+		data_readonly.NewDHCPLeases,
+		data_readonly.NewDNSResolverStatus,
+		data_readonly.NewNDPTable,
+		data_readonly.NewServicesStatus,
+		data_readonly.NewUPnPConfig,
+		data_readonly.NewUPnPStatus,
+		data_readonly.NewServiceWatchdog,
+		data_readonly.NewSystemSummary,
+		data_readonly.NewCertificateOptions,
+		data_readonly.NewDirtySubsystems,
+		data_readonly.NewFirmwareInfo,
+		data_readonly.NewGatewayPriorities,
+		data_readonly.NewGatewayGroups,
+		data_readonly.NewGatewaysStatus,
+		data_readonly.NewInterfacesStatus,
+		data_readonly.NewMonitoringDatasets,
+		data_readonly.NewQueueStats,
+		data_readonly.NewRoutesDirtyState,
+		data_readonly.NewSystemStatus,
+		data_readonly.NewInterfaceStats,
+		data_readonly.NewInterfaceWidgets,
+		data_readonly.NewInterfaceStatisticsWidget,
+	}
 }

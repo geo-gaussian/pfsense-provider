@@ -1,4 +1,4 @@
-# pfsense_firewall_alias (Resource)
+# 🧭 pfsense_firewall_alias (Resource)
 
 Manages a firewall alias on the controller's local firewall.
 

@@ -4,14 +4,18 @@
 [![Live acceptance coverage unavailable](https://img.shields.io/badge/acceptance-unavailable-lightgrey)](#-coverage)
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
-This experimental provider manages a firewall alias on a local pfSense
-firewall through the Nexus controller. It uses Netgate's OpenAPI specification
-and HashiCorp's Terraform Plugin Framework.
+This experimental provider manages a firewall alias and reads selected
+firewall, network, service, VPN, and system configuration or status from a
+local pfSense firewall through the Nexus controller. It uses Netgate's OpenAPI
+specification and HashiCorp's Terraform Plugin Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
 Alias writes and reloads have only been tested against mock servers. Do not use
 the resource on a production firewall. Verify API behaviour, compatibility,
 and recovery in an isolated environment first.
+The read-only data sources have only been tested against mock servers and the
+included OpenAPI specification; their behaviour on appliances remains
+unverified.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
@@ -101,10 +105,16 @@ variables, rather than committing them. TLS certificates are verified by
 default; `insecure = true` disables verification and is for isolated testing
 only. Terraform state can contain sensitive configuration; protect it.
 
-## 🔍 Read-only alias lookup
+## 🔍 Read-only data sources
 
-To test authentication and read alias metadata without managing an alias, use a
-separate Terraform directory with only this configuration:
+Read-only data sources expose selected firewall, network, service, and VPN
+configuration or status as JSON; use `jsondecode()` to select fields. Some
+outputs are sensitive, and the WireGuard status source omits key material. For
+example, read aliases, configured interfaces, and firewall NAT rules:
+
+The catalog also includes DHCP lease and service status reads, system summary
+and health information, gateway and interface status, and monitoring metadata.
+Sensitive outputs are marked in their individual data source documentation.
 
 ```hcl
 terraform {
@@ -130,16 +140,27 @@ provider "pfsense" {
 
 data "pfsense_firewall_aliases" "current" {}
 
+data "pfsense_interfaces" "current" {}
+
+data "pfsense_firewall_nat_port_forward" "current" {}
+
 output "firewall_aliases" {
   value = data.pfsense_firewall_aliases.current.aliases
 }
+
+output "interfaces" {
+  value = jsondecode(data.pfsense_interfaces.current.json)
+}
+
+output "port_forward_rules" {
+  value = jsondecode(data.pfsense_firewall_nat_port_forward.current.json)
+}
 ```
 
-With the development override configured, run `terraform plan`. This data
-source authenticates and requests the local firewall's alias list; it does not
-create, update, delete, or reload aliases. Login may create a session or audit
-record. A successful read verifies the login and list request, but the routing
-assumption above may not hold for other installations.
+With the development override configured, run `terraform plan`. Data sources
+perform API reads and do not write configuration or reload the firewall.
+Authentication may create a session or audit record. The added data sources
+Protect Terraform state and saved plans, especially for sensitive data sources.
 
 The output contains the name, type, description (`descr`), and `truncated` flag
 for user-defined aliases, not system aliases or alias contents. Fields omitted
@@ -170,8 +191,10 @@ changes. The upstream project is Apache-2.0 licensed; see the included
 
 Run `make generate` to regenerate the Terraform alias schema and the Go HTTP
 client using pinned generator versions. The generated `*_gen.go` files are not
-hand-edited. Terraform CRUD, session management, request serialization, and
-reload handling remain custom code.
+hand-edited. The selected read-only Terraform data sources are custom
+implementations; `make generate` does not generate their schemas or behaviour.
+Terraform CRUD, data-source behaviour, session management, request
+serialization, and reload handling remain custom code.
 
 ## 💻 Development
 

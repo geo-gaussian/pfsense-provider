@@ -21,6 +21,18 @@ provider "pfsense" {
 
 data "pfsense_firewall_aliases" "current" {}
 
+data "pfsense_interfaces" "current" {}
+
+data "pfsense_firewall_nat_port_forward" "current" {}
+
 output "firewall_aliases" {
   value = data.pfsense_firewall_aliases.current.aliases
+}
+
+output "interfaces" {
+  value = jsondecode(data.pfsense_interfaces.current.json)
+}
+
+output "port_forward_rules" {
+  value = jsondecode(data.pfsense_firewall_nat_port_forward.current.json)
 }

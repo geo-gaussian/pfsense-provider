@@ -12,5 +12,60 @@ output-options:
     - FirewallAddAlias
     - FirewallUpdateAlias
     - FirewallDeleteAlias
+    - FirewallGetNATNpt
+    - FirewallGetNAT1To1Rules
+    - FirewallGetNATOut
+    - FirewallGetNAT
+    - GetFWInterfaces
+    - GetFirewallRules
+    - FirewallGetSchedules
+    - FirewallGetTrafficShaper
+    - FirewallGetALTQ
+    - FirewallGetLimiter
+    - GetInterfaces
+    - GetInterfaceAssignments
+    - GetHostInterfaces
+    - GetInterfaceDescriptors
+    - GetGateways
+    - GetStaticRoutes
+    - GetBridgeInterfaces
+    - GetGIFs
+    - GetGREs
+    - GetInterfaceGroups
+    - GetLAGGs
+    - GetQinQs
+    - GetVLANs
+    - GetVXLANs
+    - GetDNSForwarderConfig
+    - GetIGMPProxies
+    - GetMDNSConfig
+    - GetDhcpV4RelayConfig
+    - GetDhcpV6RelayConfig
+    - GetRouterAdvSettings
+    - GetIPSecWidget
+    - GetOpenVPNStatus
+    - GetWireGuardStatus
+    - GetDHCPLeases
+    - GetDnsResolverStatus
+    - GetNDPTable
+    - GetServicesStatus
+    - GetUPnP
+    - GetUPnPStatus
+    - GetServiceWatchdogServices
+    - GetSystemSummary
+    - GetCertOptions
+    - GetDirtySubsystems
+    - GetFirmware
+    - GetGatewayPriorities
+    - GetGatewayGroups
+    - GetGatewaysStatus
+    - GetInterfacesStatus
+    - GetMonitoringDatasets
+    - GetQueueStats
+    - GetRoutesDirtyState
+    - GetStatus
+    - GetIfStats
+    - GetInterfacesWidgets
+    - GetInterfaceStatisticsWidget
     - DoFilterReload
     - GetFilterReloadStatus
