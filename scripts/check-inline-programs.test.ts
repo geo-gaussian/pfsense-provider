@@ -6,20 +6,22 @@ import { findInlinePrograms } from "./check-inline-programs.ts";
 
 const terraformFixture = fs.readFileSync(
 	fileURLToPath(
-		new URL("../testdata/terraform/lifecycle/main.tf", import.meta.url),
+		new URL("../tests/terraform/lifecycle/main.tf", import.meta.url),
 	),
 	"utf8",
 );
 const scriptFixture = fs.readFileSync(
-	fileURLToPath(new URL("../testdata/format/fixture.ts", import.meta.url)),
+	fileURLToPath(new URL("../tests/format/fixture.ts", import.meta.url)),
 	"utf8",
 );
 const goFixture = fs.readFileSync(
-	fileURLToPath(new URL("../testdata/format/config.go", import.meta.url)),
+	fileURLToPath(
+		new URL("../tests/format/_fixtures/config.go", import.meta.url),
+	),
 	"utf8",
 );
 const workflowFixture = fs.readFileSync(
-	fileURLToPath(new URL("../testdata/format/workflow.yaml", import.meta.url)),
+	fileURLToPath(new URL("../tests/format/workflow.yaml", import.meta.url)),
 	"utf8",
 );
 const queryFixture = fs.readFileSync(

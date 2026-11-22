@@ -17,14 +17,14 @@ import (
 
 func prepareTerraformFixture(t *testing.T, dir, fixture string) string {
 	t.Helper()
-	config, err := os.ReadFile(filepath.Join("testdata", "terraform", fixture, "main.tf"))
+	config, err := os.ReadFile(filepath.Join("tests", "terraform", fixture, "main.tf"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(filepath.Join(dir, "main.tf"), config, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	cliConfig, err := os.ReadFile(filepath.Join("testdata", "terraform", "terraform.tfrc"))
+	cliConfig, err := os.ReadFile(filepath.Join("tests", "terraform", "terraform.tfrc"))
 	if err != nil {
 		t.Fatal(err)
 	}

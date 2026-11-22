@@ -12,7 +12,7 @@ test("Go format check reports unformatted files and formatter failures", (t) => 
 	const dir = fs.mkdtempSync(path.join(tmpdir(), "pfsense-gofmt-"));
 	t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
 	const source = fs.readFileSync(
-		path.join(root, "testdata/format/fixture.go"),
+		path.join(root, "tests/format/_fixtures/fixture.go"),
 		"utf8",
 	);
 	const fixture = path.join(dir, "fixture.go");
@@ -29,7 +29,7 @@ test("Go format check reports unformatted files and formatter failures", (t) => 
 	assert.equal(unformatted.status, 1);
 	assert.match(unformatted.stdout, /fixture\.go/);
 	const mock = path.join(dir, "gofmt");
-	fs.copyFileSync(path.join(root, "testdata/commands/gofmt.sh"), mock);
+	fs.copyFileSync(path.join(root, "tests/commands/gofmt.sh"), mock);
 	fs.chmodSync(mock, 0o755);
 	const failure = check({
 		...process.env,
@@ -43,7 +43,7 @@ test("Pages guard deploys only the current commit and propagates errors", (t) =>
 	const dir = fs.mkdtempSync(path.join(tmpdir(), "pfsense-pages-"));
 	t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
 	const mock = path.join(dir, "gh");
-	fs.copyFileSync(path.join(root, "testdata/commands/gh.sh"), mock);
+	fs.copyFileSync(path.join(root, "tests/commands/gh.sh"), mock);
 	fs.chmodSync(mock, 0o755);
 	const response = path.join(dir, "response.json");
 	const output = path.join(dir, "output");

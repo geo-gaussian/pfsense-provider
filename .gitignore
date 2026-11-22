@@ -54,6 +54,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.tfrc
+!/tests/terraform/terraform.tfrc
 
 # Editor/IDE
 .vscode/*

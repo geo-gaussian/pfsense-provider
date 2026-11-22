@@ -11,7 +11,7 @@ const require = createRequire(import.meta.url);
 const prettier = require.resolve("prettier/bin/prettier.cjs");
 const root = fileURLToPath(new URL("..", import.meta.url));
 const fixture = (name: string) =>
-	fs.readFileSync(path.join(root, "testdata", "format", name), "utf8");
+	fs.readFileSync(path.join(root, "tests", "format", name), "utf8");
 
 function runPrettier(filename: string, input: string, check = true) {
 	const args = [prettier, "--stdin-filepath", filename];
