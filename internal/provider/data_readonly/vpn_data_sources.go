@@ -37,9 +37,6 @@ func NewWireGuardStatus() datasource.DataSource {
 			if err != nil {
 				return nil, err
 			}
-			if result == nil {
-				return nil, nil
-			}
 			if result.StatusCode() != 200 {
 				return result, nil
 			}

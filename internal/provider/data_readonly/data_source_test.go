@@ -2,6 +2,7 @@ package data_readonly
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -18,15 +19,16 @@ import (
 
 func TestReadDataSource(t *testing.T) {
 	tests := []struct {
-		name       string
-		dataSource func() datasource.DataSource
-		path       string
-		configured map[string]tftypes.Value
-		status     int
-		body       string
-		wantJSON   string
-		sensitive  bool
-		wantError  bool
+		name        string
+		dataSource  func() datasource.DataSource
+		path        string
+		configured  map[string]tftypes.Value
+		status      int
+		body        string
+		contentType string
+		wantJSON    string
+		sensitive   bool
+		wantError   bool
 	}{
 		{
 			name:       "NPT rules",
@@ -76,6 +78,15 @@ func TestReadDataSource(t *testing.T) {
 			status:     http.StatusOK,
 			body:       `{"entries":[]}`,
 			wantJSON:   `{"entries":[]}`,
+		},
+		{
+			name:       "firewall rules with unknown interface",
+			dataSource: NewFirewallRules,
+			path:       "/firewall/rules/interface/lan",
+			configured: map[string]tftypes.Value{"interface": tftypes.NewValue(tftypes.String, tftypes.UnknownValue)},
+			status:     http.StatusOK,
+			body:       `{"entries":[]}`,
+			wantError:  true,
 		},
 		{
 			name:       "firewall schedules",
@@ -285,6 +296,31 @@ func TestReadDataSource(t *testing.T) {
 			status:     http.StatusOK,
 			body:       `{"servers":[],"clients":[]}`,
 			wantJSON:   `{"servers":[],"clients":[]}`,
+		},
+		{
+			name:       "WireGuard status without tunnels",
+			dataSource: NewWireGuardStatus,
+			path:       "/vpn/wg/status",
+			status:     http.StatusOK,
+			body:       `{}`,
+			wantJSON:   `{}`,
+		},
+		{
+			name:       "WireGuard status HTTP error",
+			dataSource: NewWireGuardStatus,
+			path:       "/vpn/wg/status",
+			status:     http.StatusBadRequest,
+			body:       `{"errmsg":"failure"}`,
+			wantError:  true,
+		},
+		{
+			name:        "WireGuard status with unexpected content type",
+			dataSource:  NewWireGuardStatus,
+			path:        "/vpn/wg/status",
+			status:      http.StatusOK,
+			contentType: "text/plain",
+			body:        "not JSON",
+			wantError:   true,
 		},
 		{
 			name:       "DHCP leases",
@@ -504,7 +540,11 @@ func TestReadDataSource(t *testing.T) {
 					w.WriteHeader(http.StatusMethodNotAllowed)
 					return
 				}
-				w.Header().Set("Content-Type", "application/json")
+				contentType := tt.contentType
+				if contentType == "" {
+					contentType = "application/json"
+				}
+				w.Header().Set("Content-Type", contentType)
 				w.WriteHeader(tt.status)
 				_, _ = fmt.Fprint(w, tt.body)
 			}))
@@ -562,6 +602,122 @@ func TestReadDataSource(t *testing.T) {
 				if !exists || interfaceValue.ValueString() != expected {
 					t.Fatalf("interface argument was not retained in state: %#v", stateAttributes["interface"])
 				}
+			}
+		})
+	}
+}
+
+func TestDataSourceMetadata(t *testing.T) {
+	d := NewFirewallNATNpt()
+	var resp datasource.MetadataResponse
+	d.Metadata(context.Background(), datasource.MetadataRequest{ProviderTypeName: "pfsense"}, &resp)
+	if resp.TypeName != "pfsense_firewall_nat_npt" {
+		t.Fatalf("type name = %q, want pfsense_firewall_nat_npt", resp.TypeName)
+	}
+}
+
+func TestConfigureDataSourceHandlesMissingAndInvalidClients(t *testing.T) {
+	tests := []struct {
+		name         string
+		providerData any
+		wantError    bool
+	}{
+		{name: "missing client"},
+		{name: "unexpected client type", providerData: "not an API client", wantError: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			configurable := NewFirewallNATNpt().(datasource.DataSourceWithConfigure)
+			var resp datasource.ConfigureResponse
+			configurable.Configure(
+				context.Background(),
+				datasource.ConfigureRequest{ProviderData: tt.providerData},
+				&resp,
+			)
+			if resp.Diagnostics.HasError() != tt.wantError {
+				t.Fatalf("unexpected diagnostics: %v", resp.Diagnostics)
+			}
+		})
+	}
+}
+
+func TestReadDataSourceRequiresConfiguredClient(t *testing.T) {
+	d := NewFirewallNATNpt()
+	dataSchema := dataSourceSchema(t, d)
+	config := tfsdk.Config{
+		Schema: dataSchema,
+		Raw: tftypes.NewValue(dataSchema.Type().TerraformType(context.Background()), map[string]tftypes.Value{
+			"json": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+		}),
+	}
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
+	d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error when the API client is not configured")
+	}
+}
+
+func TestReadDataSourceRejectsInvalidRequestConfig(t *testing.T) {
+	server := httptest.NewServer(http.NotFoundHandler())
+	defer server.Close()
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	d := NewFirewallNATNpt()
+	configureDataSource(t, d, client)
+	dataSchema := dataSourceSchema(t, d)
+	config := tfsdk.Config{Schema: dataSchema, Raw: tftypes.NewValue(tftypes.String, "invalid")}
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
+	d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error for an invalid request config")
+	}
+}
+
+func TestReadDataSourceHandlesReadFailures(t *testing.T) {
+	server := httptest.NewServer(http.NotFoundHandler())
+	defer server.Close()
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name string
+		read readFunc
+	}{
+		{
+			name: "read error",
+			read: func(context.Context, *api.ClientWithResponses, map[string]string) (apiResponse, error) {
+				return nil, errors.New("mock read failure")
+			},
+		},
+		{
+			name: "nil response",
+			read: func(context.Context, *api.ClientWithResponses, map[string]string) (apiResponse, error) {
+				return nil, nil
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := newDataSource("test", "test data source", nil, tt.read)
+			configureDataSource(t, d, client)
+			dataSchema := dataSourceSchema(t, d)
+			config := tfsdk.Config{
+				Schema: dataSchema,
+				Raw: tftypes.NewValue(dataSchema.Type().TerraformType(context.Background()), map[string]tftypes.Value{
+					"json": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+				}),
+			}
+			resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
+			d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+			if !resp.Diagnostics.HasError() {
+				t.Fatal("expected a read error")
 			}
 		})
 	}
@@ -626,6 +782,42 @@ func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
 		if !strings.Contains(got, safeValue) {
 			t.Fatalf("WireGuard output omitted expected status value %q: %s", safeValue, got)
 		}
+	}
+}
+
+func TestWireGuardStatusHandlesTransportError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		hijacker, ok := w.(http.Hijacker)
+		if !ok {
+			t.Error("HTTP response writer does not support connection hijacking")
+			return
+		}
+		connection, _, err := hijacker.Hijack()
+		if err != nil {
+			t.Errorf("hijack connection: %v", err)
+			return
+		}
+		_ = connection.Close()
+	}))
+	defer server.Close()
+
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d := NewWireGuardStatus()
+	configureDataSource(t, d, client)
+	dataSchema := dataSourceSchema(t, d)
+	config := tfsdk.Config{
+		Schema: dataSchema,
+		Raw: tftypes.NewValue(dataSchema.Type().TerraformType(context.Background()), map[string]tftypes.Value{
+			"json": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+		}),
+	}
+	resp := datasource.ReadResponse{State: tfsdk.State{Schema: dataSchema}}
+	d.Read(context.Background(), datasource.ReadRequest{Config: config}, &resp)
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error when the API connection fails")
 	}
 }
 
