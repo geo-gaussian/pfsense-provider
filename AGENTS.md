@@ -34,6 +34,8 @@ unverified.
 ## 📝 Documentation Rules
 
 - Markdown headings at levels 1, 2, and 3 MUST include a relevant emoji.
+- Use `.yaml` for project-owned YAML files. Keep `.yml` only where an external
+  tool requires that exact filename.
 - Use two-space indentation in Markdown and preserve rendered list and code
   block structure.
 - Follow the repository's cspell configuration and update documentation when
@@ -75,7 +77,7 @@ Before marking a resource complete, verify:
 ## 📖 Definition of Done for Any New Data Source
 
 - [ ] The OpenAPI operation is a safe read and its request, response, and endpoint behaviour have been reviewed.
-- [ ] The selected operation ID is in `oapi-codegen.yml`, and the custom data source is registered in `internal/provider/provider.go`.
+- [ ] The selected operation ID is in `oapi-codegen.yaml`, and the custom data source is registered in `internal/provider/provider.go`.
 - [ ] Sensitive or identifying JSON output is marked sensitive; secret material is omitted from status projections where appropriate.
 - [ ] A data-source page exists under `docs/data-sources/`, and mock HTTP tests cover the endpoint and relevant failures.
 - [ ] `go test -race ./...` and `pnpm run lint` pass; live appliance compatibility is clearly described as unverified unless tested.

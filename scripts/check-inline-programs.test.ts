@@ -82,13 +82,13 @@ test("detects multiline workflow programs and inline commands", () => {
 		command + "\n          " + command,
 	);
 	assert.match(
-		findInlinePrograms(".github/workflows/ci.yml", block)[0],
+		findInlinePrograms(".github/workflows/ci.yaml", block)[0],
 		/multiline workflow/,
 	);
 	const inline = ["node", "-e", JSON.stringify(scriptFixture)].join(" ");
 	assert.match(
 		findInlinePrograms(
-			".github/workflows/ci.yml",
+			".github/workflows/ci.yaml",
 			workflowFixture.replace(command, inline),
 		)[0],
 		/interpreter program/,

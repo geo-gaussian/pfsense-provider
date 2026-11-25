@@ -61,6 +61,15 @@ test("whitespace checker includes TypeScript files", (t) => {
 	const check = () =>
 		spawnSync(process.execPath, [checker], { encoding: "utf8" });
 	assert.equal(check().status, 0);
+	const legacyYamlPath = path.join(dir, "legacy.yml");
+	fs.writeFileSync(legacyYamlPath, "value: true\n");
+	const legacyYaml = check();
+	assert.equal(legacyYaml.status, 1);
+	assert.match(
+		legacyYaml.stderr,
+		/legacy\.yml: use the \.yaml extension instead of \.yml/,
+	);
+	fs.rmSync(legacyYamlPath);
 	fs.writeFileSync(fixturePath, source.replace("\n", " \n"));
 	const invalid = check();
 	assert.equal(invalid.status, 1);

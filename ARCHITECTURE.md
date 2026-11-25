@@ -101,8 +101,8 @@ mock-tested but have not been validated against a live appliance.
 ## ⚙️ Generation and development
 
 [docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) is the included Netgate API
-specification. `make generate` uses [generator_config.yml](generator_config.yml)
-to generate the alias resource schema and [oapi-codegen.yml](oapi-codegen.yml)
+specification. `make generate` uses [generator_config.yaml](generator_config.yaml)
+to generate the alias resource schema and [oapi-codegen.yaml](oapi-codegen.yaml)
 to generate the Go API client methods selected for resources and data sources.
 The generated `*_gen.go` files are not hand-edited; CRUD, authentication,
 reload handling, and Terraform data-source behaviour are custom code. Review
