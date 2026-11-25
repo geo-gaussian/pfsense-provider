@@ -756,6 +756,14 @@ func addressListType() types.ObjectType {
 }
 
 func addressListValue(ctx context.Context, source *[]api.WGIPAddress) (basetypes.ListValue, error) {
+	return addressListValueWithFactory(ctx, source, types.ListValueFrom)
+}
+
+func addressListValueWithFactory(
+	ctx context.Context,
+	source *[]api.WGIPAddress,
+	newList func(context.Context, attr.Type, any) (basetypes.ListValue, diag.Diagnostics),
+) (basetypes.ListValue, error) {
 	if source == nil {
 		return types.ListNull(addressListType()), nil
 	}
@@ -770,7 +778,7 @@ func addressListValue(ctx context.Context, source *[]api.WGIPAddress) (basetypes
 		}
 		addresses = append(addresses, ipAddressModel{Address: types.StringValue(address.Address), Descr: descr})
 	}
-	result, diags := types.ListValueFrom(ctx, addressListType(), addresses)
+	result, diags := newList(ctx, addressListType(), addresses)
 	if diags.HasError() {
 		return types.ListNull(addressListType()), fmt.Errorf("convert WireGuard IP addresses: %s", diags.Errors()[0].Detail())
 	}

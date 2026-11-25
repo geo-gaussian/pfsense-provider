@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -1014,6 +1015,88 @@ func TestTunnelAndPeerToAPIRejectInvalidAddressLists(t *testing.T) {
 	peer := peerModel{PublicKey: types.StringValue("pub"), AllowedIPs: wrongTypeList}
 	if _, diags := peer.toAPI(ctx); !diags.HasError() {
 		t.Fatal("expected invalid peer allowed IPs to be rejected")
+	}
+}
+
+func TestAddressListValueReportsFrameworkConversionErrors(t *testing.T) {
+	_, err := addressListValueWithFactory(
+		context.Background(),
+		&[]api.WGIPAddress{{Address: "192.0.2.1/32"}},
+		func(context.Context, attr.Type, any) (basetypes.ListValue, diag.Diagnostics) {
+			return types.ListNull(addressListType()), diag.Diagnostics{
+				diag.NewErrorDiagnostic("List conversion failed", "conversion rejected"),
+			}
+		},
+	)
+	if err == nil || err.Error() != "convert WireGuard IP addresses: conversion rejected" {
+		t.Fatalf("unexpected address-list conversion error: %v", err)
+	}
+}
+
+func TestWireGuardLifecycleReportsAddressConversionErrors(t *testing.T) {
+	ctx := context.Background()
+	for _, resourceName := range []string{"tunnel", "peer"} {
+		for _, operation := range []string{"create", "update"} {
+			t.Run(resourceName+" "+operation, func(t *testing.T) {
+				var target resource.Resource
+				var model any
+				var stateModel any
+				var listAttribute string
+				switch resourceName {
+				case "tunnel":
+					target = NewTunnel()
+					listAttribute = "addresses"
+					model = &tunnelModel{
+						Name: types.StringValue("wg0"), PrivateKey: types.StringValue("private"),
+						PublicKey: types.StringValue("public"),
+						Addresses: types.ListValueMust(types.StringType, []attr.Value{types.StringValue("invalid")}),
+					}
+					stateModel = &tunnelModel{
+						Name: types.StringValue("wg0"), PrivateKey: types.StringValue("private"),
+						PublicKey: types.StringValue("public"), Addresses: types.ListNull(addressListType()),
+					}
+				case "peer":
+					target = NewPeer()
+					listAttribute = "allowedips"
+					model = &peerModel{
+						PublicKey:  types.StringValue("pub"),
+						AllowedIPs: types.ListValueMust(types.StringType, []attr.Value{types.StringValue("invalid")}),
+					}
+					stateModel = &peerModel{
+						PublicKey: types.StringValue("pub"), AllowedIPs: types.ListNull(addressListType()),
+					}
+				}
+
+				planSchema := testResourceSchema(t, target)
+				planSchema.Attributes[listAttribute] = schema.ListAttribute{
+					Optional:    true,
+					ElementType: types.StringType,
+				}
+				plan := tfsdk.Plan{Schema: planSchema}
+				if diags := plan.Set(ctx, model); diags.HasError() {
+					t.Fatal(diags)
+				}
+
+				if operation == "create" {
+					resp := resource.CreateResponse{State: tfsdk.State{Schema: testResourceSchema(t, target)}}
+					callCreate(target, ctx, plan, &resp)
+					if !resp.Diagnostics.HasError() {
+						t.Fatal("expected invalid list conversion to fail before the API request")
+					}
+					return
+				}
+
+				state := tfsdk.State{Schema: testResourceSchema(t, target)}
+				if diags := state.Set(ctx, stateModel); diags.HasError() {
+					t.Fatal(diags)
+				}
+				resp := resource.UpdateResponse{State: tfsdk.State{Schema: state.Schema}}
+				callUpdate(target, ctx, plan, state, &resp)
+				if !resp.Diagnostics.HasError() {
+					t.Fatal("expected invalid list conversion to fail before the API request")
+				}
+			})
+		}
 	}
 }
 
