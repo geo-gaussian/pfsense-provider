@@ -69,8 +69,8 @@ func TestConfigure(t *testing.T) {
 			}
 		})
 	}
-	if len(p.Resources(ctx)) != 4 || len(p.DataSources(ctx)) != 58 {
-		t.Fatal("expected four resources and fifty-eight data sources")
+	if len(p.Resources(ctx)) != 13 || len(p.DataSources(ctx)) != 60 {
+		t.Fatal("expected thirteen resources and sixty data sources")
 	}
 	ephemeralProvider, ok := p.(frameworkprovider.ProviderWithEphemeralResources)
 	if !ok || len(ephemeralProvider.EphemeralResources(ctx)) != 1 {

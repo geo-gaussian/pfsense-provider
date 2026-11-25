@@ -16,12 +16,71 @@ output-options:
     - FirewallGetNAT1To1Rules
     - FirewallGetNATOut
     - FirewallGetNAT
+    - FirewallCreateNATNpt
+    - FirewallOrderNATNptRules
+    - FirewallToggleNATNptRules
+    - FirewallToggleNATNptRule
+    - FirewallDeleteNATNptRules
+    - FirewallCreateNAT1To1Rule
+    - FirewallOrderNAT1To1Rules
+    - FirewallToggleNAT1To1Rules
+    - FirewallToggleNAT1To1Rule
+    - FirewallDeleteNAT1To1Rules
+    - FirewallCreateNATOut
+    - FirewallUpdateNATOutMode
+    - FirewallOrderNATOut
+    - FirewallToggleNATOut
+    - FirewallUpdateNATOut
+    - FirewallCreateNAT
+    - FirewallOrderNATRules
+    - FirewallAddNATSeparator
+    - FirewallToggleNATRules
+    - FirewallToggleNATRule
+    - FirewallDeleteNAT
+    - FirewallUpdateNAT
+    - FirewallGetPFlow
+    - FirewallSetPFlow
+    - FirewallAddPFlowExporter
+    - FirewallUpdatePFlowExporter
+    - FirewallDeletePFlowExporter
     - GetFWInterfaces
     - GetFirewallRules
+    - AppendFirewallRule
+    - QueryBogonRule
+    - ToggleBogonRule
+    - CopyFirewallRules
+    - DeleteFirewallRules
+    - ReorderFirewallRules
+    - InsertFirewallSeparator
+    - DeleteFirewallSeparator
+    - ToggleFirewallRules
+    - ToggleFirewallRule
+    - UpdateFirewallRule
+    - InsertFirewallRule
+    - DeleteFirewallRule
     - FirewallGetSchedules
+    - FirewallAddSchedule
+    - FirewallUpdateSchedule
+    - FirewallDeleteSchedule
     - FirewallGetTrafficShaper
     - FirewallGetALTQ
+    - FirewallAddALTQ
+    - FirewallUpdateALTQ
+    - FirewallDeleteALTQ
+    - FirewallAddALTQChildQueue
+    - FirewallUpdateALTQChildQueue
+    - FirewallDeleteALTQChildQueue
     - FirewallGetLimiter
+    - FirewallAddLimiter
+    - FirewallUpdateLimiter
+    - FirewallDeleteLimiter
+    - FirewallAddLimiterQueue
+    - FirewallUpdateLimiterQueue
+    - FirewallDeleteLimiterQueue
+    - FirewallGetVirtualIPs
+    - FirewallSetVirtualIP
+    - FirewallDeleteVirtualIP
+    - FirewallUpdateVirtualIP
     - GetInterfaces
     - GetInterfaceAssignments
     - GetHostInterfaces

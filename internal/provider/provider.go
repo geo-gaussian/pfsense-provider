@@ -9,6 +9,7 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_firewall_aliases"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_readonly"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/ephemeral_wireguard"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/firewall_resources"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_wireguard"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -88,6 +89,15 @@ func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureR
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resource_firewall_alias.New,
+		firewall_resources.NewNATNpt,
+		firewall_resources.NewNATOneToOne,
+		firewall_resources.NewNATPortForward,
+		firewall_resources.NewRule,
+		firewall_resources.NewSchedule,
+		firewall_resources.NewALTQ,
+		firewall_resources.NewLimiter,
+		firewall_resources.NewPFlowExporter,
+		firewall_resources.NewVirtualIP,
 		resource_wireguard.NewSettings,
 		resource_wireguard.NewTunnel,
 		resource_wireguard.NewPeer,
@@ -107,6 +117,8 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewFirewallTrafficShaper,
 		data_readonly.NewFirewallALTQ,
 		data_readonly.NewFirewallLimiters,
+		data_readonly.NewFirewallPFlow,
+		data_readonly.NewFirewallVirtualIPs,
 		data_readonly.NewInterfaces,
 		data_readonly.NewInterfaceAssignments,
 		data_readonly.NewHostInterfaces,
