@@ -13,6 +13,23 @@ Terraform's `jsondecode()` function. See [`resources/`](resources/),
 !> Firewall and WireGuard mutations have only been tested against mock
 servers. Do not use these resources on a production firewall.
 
+## 🔥 Managed Firewall Resources
+
+The provider manages [firewall aliases](resources/firewall_alias.md),
+[filter rules](resources/firewall_rule.md),
+[schedules](resources/firewall_schedule.md),
+[NPT NAT](resources/firewall_nat_npt.md),
+[one-to-one NAT](resources/firewall_nat_one_to_one.md),
+[port-forward NAT](resources/firewall_nat_port_forward.md),
+[ALTQ root queues](resources/firewall_altq.md),
+[limiters](resources/firewall_limiter.md),
+[PFlow exporters](resources/firewall_pflow_exporter.md), and
+[virtual IPs](resources/firewall_virtual_ip.md).
+
+Outbound NAT and global PFlow options are read-only because the API does not
+provide a complete delete or reset lifecycle. Firewall resource mutations
+initiate a filter reload but do not confirm its completion.
+
 ## 🧪 Example Usage
 
 ```terraform

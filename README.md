@@ -21,6 +21,18 @@ behaviour, compatibility, and recovery in an isolated environment first.
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
 
+## 🔥 Managed firewall resources
+
+The provider manages firewall aliases, filter rules, schedules, NPT NAT,
+one-to-one NAT, port-forward NAT, ALTQ root queues, limiters, PFlow exporters,
+and virtual IPs. See the [resource documentation](docs/resources/) for
+individual resource schemas and import instructions.
+
+Outbound NAT and global PFlow options remain read-only: the API does not
+provide the complete delete or reset lifecycle needed to manage them safely.
+Firewall resource mutations initiate a filter reload but do not confirm its
+completion.
+
 The provider routes firewall and WireGuard operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
