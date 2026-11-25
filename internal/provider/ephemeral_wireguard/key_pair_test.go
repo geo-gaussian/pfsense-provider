@@ -99,3 +99,122 @@ func TestKeyPairOpenRejectsMissingKeys(t *testing.T) {
 		t.Fatal("expected an error when the API omits private key material")
 	}
 }
+
+func TestKeyPairMetadataConfigureAndOpenErrors(t *testing.T) {
+	ctx := context.Background()
+	r := New().(*keyPairResource)
+
+	var metadata ephemeral.MetadataResponse
+	r.Metadata(ctx, ephemeral.MetadataRequest{ProviderTypeName: "pfsense"}, &metadata)
+	if metadata.TypeName != "pfsense_wireguard_key_pair" {
+		t.Fatalf("unexpected ephemeral resource type name %q", metadata.TypeName)
+	}
+
+	for _, providerData := range []any{nil, "invalid"} {
+		var response ephemeral.ConfigureResponse
+		r.Configure(ctx, ephemeral.ConfigureRequest{ProviderData: providerData}, &response)
+		if response.Diagnostics.HasError() != (providerData != nil) {
+			t.Fatalf("unexpected Configure diagnostics for %#v: %v", providerData, response.Diagnostics)
+		}
+	}
+
+	var schemaResp ephemeral.SchemaResponse
+	r.Schema(ctx, ephemeral.SchemaRequest{}, &schemaResp)
+	t.Run("client missing", func(t *testing.T) {
+		response := openResponse(schemaResp.Schema)
+		r.Open(ctx, ephemeral.OpenRequest{}, &response)
+		if !response.Diagnostics.HasError() {
+			t.Fatal("expected an error without a configured client")
+		}
+	})
+
+	t.Run("transport error", func(t *testing.T) {
+		server := httptest.NewServer(http.NotFoundHandler())
+		client, err := api.NewClientWithResponses(server.URL)
+		if err != nil {
+			t.Fatal(err)
+		}
+		server.Close()
+		configured := &keyPairResource{client: client}
+		response := openResponse(schemaResp.Schema)
+		configured.Open(ctx, ephemeral.OpenRequest{}, &response)
+		if !response.Diagnostics.HasError() {
+			t.Fatal("expected an API transport error")
+		}
+	})
+
+	for _, tt := range []struct {
+		name   string
+		status int
+		body   string
+	}{
+		{name: "rejected status", status: http.StatusServiceUnavailable},
+		{name: "null response", status: http.StatusOK, body: "null"},
+		{name: "empty private key", status: http.StatusOK, body: `{"privkey":[],"pubkey":[1]}`},
+		{name: "empty public key", status: http.StatusOK, body: `{"privkey":[1],"pubkey":[]}`},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			client := keyPairClient(t, tt.status, tt.body)
+			configured := &keyPairResource{client: client}
+			response := openResponse(schemaResp.Schema)
+			configured.Open(ctx, ephemeral.OpenRequest{}, &response)
+			if !response.Diagnostics.HasError() {
+				t.Fatal("expected invalid API response to fail")
+			}
+		})
+	}
+
+	t.Run("optional fields omitted", func(t *testing.T) {
+		client := keyPairClient(t, http.StatusOK, `{"privkey":[1,2],"pubkey":[3,4]}`)
+		configured := &keyPairResource{client: client}
+		response := openResponse(schemaResp.Schema)
+		configured.Open(ctx, ephemeral.OpenRequest{}, &response)
+		if response.Diagnostics.HasError() {
+			t.Fatal(response.Diagnostics)
+		}
+		var result keyPairModel
+		if diags := response.Result.Get(ctx, &result); diags.HasError() {
+			t.Fatal(diags)
+		}
+		if !result.PrivateKeyClamped.IsNull() || !result.WasClamped.IsNull() {
+			t.Fatalf("omitted optional values should remain null: %#v", result)
+		}
+	})
+
+	t.Run("result schema mismatch", func(t *testing.T) {
+		client := keyPairClient(t, http.StatusOK, `{"privkey":[1],"pubkey":[2]}`)
+		configured := &keyPairResource{client: client}
+		response := openResponse(schemaResp.Schema)
+		response.Result.Schema = schema.Schema{Attributes: map[string]schema.Attribute{
+			"private_key":         schema.BoolAttribute{Computed: true, Sensitive: true},
+			"private_key_clamped": schema.StringAttribute{Computed: true, Sensitive: true},
+			"public_key":          schema.StringAttribute{Computed: true},
+			"was_clamped":         schema.BoolAttribute{Computed: true},
+		}}
+		configured.Open(ctx, ephemeral.OpenRequest{}, &response)
+		if !response.Diagnostics.HasError() {
+			t.Fatal("expected incompatible result schema to fail")
+		}
+	})
+}
+
+func openResponse(s schema.Schema) ephemeral.OpenResponse {
+	return ephemeral.OpenResponse{Result: tfsdk.EphemeralResultData{Schema: s}}
+}
+
+func keyPairClient(t *testing.T, status int, body string) *api.ClientWithResponses {
+	t.Helper()
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(status)
+		if body != "" {
+			_, _ = w.Write([]byte(body))
+		}
+	}))
+	t.Cleanup(server.Close)
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return client
+}
