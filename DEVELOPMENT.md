@@ -93,7 +93,7 @@ if apiResp.PrivateKey != "" {
 
 ## 🧪 Offline HTTP Unit Testing with `httptest`
 
-Test JSON serialization, authentication, and HTTP errors without needing a live
+Test JSON serialisation, authentication, and HTTP errors without needing a live
 router. See `internal/client/client_test.go` and the existing resource and data
 source tests for the current request paths and mock-server patterns.
 

@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -17,7 +17,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before clarification)**:
 - Check if `.specify/extensions.yml` exists in the project root.
@@ -53,7 +53,7 @@ You **MUST** consider the user input before proceeding (if not empty).
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Outline
+## 🧭 Outline
 
 Goal: Detect and reduce ambiguity or missing decision points in the active feature specification and record the clarifications directly in the spec file.
 
@@ -72,7 +72,7 @@ Execution steps:
 
 3. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
 
-   Functional Scope & Behavior:
+   Functional Scope & Behaviour:
    - Core user goals & success criteria
    - Explicit out-of-scope declarations
    - User roles / personas differentiation
@@ -106,9 +106,9 @@ Execution steps:
    - Rate limiting / throttling
    - Conflict resolution (e.g., concurrent edits)
 
-   Constraints & Tradeoffs:
+   Constraints & Trade-offs:
    - Technical constraints (language, storage, hosting)
-   - Explicit tradeoffs or rejected alternatives
+   - Explicit trade-offs or rejected alternatives
 
    Terminology & Consistency:
    - Canonical glossary terms
@@ -131,7 +131,7 @@ Execution steps:
     - Each question must be answerable with EITHER:
        - A short multiple‑choice selection (2–5 distinct, mutually exclusive options), OR
        - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words").
-    - Only include questions whose answers materially impact architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation.
+    - Only include questions whose answers materially impact architecture, data modelling, task decomposition, test design, UX behaviour, operational readiness, or compliance validation.
     - Ensure category coverage balance: attempt to cover the highest impact unresolved categories first; avoid asking two low-impact questions when a single high-impact area (e.g., security posture) is unresolved.
     - Exclude questions already answered, trivial stylistic preferences, or plan-level execution details (unless blocking correctness).
     - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
@@ -146,7 +146,7 @@ Execution steps:
        - Immediately after the question line, add one plain-language "Why it matters" sentence (the stake for acceptance or shipping) before the recommendation/options.
        - Use everyday wording; introduce jargon only if defined in the same sentence. Self-check: a reader who does not know Spec Kit must be able to answer from the Question line alone. Terse is fine; cryptic labels are not.
     - For multiple‑choice questions:
-       - **Analyze all options** and determine the **most suitable option** based on:
+       - **Analyse all options** and determine the **most suitable option** based on:
           - Best practices for the project type
           - Common patterns in similar implementations
           - Risk reduction (security, performance, maintainability)
@@ -191,7 +191,7 @@ Execution steps:
        - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
        - Non-functional constraint → Add/modify measurable criteria in Success Criteria > Measurable Outcomes (convert vague adjective to metric or explicit target).
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
-       - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
+       - Terminology conflict → Normalise term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
     - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.
     - Save the spec file AFTER each integration to minimize risk of context loss (atomic overwrite).
     - Preserve formatting: do not reorder unrelated sections; keep heading hierarchy intact.
@@ -226,7 +226,7 @@ Execution steps:
         - **Still unchecked**: items that remain unchecked.
      8. Record the before/after pass counts as checked/total checkbox items (e.g., "12/16 → 15/16 items passing").
 
-Behavior rules:
+Behaviour rules:
 
 - If no meaningful ambiguities found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding.
 - If spec file missing, instruct user to run `/speckit-specify` first (do not create a new spec here).
@@ -238,7 +238,7 @@ Behavior rules:
 
 Context for prioritization: $ARGUMENTS
 
-## Mandatory Post-Execution Hooks
+## 🔄 Mandatory Post-Execution Hooks
 
 **You MUST complete this section before reporting completion to the user.**
 
@@ -273,7 +273,7 @@ Check if `.specify/extensions.yml` exists in the project root.
     To execute: `/{command}`
     ```
 
-## Completion Report
+## 📋 Completion Report
 
 Report completion (after questioning loop ends or early termination):
 - Number of questions asked & answered.
@@ -284,7 +284,7 @@ Report completion (after questioning loop ends or early termination):
 - If any Outstanding or Deferred remain, recommend whether to proceed to `/speckit-plan` or run `/speckit-clarify` again later post-plan.
 - Suggested next command.
 
-## Done When
+## ✅ Done When
 
 - [ ] Spec ambiguities identified and clarifications integrated into spec file
 - [ ] Spec quality checklist re-validated against updated spec (if `FEATURE_DIR/checklists/requirements.md` exists)

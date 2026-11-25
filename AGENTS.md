@@ -13,7 +13,7 @@ versions remains unverified.
 
 ## 📐 Architectural Rules & Constraints
 
-1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serializes HTTP requests per configured client, not across separate clients or Terraform processes.
+1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serialises HTTP requests per configured client, not across separate clients or Terraform processes.
 2. **Preserve Generated Files vs. Custom Logic:**
    - HashiCorp's OpenAPI resource generator is configured for the alias resource. WireGuard resources, the ephemeral key-pair resource, and selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and registration.
 3. **Explicit Apply / Reload Lifecycle:**
@@ -38,6 +38,7 @@ versions remains unverified.
   tool requires that exact filename.
 - Use two-space indentation in Markdown and preserve rendered list and code
   block structure.
+- Write project documentation in British English.
 - Follow the repository's cspell configuration and update documentation when
   behaviour or development workflows change.
 - Keep examples free of credentials and other sensitive information.

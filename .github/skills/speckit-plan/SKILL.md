@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -17,7 +17,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before planning)**:
 - Check if `.specify/extensions.yml` exists in the project root.
@@ -53,7 +53,7 @@ You **MUST** consider the user input before proceeding (if not empty).
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Outline
+## 🧭 Outline
 
 1. **Setup**: Run `.specify/scripts/bash/setup-plan.sh --json` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, FEATURE_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
@@ -67,7 +67,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Phase 1: Generate data-model.md, contracts/, quickstart.md
    - Re-evaluate Constitution Check post-design
 
-## Mandatory Post-Execution Hooks
+## 🔄 Mandatory Post-Execution Hooks
 
 **You MUST complete this section before reporting completion to the user.**
 
@@ -102,13 +102,13 @@ Check if `.specify/extensions.yml` exists in the project root.
     To execute: `/{command}`
     ```
 
-## Completion Report
+## 📋 Completion Report
 
 Command ends after Phase 1 design. Report branch, IMPL_PLAN path, and generated artifacts.
 
-## Phases
+## 🗓️ Phases
 
-### Phase 0: Outline & Research
+### 🔎 Phase 0: Outline & Research
 
 1. **Extract unknowns from Technical Context** above:
    - For each NEEDS CLARIFICATION → research task
@@ -131,7 +131,7 @@ Command ends after Phase 1 design. Report branch, IMPL_PLAN path, and generated 
 
 **Output**: research.md with all NEEDS CLARIFICATION resolved
 
-### Phase 1: Design & Contracts
+### 🧩 Phase 1: Design & Contracts
 
 **Prerequisites:** `research.md` complete
 
@@ -155,12 +155,12 @@ Command ends after Phase 1 design. Report branch, IMPL_PLAN path, and generated 
 
 **Output**: data-model.md, /contracts/*, quickstart.md
 
-## Key rules
+## 📐 Key rules
 
 - Use absolute paths for filesystem operations; use project-relative paths for references in documentation
 - ERROR on gate failures or unresolved clarifications
 
-## Done When
+## ✅ Done When
 
 - [ ] Plan workflow executed and design artifacts generated
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above

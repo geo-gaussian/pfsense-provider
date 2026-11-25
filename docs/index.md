@@ -42,13 +42,13 @@ data "pfsense_firewall_aliases" "current" {}
 
 ## 🔍 Read-only Data Sources
 
-The read-only catalog includes firewall NAT and rule configuration, interface
+The read-only catalogue includes firewall NAT and rule configuration, interface
 and route discovery, service settings and status, VPN status/configuration,
 DHCP leases, system health, and monitoring information. These data sources do
 not apply configuration or reload the firewall. WireGuard status omits key
 material; full configuration and rendered tunnel configuration outputs are
-sensitive. The additional data sources have only been tested against mock
-servers; appliance behaviour and compatibility remain unverified.
+sensitive. All data sources other than alias listing have only been tested
+against mock servers; appliance behaviour and compatibility remain unverified.
 
 ## ⚙️ Argument Reference
 

@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## Checklist Purpose: "Unit Tests for English"
+## 📋 Checklist Purpose: "Unit Tests for English"
 
 **CRITICAL CONCEPT**: Checklists are **UNIT TESTS FOR REQUIREMENTS WRITING** - they validate the quality, clarity, and completeness of requirements in a given domain.
 
@@ -39,7 +39,7 @@ metadata:
 - An agent may assist with evaluating items only when explicitly asked by the reviewer.
 - `checklists/requirements.md` is a separate built-in spec-quality checklist maintained by `/speckit-specify` and `/speckit-clarify`; do not treat that exception as applying to custom checklists generated here.
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -47,7 +47,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before checklist generation)**:
 - Check if `.specify/extensions.yml` exists in the project root.
@@ -83,7 +83,7 @@ You **MUST** consider the user input before proceeding (if not empty).
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Execution Steps
+## 🔄 Execution Steps
 
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --template checklist-template` from repo root and parse JSON for FEATURE_DIR, AVAILABLE_DOCS list, and TEMPLATE_CONTENT.
    - All file paths must be absolute.
@@ -91,7 +91,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **IF EXISTS**: Load `.specify/memory/constitution.md` for project principles and governance constraints.
 
-3. **Clarify intent (dynamic)**: Derive up to THREE initial contextual clarifying questions (no pre-baked catalog). They MUST:
+3. **Clarify intent (dynamic)**: Derive up to THREE initial contextual clarifying questions (no pre-baked catalogue). They MUST:
    - Be generated from the user's phrasing + extracted signals from spec/plan/tasks
    - Only ask about information that materially changes checklist content
    - Be skipped individually if already unambiguous in `$ARGUMENTS`
@@ -101,7 +101,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    1. Extract signals: feature domain keywords (e.g., auth, latency, UX, API), risk indicators ("critical", "must", "compliance"), stakeholder hints ("QA", "review", "security team"), and explicit deliverables ("a11y", "rollback", "contracts").
    2. Cluster signals into candidate focus areas (max 4) ranked by relevance.
    3. Identify probable audience & timing (author, reviewer, QA, release) if not explicit.
-   4. Detect missing dimensions: scope breadth, depth/rigor, risk emphasis, exclusion boundaries, measurable acceptance criteria.
+   4. Detect missing dimensions: scope breadth, depth/rigour, risk emphasis, exclusion boundaries, measurable acceptance criteria.
    5. Formulate questions chosen from these archetypes:
       - Scope refinement (e.g., "Should this include integration touchpoints with X and Y or stay limited to local module correctness?")
       - Risk prioritization (e.g., "Which of these potential risk areas should receive mandatory gating checks?")
@@ -145,7 +145,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Generate unique checklist filename:
      - Use short, descriptive name based on domain (e.g., `ux.md`, `api.md`, `security.md`)
      - Format: `[domain].md`
-   - File handling behavior:
+   - File handling behaviour:
      - If file does NOT exist: Create new file and number items starting from CHK001
      - If file exists: Append new items to existing file, continuing from the last CHK ID (e.g., if last item is CHK015, start new items at CHK016)
    - Never delete or replace existing checklist content - always preserve and append
@@ -182,7 +182,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - "Is 'prominent display' quantified with specific sizing/positioning?" [Clarity]
    - "Are hover state requirements consistent across all interactive elements?" [Consistency]
    - "Are keyboard navigation requirements defined for all interactive UI?" [Coverage]
-   - "Is the fallback behavior specified when logo image fails to load?" [Edge Cases]
+   - "Is the fallback behaviour specified when logo image fails to load?" [Edge Cases]
    - "Are loading states defined for asynchronous episode data?" [Completeness]
    - "Does the spec define visual hierarchy for competing UI elements?" [Clarity]
 
@@ -244,8 +244,8 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If >5 low-impact edge cases, create one item: "Are edge cases X, Y, Z addressed in requirements? [Coverage]"
 
    **🚫 ABSOLUTELY PROHIBITED** - These make it an implementation test, not a requirements test:
-   - ❌ Any item starting with "Verify", "Test", "Confirm", "Check" + implementation behavior
-   - ❌ References to code execution, user actions, system behavior
+   - ❌ Any item starting with "Verify", "Test", "Confirm", "Check" + implementation behaviour
+   - ❌ References to code execution, user actions, system behaviour
    - ❌ "Displays correctly", "works properly", "functions as expected"
    - ❌ "Click", "navigate", "render", "load", "execute"
    - ❌ Test cases, test plans, QA procedures
@@ -275,7 +275,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 To avoid clutter, use descriptive types and clean up obsolete checklists when done.
 
-## Example Checklist Types & Sample Items
+## 🧾 Example Checklist Types & Sample Items
 
 **UX Requirements Quality:** `ux.md`
 
@@ -285,7 +285,7 @@ Sample items (testing the requirements, NOT the implementation):
 - "Is the number and positioning of UI elements explicitly specified? [Completeness, Spec §FR-1]"
 - "Are interaction state requirements (hover, focus, active) consistently defined? [Consistency]"
 - "Are accessibility requirements specified for all interactive elements? [Coverage, Gap]"
-- "Is fallback behavior defined when images fail to load? [Edge Case, Gap]"
+- "Is fallback behaviour defined when images fail to load? [Edge Case, Gap]"
 - "Can 'prominent display' be objectively measured? [Measurability, Spec §FR-4]"
 
 **API Requirements Quality:** `api.md`
@@ -318,7 +318,7 @@ Sample items:
 - "Are security requirements consistent with compliance obligations? [Consistency]"
 - "Are security failure/breach response requirements defined? [Gap, Exception Flow]"
 
-## Anti-Examples: What NOT To Do
+## 🚫 Anti-Examples: What NOT To Do
 
 **❌ WRONG - These test implementation, not requirements:**
 
@@ -344,12 +344,12 @@ Sample items:
 
 - Wrong: Tests if the system works correctly
 - Correct: Tests if the requirements are written correctly
-- Wrong: Verification of behavior
+- Wrong: Verification of behaviour
 - Correct: Validation of requirement quality
 - Wrong: "Does it do X?"
 - Correct: "Is X clearly specified?"
 
-## Post-Execution Checks
+## ✅ Post-Execution Checks
 
 **Check for extension hooks (after checklist generation)**:
 Check if `.specify/extensions.yml` exists in the project root.

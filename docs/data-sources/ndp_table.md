@@ -1,6 +1,6 @@
 # 🧭 pfsense_ndp_table (Data Source)
 
-Reads the IPv6 neighbor discovery table, including local device addresses. The
+Reads the IPv6 neighbour discovery table, including local device addresses. The
 JSON result is marked sensitive.
 
 ## 🧪 Example Usage
