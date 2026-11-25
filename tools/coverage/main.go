@@ -30,14 +30,25 @@ type evidence struct {
 
 // Generated methods alone do not constitute provider support.
 var implemented = map[string]evidence{
-	"Login":               {"POST", "/login", "internal/client/client.go", "internal/client/client_test.go", "manually observed"},
-	"RefreshAccessToken":  {"POST", "/login/refresh", "internal/client/client.go", "internal/client/client_test.go", ""},
-	"FirewallGetAliases":  {"GET", "/aliases", "internal/provider/data_firewall_aliases/firewall_aliases_data_source.go", "internal/provider/data_firewall_aliases/firewall_aliases_data_source_test.go", "manually observed"},
-	"FirewallAddAlias":    {"PUT", "/aliases", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallGetAlias":    {"GET", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallUpdateAlias": {"POST", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallDeleteAlias": {"DELETE", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"DoFilterReload":      {"POST", "/system/filterreload/reload", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"Login":                  {"POST", "/login", "internal/client/client.go", "internal/client/client_test.go", "manually observed"},
+	"RefreshAccessToken":     {"POST", "/login/refresh", "internal/client/client.go", "internal/client/client_test.go", ""},
+	"FirewallGetAliases":     {"GET", "/aliases", "internal/provider/data_firewall_aliases/firewall_aliases_data_source.go", "internal/provider/data_firewall_aliases/firewall_aliases_data_source_test.go", "manually observed"},
+	"FirewallAddAlias":       {"PUT", "/aliases", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"FirewallGetAlias":       {"GET", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"FirewallUpdateAlias":    {"POST", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"FirewallDeleteAlias":    {"DELETE", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"DoFilterReload":         {"POST", "/system/filterreload/reload", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
+	"GetWireGuard":           {"GET", "/vpn/wg", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"GetNewWireGuardKeys":    {"GET", "/vpn/wg/genkeys", "internal/provider/ephemeral_wireguard/key_pair.go", "internal/provider/ephemeral_wireguard/key_pair_test.go", ""},
+	"SetWireGuardPeer":       {"PUT", "/vpn/wg/peer", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"UpdateWireGuardPeer":    {"POST", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"DeleteWireGuardPeer":    {"DELETE", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"SetWireGuardSettings":   {"POST", "/vpn/wg/settings", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"GetWireGuardStatus":     {"GET", "/vpn/wg/status", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
+	"SetWireGuardTunnel":     {"PUT", "/vpn/wg/tunnel", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"UpdateWireGuardTunnel":  {"POST", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"DeleteWireGuardTunnel":  {"DELETE", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
+	"GetWireGuardTunnelConf": {"GET", "/vpn/wg/tunnel/{name}/conf", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
 }
 
 type operation struct {
@@ -196,12 +207,15 @@ func filterProfile(data []byte) ([]byte, int64, int64, error) {
 			continue
 		}
 		num, err := strconv.ParseInt(fields[1], 10, 64)
-		if err != nil || num <= 0 {
+		if err != nil || num < 0 {
 			return nil, 0, 0, fmt.Errorf("invalid statement count in %q", line)
 		}
 		count, err := strconv.ParseInt(fields[2], 10, 64)
 		if err != nil || count < 0 {
 			return nil, 0, 0, fmt.Errorf("invalid execution count in %q", line)
+		}
+		if num == 0 {
+			continue
 		}
 		total += num
 		if count > 0 {

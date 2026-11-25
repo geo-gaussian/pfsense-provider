@@ -73,10 +73,11 @@ func TestFilterProfile(t *testing.T) {
 	profile := "mode: atomic\n" +
 		module + "custom.go:1.1,2.1 3 1\n" +
 		module + "custom.go:2.1,3.1 2 0\n" +
+		module + "custom.go:3.1,4.1 0 1\n" +
 		module + "generated.go:1.1,2.1 20 1\n" +
 		module + "tools/coverage/main.go:1.1,2.1 30 1\n"
 	result, covered, total, err := filterProfile([]byte(profile))
-	if err != nil || covered != 3 || total != 5 || strings.Contains(string(result), "generated.go") || strings.Contains(string(result), "tools/coverage") {
+	if err != nil || covered != 3 || total != 5 || strings.Contains(string(result), "generated.go") || strings.Contains(string(result), "tools/coverage") || strings.Contains(string(result), "3.1,4.1") {
 		t.Fatalf("unexpected filtered profile: %q, %d/%d, %v", result, covered, total, err)
 	}
 	if _, _, _, err := filterProfile([]byte("mode: atomic\n" + module + "custom.go:1.1,2.1 invalid 1\n")); err == nil {
