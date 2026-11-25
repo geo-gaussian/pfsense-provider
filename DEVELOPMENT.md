@@ -37,6 +37,10 @@ argument lists.
 4. Implement the lifecycle and import methods, register the resource in
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.
+5. Add focused tests for successful behaviour and relevant validation, API
+   failures, malformed responses, and state-preservation behaviour. Run
+   `pnpm run coverage`, compare coverage with the base revision, and run
+   `pnpm run lint`.
 
 ## 🔍 Adding a Read-Only Data Source
 
@@ -53,8 +57,9 @@ argument lists.
 4. Mark the `json` output sensitive when the response can contain private or
    identifying information. If secret fields can be safely omitted from a
    status projection, omit them rather than exposing them in state.
-5. Add mock HTTP coverage for the endpoint and its relevant error cases. Run
-   `go test -race ./...` and `pnpm run lint`.
+5. Add mock HTTP coverage for successful responses and relevant failure cases.
+   Run `pnpm run coverage`, compare coverage with the base revision, and run
+   `pnpm run lint`.
 
 ## 🔐 WireGuard resources and ephemeral keys
 
@@ -96,6 +101,43 @@ if apiResp.PrivateKey != "" {
 Test JSON serialisation, authentication, and HTTP errors without needing a live
 router. See `internal/client/client_test.go` and the existing resource and data
 source tests for the current request paths and mock-server patterns.
+
+## 📊 Preventing Coverage Regressions
+
+Run the same coverage command on the base revision and the proposed change:
+
+```sh
+pnpm run coverage
+```
+
+Compare the reported unit statement-coverage ratios, using the same toolchain
+and coverage rules. When the covered or total statement counts differ, compare
+the ratios rather than the covered counts alone. The command runs the
+race-enabled Go test suite and generates the report, but it does not fail when
+coverage decreases.
+
+The proposed change MUST NOT lower coverage without a clear justification in
+the pull request and explicit reviewer approval. Explain the reason for the
+decrease, its impact, and any mitigating tests or safeguards. Report the
+before-and-after coverage values; a successful command exit is not evidence
+that coverage did not regress.
+
+Add focused tests for changed behaviour, including applicable success,
+validation, API transport and status errors, malformed or missing responses,
+secret retention, and out-of-band deletion. Assert outcomes and diagnostics;
+do not optimise tests for line execution or remove coverage exclusions to hide
+a regression. When a defensive conversion error cannot be triggered with valid
+Terraform input, isolate the conversion boundary so its error handling can be
+tested without weakening production checks.
+
+## 🧭 Spec Kit Test Requirements
+
+Spec Kit provides a project Constitution and a Constitution Check in the
+implementation-plan workflow. The repository Constitution makes focused tests
+mandatory for behaviour changes and requires plans to include test tasks, even
+though the generic Spec Kit tasks template describes tests as optional. Each
+story's independent test and acceptance scenarios should identify the expected
+behaviour and relevant failure cases.
 
 ## 🖥️ Planning live acceptance tests
 

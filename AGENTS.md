@@ -55,15 +55,36 @@ sequenceDiagram
     participant Gen as OpenAPI code generators
     participant Impl as Provider implementation
     participant Client as internal/client (Mutex + Auth)
-    participant Test as go test (httptest / provider protocol)
+    participant Test as go test + coverage
 
     Dev->>Gen: 1. Update generator mappings or API operation IDs; regenerate
     Gen->>Impl: 2. Generate resource schemas and selected API client methods
     Dev->>Impl: 3. Implement resource lifecycle or custom read-only data source
     Impl->>Client: Route every HTTP request through NexusClient.DoRequest
     Dev->>Test: 4. Add mock HTTP and provider-protocol tests as applicable
-    Test-->>Dev: 5. Verify pass with `go test -race ./...`
+    Test-->>Dev: 5. Compare coverage with the base revision; justify any decrease, then lint
 ```
+
+## 🧪 Test Quality and Coverage
+
+- Every behaviour change MUST include focused regression tests for the changed
+  behaviour. Cover success and relevant validation, API failure, malformed or
+  missing response, state-preservation, and out-of-band deletion paths.
+- Tests MUST assert expected state, outputs, and diagnostics. Do not add tests
+  solely to execute statements or weaken runtime checks to improve coverage.
+- Run `pnpm run coverage` and compare its unit statement-coverage ratio with the
+  base revision using the same tooling. Compare ratios when the statement totals
+  differ; a larger covered-statement count alone does not prove coverage did
+  not regress.
+- If coverage decreases, the pull request MUST explain the cause, impact, and
+  risk mitigation, and receive explicit reviewer approval. The command does not
+  enforce this comparison, so report the before-and-after values in the pull
+  request. New or changed behaviour still requires meaningful tests.
+- If a defensive error path cannot be reached with a valid Terraform schema,
+  isolate its conversion boundary and test the error behaviour without
+  weakening production error handling.
+- `pnpm run coverage` already runs `go test -race ./...`; run that Go command
+  separately only when race testing is needed without a coverage report.
 
 ## ✅ Definition of Done for Any New Resource
 
@@ -72,7 +93,10 @@ Before marking a resource complete, verify:
 - [ ] Endpoint paths and JSON field tags match `docs/nexus.openapi.yaml`.
 - [ ] `Create`, `Read`, `Update`, `Delete`, and `ImportState` are all implemented.
 - [ ] Sensitive fields are marked `Sensitive: true`.
-- [ ] Offline unit test in `internal/client` or `internal/provider` passes under `go test -race ./...`.
+- [ ] Mock HTTP tests cover successful lifecycle behaviour and relevant
+  validation, API-error, malformed-response, and secret-preservation paths.
+- [ ] `pnpm run coverage` has been compared with the base revision; any decrease
+  has a reviewed justification. `pnpm run lint` passes.
 - [ ] No hardcoded credentials, IPs, or private keys appear in code or examples.
 
 ## 📖 Definition of Done for Any New Data Source
@@ -80,5 +104,8 @@ Before marking a resource complete, verify:
 - [ ] The OpenAPI operation is a safe read and its request, response, and endpoint behaviour have been reviewed.
 - [ ] The selected operation ID is in `oapi-codegen.yaml`, and the custom data source is registered in `internal/provider/provider.go`.
 - [ ] Sensitive or identifying JSON output is marked sensitive; secret material is omitted from status projections where appropriate.
-- [ ] A data-source page exists under `docs/data-sources/`, and mock HTTP tests cover the endpoint and relevant failures.
-- [ ] `go test -race ./...` and `pnpm run lint` pass; live appliance compatibility is clearly described as unverified unless tested.
+- [ ] A data-source page exists under `docs/data-sources/`, and mock HTTP tests
+  cover the endpoint and relevant failures.
+- [ ] `pnpm run coverage` has been compared with the base revision; any decrease
+  has a reviewed justification. `pnpm run lint` passes, and live appliance
+  compatibility is clearly described as unverified unless tested.

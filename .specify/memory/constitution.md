@@ -1,8 +1,9 @@
 <!--
 Sync Impact Report
-Version change: unratified template → 1.0.0
-Modified principles: none; the prior file contained only template placeholders.
-Added sections: five project principles, engineering constraints, quality workflow and governance.
+Version change: 1.0.0 → 1.1.0
+Modified principles: III. Regression Tests and Coverage (absolute target replaced by non-regression policy).
+Modified sections: Quality Workflow and Gates.
+Added sections: none.
 Removed sections: none.
 Follow-up TODO: confirm the original ratification date.
 -->
@@ -32,12 +33,18 @@ behaviour, including relevant success, validation, API failure, malformed-respon
 and state-preservation paths. Tests MUST assert outcomes and diagnostics rather
 than merely execute lines.
 
-The unit statement-coverage target is 100% of statements included by the
-repository's coverage report. Contributors MUST run `pnpm run coverage` and
-preserve that target. When a defensive error path cannot be reached through a
-valid Terraform schema, isolate the conversion boundary so the error behaviour
-can be tested without weakening production error handling. Coverage is a
-regression guard, not a substitute for meaningful assertions.
+Contributors MUST run `pnpm run coverage` and compare the reported unit
+statement-coverage ratio with the base revision using the same tooling and
+coverage rules. A change MUST NOT lower coverage unless its pull request gives
+a clear justification for the decrease and receives explicit reviewer
+approval. When statement totals differ, compare ratios rather than covered
+counts alone. The command does not enforce this comparison, so the pull request
+MUST report both values and include any required justification.
+
+When a defensive error path cannot be reached through a valid Terraform schema,
+isolate the conversion boundary so the error behaviour can be tested without
+weakening production error handling. Coverage is a regression guard, not a
+substitute for meaningful assertions.
 
 ### 🧱 IV. Explicit API and Code-Generation Boundaries
 
@@ -69,13 +76,14 @@ values.
 - Spec Kit implementation plans MUST include a Constitution Check that covers
   the principles above. Behaviour-changing work MUST include test tasks even
   when a generic Spec Kit template describes tests as optional.
-- Before completion, run `pnpm run coverage` and confirm the report remains at
-  100% unit statement coverage, then run `pnpm run lint`.
+- Before completion, run `pnpm run coverage`, compare its report with the base
+  revision, and run `pnpm run lint`. Any coverage decrease MUST have a
+  documented justification and explicit reviewer approval.
 - Run `go test -race ./...` when the coverage command has not already run it.
 - Review tests for meaningful assertions, representative error cases, and
   absence of dependence on a live appliance.
 - Any intentional exception MUST be documented in the change and approved
-  through project review; exceptions MUST NOT silently lower the coverage target.
+  through project review; exceptions MUST NOT silently lower coverage.
 
 ## ⚖️ Governance
 
@@ -89,4 +97,4 @@ for clarifications that do not change obligations. Reviewers MUST check proposed
 changes against these principles and the current `AGENTS.md` and `DEVELOPMENT.md`
 guidance.
 
-**Version**: 1.0.0 | **Ratified**: TODO | **Last Amended**: 2026-11-25
+**Version**: 1.1.0 | **Ratified**: TODO | **Last Amended**: 2026-11-25
