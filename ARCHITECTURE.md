@@ -95,8 +95,10 @@ sources expose the selected API payload as a computed JSON string so callers
 can inspect fields with Terraform's `jsondecode()`. They intentionally exclude
 diagnostic actions and downloads. Outputs that may contain arbitrary
 configuration are marked sensitive; WireGuard status is projected to omit
-private keys, preshared keys, and configuration objects. These endpoints are
-mock-tested but have not been validated against a live appliance.
+private keys, preshared keys, and configuration objects. WireGuard settings,
+tunnel, and peer resources use custom lifecycle code, while key generation is
+an ephemeral resource. These endpoints and writes are mock-tested but have not
+been validated against a live appliance.
 
 ## ⚙️ Generation and development
 
@@ -105,8 +107,11 @@ specification. `make generate` uses [generator_config.yaml](generator_config.yam
 to generate the alias resource schema and [oapi-codegen.yaml](oapi-codegen.yaml)
 to generate the Go API client methods selected for resources and data sources.
 The generated `*_gen.go` files are not hand-edited; CRUD, authentication,
-reload handling, and Terraform data-source behaviour are custom code. Review
-generated changes alongside custom integration when updating the specification.
+reload handling, and Terraform data-source behaviour are custom code. WireGuard
+mutations use the documented operations without an additional apply call,
+because the current specification defines no WireGuard-specific reload
+operation. Review generated changes alongside custom integration when updating
+the specification.
 
 Tests use mock HTTP servers; when Terraform is available, tests also exercise
 the provider protocol. The pre-commit hook runs lint and race tests. CI runs

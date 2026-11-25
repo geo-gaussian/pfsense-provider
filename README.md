@@ -4,29 +4,30 @@
 [![Live acceptance coverage unavailable](https://img.shields.io/badge/acceptance-unavailable-lightgrey)](#-coverage)
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
-This experimental provider manages a firewall alias and reads selected
-firewall, network, service, VPN, and system configuration or status from a
-local pfSense firewall through the Nexus controller. It uses Netgate's OpenAPI
-specification and HashiCorp's Terraform Plugin Framework.
+This experimental provider manages firewall aliases and WireGuard settings,
+tunnels, and peers, and reads selected firewall, network, service, VPN, and
+system configuration or status from a local pfSense firewall through the Nexus
+controller. WireGuard key generation is available as an ephemeral resource.
+It uses Netgate's OpenAPI specification and HashiCorp's Terraform Plugin
+Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
-Alias writes and reloads have only been tested against mock servers. Do not use
-the resource on a production firewall. Verify API behaviour, compatibility,
-and recovery in an isolated environment first.
-The read-only data sources have only been tested against mock servers and the
-included OpenAPI specification; their behaviour on appliances remains
-unverified.
+Alias writes/reloads, WireGuard operations, and the read-only data sources have
+only been tested against mock servers and the included OpenAPI specification.
+Do not use these resources on a production firewall. Verify API behaviour,
+compatibility, and recovery in an isolated environment first.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
 
-The provider routes firewall operations through
+The provider routes firewall and WireGuard operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
-installations have not been verified. Firewall writes initiate a filter reload,
-but do not establish that the resulting rules are active. Requests are
-serialized per configured client, not across separate provider configurations
-or Terraform processes.
+installations have not been verified. Firewall alias writes initiate a filter
+reload, but WireGuard mutations use the documented API operations without an
+additional apply call because the included specification defines no
+WireGuard-specific apply endpoint. Requests are serialized per configured
+client, not across separate provider configurations or Terraform processes.
 If a write or reload fails, check the firewall configuration and initiate a
 reload manually before retrying: Terraform refresh may observe the changed
 configuration without retrying the failed reload. A failed create with an
@@ -36,6 +37,7 @@ uncertain API response may also require importing the existing alias.
 
 - Go 1.25 or newer to build
 - Terraform 1.8 or newer
+- Terraform 1.10 or newer to use the WireGuard ephemeral key-pair resource
 - Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
   repository lint checks
 - jq for the Pages deployment guard and its offline tests

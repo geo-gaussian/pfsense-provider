@@ -44,7 +44,17 @@ output-options:
     - GetRouterAdvSettings
     - GetIPSecWidget
     - GetOpenVPNStatus
+    - GetWireGuard
+    - GetNewWireGuardKeys
+    - SetWireGuardPeer
+    - UpdateWireGuardPeer
+    - DeleteWireGuardPeer
+    - SetWireGuardSettings
     - GetWireGuardStatus
+    - SetWireGuardTunnel
+    - UpdateWireGuardTunnel
+    - DeleteWireGuardTunnel
+    - GetWireGuardTunnelConf
     - GetDHCPLeases
     - GetDnsResolverStatus
     - GetNDPTable

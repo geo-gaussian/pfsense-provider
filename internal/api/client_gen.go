@@ -2986,6 +2986,11 @@ type WGPeer struct {
 	Tun                 *string        `json:"tun,omitempty"`
 }
 
+// WGPeers defines model for WGPeers.
+type WGPeers struct {
+	Item *[]WGPeer `json:"item,omitempty"`
+}
+
 // WGTunnel valid values:
 // enabled = "yes", "no"
 type WGTunnel struct {
@@ -2997,6 +3002,16 @@ type WGTunnel struct {
 	Name       string         `json:"name"`
 	Privatekey string         `json:"privatekey"`
 	Publickey  string         `json:"publickey"`
+}
+
+// WGTunnelConf defines model for WGTunnelConf.
+type WGTunnelConf struct {
+	Conf *string `json:"conf,omitempty"`
+}
+
+// WGTunnels defines model for WGTunnels.
+type WGTunnels struct {
+	Item *[]WGTunnel `json:"item,omitempty"`
 }
 
 // WatchdogList defines model for WatchdogList.
@@ -3014,6 +3029,14 @@ type WatchdogService struct {
 	Watch *bool   `json:"watch,omitempty"`
 }
 
+// WireGuardKeys defines model for WireGuardKeys.
+type WireGuardKeys struct {
+	Privkey        *[]byte `json:"privkey,omitempty"`
+	PrivkeyClamped *[]byte `json:"privkey_clamped,omitempty"`
+	Pubkey         *[]byte `json:"pubkey,omitempty"`
+	WasClamped     *bool   `json:"was_clamped,omitempty"`
+}
+
 // WireGuardPeerStatus defines model for WireGuardPeerStatus.
 type WireGuardPeerStatus struct {
 	AllowedIps *string `json:"allowed_ips,omitempty"`
@@ -3028,6 +3051,13 @@ type WireGuardPeerStatus struct {
 	PublicKey           *string `json:"public_key,omitempty"`
 	TransferRx          *string `json:"transfer_rx,omitempty"`
 	TransferTx          *string `json:"transfer_tx,omitempty"`
+}
+
+// WireGuardSettings defines model for WireGuardSettings.
+type WireGuardSettings struct {
+	Config  *[]WGConfig `json:"config,omitempty"`
+	Peers   *WGPeers    `json:"peers,omitempty"`
+	Tunnels *WGTunnels  `json:"tunnels,omitempty"`
 }
 
 // WireGuardStatus defines model for WireGuardStatus.
@@ -3071,6 +3101,21 @@ type LoginJSONRequestBody = LoginCredentials
 
 // RefreshAccessTokenJSONRequestBody defines body for RefreshAccessToken for application/json ContentType.
 type RefreshAccessTokenJSONRequestBody = RefreshTokenParam
+
+// SetWireGuardPeerJSONRequestBody defines body for SetWireGuardPeer for application/json ContentType.
+type SetWireGuardPeerJSONRequestBody = WGPeer
+
+// UpdateWireGuardPeerJSONRequestBody defines body for UpdateWireGuardPeer for application/json ContentType.
+type UpdateWireGuardPeerJSONRequestBody = WGPeer
+
+// SetWireGuardSettingsJSONRequestBody defines body for SetWireGuardSettings for application/json ContentType.
+type SetWireGuardSettingsJSONRequestBody = WGConfig
+
+// SetWireGuardTunnelJSONRequestBody defines body for SetWireGuardTunnel for application/json ContentType.
+type SetWireGuardTunnelJSONRequestBody = WGTunnel
+
+// UpdateWireGuardTunnelJSONRequestBody defines body for UpdateWireGuardTunnel for application/json ContentType.
+type UpdateWireGuardTunnelJSONRequestBody = WGTunnel
 
 // RequestEditorFn is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -3514,10 +3559,105 @@ type ClientInterface interface {
 	// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
 	GetOpenVPNStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWireGuard List WireGuard config
+	//
+	// Corresponds with GET /vpn/wg (the `GetWireGuard` operationId).
+	GetWireGuard(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetNewWireGuardKeys Get a new pair of public/private keys
+	//
+	// Corresponds with GET /vpn/wg/genkeys (the `GetNewWireGuardKeys` operationId).
+	GetNewWireGuardKeys(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardPeerWithBody Set WireGuard Peer
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+	SetWireGuardPeerWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardPeer Set WireGuard Peer
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+	SetWireGuardPeer(ctx context.Context, body SetWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWireGuardPeer Delete WireGuard Peer
+	//
+	// Corresponds with DELETE /vpn/wg/peer/{pubkey} (the `DeleteWireGuardPeer` operationId).
+	DeleteWireGuardPeer(ctx context.Context, pubkey string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWireGuardPeerWithBody Update WireGuard Peer
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+	UpdateWireGuardPeerWithBody(ctx context.Context, pubkey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWireGuardPeer Update WireGuard Peer
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+	UpdateWireGuardPeer(ctx context.Context, pubkey string, body UpdateWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardSettingsWithBody Set WireGuard Settings
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+	SetWireGuardSettingsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardSettings Set WireGuard Settings
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+	SetWireGuardSettings(ctx context.Context, body SetWireGuardSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetWireGuardStatus Get Wireguard status
 	//
 	// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
 	GetWireGuardStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardTunnelWithBody Set WireGuard Tunnel
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+	SetWireGuardTunnelWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetWireGuardTunnel Set WireGuard Tunnel
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+	SetWireGuardTunnel(ctx context.Context, body SetWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWireGuardTunnel Delete WireGuard Tunnel
+	//
+	// Corresponds with DELETE /vpn/wg/tunnel/{name} (the `DeleteWireGuardTunnel` operationId).
+	DeleteWireGuardTunnel(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWireGuardTunnelWithBody Update WireGuard Tunnel
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+	UpdateWireGuardTunnelWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWireGuardTunnel Update WireGuard Tunnel
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+	UpdateWireGuardTunnel(ctx context.Context, name string, body UpdateWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWireGuardTunnelConf Get Wireguard Tunnel Conf
+	//
+	// Corresponds with GET /vpn/wg/tunnel/{name}/conf (the `GetWireGuardTunnelConf` operationId).
+	GetWireGuardTunnelConf(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 // FirewallGetAliases Get firewall aliases
@@ -4558,11 +4698,256 @@ func (c *Client) GetOpenVPNStatus(ctx context.Context, reqEditors ...RequestEdit
 	return c.Client.Do(req)
 }
 
+// GetWireGuard List WireGuard config
+//
+// Corresponds with GET /vpn/wg (the `GetWireGuard` operationId).
+func (c *Client) GetWireGuard(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWireGuardRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetNewWireGuardKeys Get a new pair of public/private keys
+//
+// Corresponds with GET /vpn/wg/genkeys (the `GetNewWireGuardKeys` operationId).
+func (c *Client) GetNewWireGuardKeys(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetNewWireGuardKeysRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardPeerWithBody Set WireGuard Peer
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+func (c *Client) SetWireGuardPeerWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardPeerRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardPeer Set WireGuard Peer
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+func (c *Client) SetWireGuardPeer(ctx context.Context, body SetWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardPeerRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteWireGuardPeer Delete WireGuard Peer
+//
+// Corresponds with DELETE /vpn/wg/peer/{pubkey} (the `DeleteWireGuardPeer` operationId).
+func (c *Client) DeleteWireGuardPeer(ctx context.Context, pubkey string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWireGuardPeerRequest(c.Server, pubkey)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateWireGuardPeerWithBody Update WireGuard Peer
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+func (c *Client) UpdateWireGuardPeerWithBody(ctx context.Context, pubkey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWireGuardPeerRequestWithBody(c.Server, pubkey, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateWireGuardPeer Update WireGuard Peer
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+func (c *Client) UpdateWireGuardPeer(ctx context.Context, pubkey string, body UpdateWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWireGuardPeerRequest(c.Server, pubkey, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardSettingsWithBody Set WireGuard Settings
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+func (c *Client) SetWireGuardSettingsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardSettingsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardSettings Set WireGuard Settings
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+func (c *Client) SetWireGuardSettings(ctx context.Context, body SetWireGuardSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardSettingsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetWireGuardStatus Get Wireguard status
 //
 // Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
 func (c *Client) GetWireGuardStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWireGuardStatusRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardTunnelWithBody Set WireGuard Tunnel
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+func (c *Client) SetWireGuardTunnelWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardTunnelRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetWireGuardTunnel Set WireGuard Tunnel
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+func (c *Client) SetWireGuardTunnel(ctx context.Context, body SetWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetWireGuardTunnelRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteWireGuardTunnel Delete WireGuard Tunnel
+//
+// Corresponds with DELETE /vpn/wg/tunnel/{name} (the `DeleteWireGuardTunnel` operationId).
+func (c *Client) DeleteWireGuardTunnel(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWireGuardTunnelRequest(c.Server, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateWireGuardTunnelWithBody Update WireGuard Tunnel
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+func (c *Client) UpdateWireGuardTunnelWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWireGuardTunnelRequestWithBody(c.Server, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateWireGuardTunnel Update WireGuard Tunnel
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+func (c *Client) UpdateWireGuardTunnel(ctx context.Context, name string, body UpdateWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWireGuardTunnelRequest(c.Server, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetWireGuardTunnelConf Get Wireguard Tunnel Conf
+//
+// Corresponds with GET /vpn/wg/tunnel/{name}/conf (the `GetWireGuardTunnelConf` operationId).
+func (c *Client) GetWireGuardTunnelConf(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWireGuardTunnelConfRequest(c.Server, name)
 	if err != nil {
 		return nil, err
 	}
@@ -6381,6 +6766,221 @@ func NewGetOpenVPNStatusRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetWireGuardRequest constructs an http.Request for the GetWireGuard method
+func NewGetWireGuardRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetNewWireGuardKeysRequest constructs an http.Request for the GetNewWireGuardKeys method
+func NewGetNewWireGuardKeysRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/genkeys")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetWireGuardPeerRequest calls the generic SetWireGuardPeer builder with application/json body
+func NewSetWireGuardPeerRequest(server string, body SetWireGuardPeerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetWireGuardPeerRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSetWireGuardPeerRequestWithBody constructs an http.Request for the SetWireGuardPeer method, with any body, and a specified content type
+func NewSetWireGuardPeerRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/peer")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWireGuardPeerRequest constructs an http.Request for the DeleteWireGuardPeer method
+func NewDeleteWireGuardPeerRequest(server string, pubkey string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "pubkey", pubkey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/peer/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWireGuardPeerRequest calls the generic UpdateWireGuardPeer builder with application/json body
+func NewUpdateWireGuardPeerRequest(server string, pubkey string, body UpdateWireGuardPeerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWireGuardPeerRequestWithBody(server, pubkey, "application/json", bodyReader)
+}
+
+// NewUpdateWireGuardPeerRequestWithBody constructs an http.Request for the UpdateWireGuardPeer method, with any body, and a specified content type
+func NewUpdateWireGuardPeerRequestWithBody(server string, pubkey string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "pubkey", pubkey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/peer/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSetWireGuardSettingsRequest calls the generic SetWireGuardSettings builder with application/json body
+func NewSetWireGuardSettingsRequest(server string, body SetWireGuardSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetWireGuardSettingsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSetWireGuardSettingsRequestWithBody constructs an http.Request for the SetWireGuardSettings method, with any body, and a specified content type
+func NewSetWireGuardSettingsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/settings")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetWireGuardStatusRequest constructs an http.Request for the GetWireGuardStatus method
 func NewGetWireGuardStatusRequest(server string) (*http.Request, error) {
 	var err error
@@ -6391,6 +6991,161 @@ func NewGetWireGuardStatusRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/vpn/wg/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetWireGuardTunnelRequest calls the generic SetWireGuardTunnel builder with application/json body
+func NewSetWireGuardTunnelRequest(server string, body SetWireGuardTunnelJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetWireGuardTunnelRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSetWireGuardTunnelRequestWithBody constructs an http.Request for the SetWireGuardTunnel method, with any body, and a specified content type
+func NewSetWireGuardTunnelRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/tunnel")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWireGuardTunnelRequest constructs an http.Request for the DeleteWireGuardTunnel method
+func NewDeleteWireGuardTunnelRequest(server string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/tunnel/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWireGuardTunnelRequest calls the generic UpdateWireGuardTunnel builder with application/json body
+func NewUpdateWireGuardTunnelRequest(server string, name string, body UpdateWireGuardTunnelJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWireGuardTunnelRequestWithBody(server, name, "application/json", bodyReader)
+}
+
+// NewUpdateWireGuardTunnelRequestWithBody constructs an http.Request for the UpdateWireGuardTunnel method, with any body, and a specified content type
+func NewUpdateWireGuardTunnelRequestWithBody(server string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/tunnel/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWireGuardTunnelConfRequest constructs an http.Request for the GetWireGuardTunnelConf method
+func NewGetWireGuardTunnelConfRequest(server string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vpn/wg/tunnel/%s/conf", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -6938,12 +7693,117 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /vpn/openvpn/status (the `GetOpenVPNStatus` operationId).
 	GetOpenVPNStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOpenVPNStatusAPIResponse, error)
 
+	// GetWireGuardWithResponse List WireGuard config
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vpn/wg (the `GetWireGuard` operationId).
+	GetWireGuardWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetWireGuardAPIResponse, error)
+
+	// GetNewWireGuardKeysWithResponse Get a new pair of public/private keys
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vpn/wg/genkeys (the `GetNewWireGuardKeys` operationId).
+	GetNewWireGuardKeysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetNewWireGuardKeysAPIResponse, error)
+
+	// SetWireGuardPeerWithBodyWithResponse Set WireGuard Peer
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+	SetWireGuardPeerWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardPeerAPIResponse, error)
+
+	// SetWireGuardPeerWithResponse Set WireGuard Peer
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+	SetWireGuardPeerWithResponse(ctx context.Context, body SetWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardPeerAPIResponse, error)
+
+	// DeleteWireGuardPeerWithResponse Delete WireGuard Peer
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /vpn/wg/peer/{pubkey} (the `DeleteWireGuardPeer` operationId).
+	DeleteWireGuardPeerWithResponse(ctx context.Context, pubkey string, reqEditors ...RequestEditorFn) (*DeleteWireGuardPeerAPIResponse, error)
+
+	// UpdateWireGuardPeerWithBodyWithResponse Update WireGuard Peer
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+	UpdateWireGuardPeerWithBodyWithResponse(ctx context.Context, pubkey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWireGuardPeerAPIResponse, error)
+
+	// UpdateWireGuardPeerWithResponse Update WireGuard Peer
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+	UpdateWireGuardPeerWithResponse(ctx context.Context, pubkey string, body UpdateWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWireGuardPeerAPIResponse, error)
+
+	// SetWireGuardSettingsWithBodyWithResponse Set WireGuard Settings
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+	SetWireGuardSettingsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardSettingsAPIResponse, error)
+
+	// SetWireGuardSettingsWithResponse Set WireGuard Settings
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+	SetWireGuardSettingsWithResponse(ctx context.Context, body SetWireGuardSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardSettingsAPIResponse, error)
+
 	// GetWireGuardStatusWithResponse Get Wireguard status
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /vpn/wg/status (the `GetWireGuardStatus` operationId).
 	GetWireGuardStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetWireGuardStatusAPIResponse, error)
+
+	// SetWireGuardTunnelWithBodyWithResponse Set WireGuard Tunnel
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+	SetWireGuardTunnelWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardTunnelAPIResponse, error)
+
+	// SetWireGuardTunnelWithResponse Set WireGuard Tunnel
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+	SetWireGuardTunnelWithResponse(ctx context.Context, body SetWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardTunnelAPIResponse, error)
+
+	// DeleteWireGuardTunnelWithResponse Delete WireGuard Tunnel
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /vpn/wg/tunnel/{name} (the `DeleteWireGuardTunnel` operationId).
+	DeleteWireGuardTunnelWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*DeleteWireGuardTunnelAPIResponse, error)
+
+	// UpdateWireGuardTunnelWithBodyWithResponse Update WireGuard Tunnel
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+	UpdateWireGuardTunnelWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWireGuardTunnelAPIResponse, error)
+
+	// UpdateWireGuardTunnelWithResponse Update WireGuard Tunnel
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+	UpdateWireGuardTunnelWithResponse(ctx context.Context, name string, body UpdateWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWireGuardTunnelAPIResponse, error)
+
+	// GetWireGuardTunnelConfWithResponse Get Wireguard Tunnel Conf
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vpn/wg/tunnel/{name}/conf (the `GetWireGuardTunnelConf` operationId).
+	GetWireGuardTunnelConfWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*GetWireGuardTunnelConfAPIResponse, error)
 }
 
 type FirewallGetAliasesAPIResponse struct {
@@ -9970,6 +10830,294 @@ func (r GetOpenVPNStatusAPIResponse) ContentType() string {
 	return ""
 }
 
+type GetWireGuardAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WireGuardSettings
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetWireGuardAPIResponse) GetJSON200() *WireGuardSettings {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetWireGuardAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetWireGuardAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWireGuardAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWireGuardAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWireGuardAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetNewWireGuardKeysAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WireGuardKeys
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetNewWireGuardKeysAPIResponse) GetJSON200() *WireGuardKeys {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetNewWireGuardKeysAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetNewWireGuardKeysAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetNewWireGuardKeysAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetNewWireGuardKeysAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetNewWireGuardKeysAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetWireGuardPeerAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetWireGuardPeerAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r SetWireGuardPeerAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r SetWireGuardPeerAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetWireGuardPeerAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetWireGuardPeerAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetWireGuardPeerAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteWireGuardPeerAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteWireGuardPeerAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteWireGuardPeerAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteWireGuardPeerAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWireGuardPeerAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWireGuardPeerAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteWireGuardPeerAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateWireGuardPeerAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateWireGuardPeerAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r UpdateWireGuardPeerAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateWireGuardPeerAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWireGuardPeerAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWireGuardPeerAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateWireGuardPeerAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetWireGuardSettingsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetWireGuardSettingsAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r SetWireGuardSettingsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r SetWireGuardSettingsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetWireGuardSettingsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetWireGuardSettingsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetWireGuardSettingsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetWireGuardStatusAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10012,6 +11160,198 @@ func (r GetWireGuardStatusAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetWireGuardStatusAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetWireGuardTunnelAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetWireGuardTunnelAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r SetWireGuardTunnelAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r SetWireGuardTunnelAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetWireGuardTunnelAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetWireGuardTunnelAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetWireGuardTunnelAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteWireGuardTunnelAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteWireGuardTunnelAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteWireGuardTunnelAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteWireGuardTunnelAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWireGuardTunnelAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWireGuardTunnelAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteWireGuardTunnelAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateWireGuardTunnelAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateWireGuardTunnelAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r UpdateWireGuardTunnelAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateWireGuardTunnelAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWireGuardTunnelAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWireGuardTunnelAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateWireGuardTunnelAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWireGuardTunnelConfAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WGTunnelConf
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetWireGuardTunnelConfAPIResponse) GetJSON200() *WGTunnelConf {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r GetWireGuardTunnelConfAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r GetWireGuardTunnelConfAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWireGuardTunnelConfAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWireGuardTunnelConfAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWireGuardTunnelConfAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -10906,6 +12246,123 @@ func (c *ClientWithResponses) GetOpenVPNStatusWithResponse(ctx context.Context, 
 	return ParseGetOpenVPNStatusAPIResponse(rsp)
 }
 
+// GetWireGuardWithResponse List WireGuard config
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vpn/wg (the `GetWireGuard` operationId).
+func (c *ClientWithResponses) GetWireGuardWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetWireGuardAPIResponse, error) {
+	rsp, err := c.GetWireGuard(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWireGuardAPIResponse(rsp)
+}
+
+// GetNewWireGuardKeysWithResponse Get a new pair of public/private keys
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vpn/wg/genkeys (the `GetNewWireGuardKeys` operationId).
+func (c *ClientWithResponses) GetNewWireGuardKeysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetNewWireGuardKeysAPIResponse, error) {
+	rsp, err := c.GetNewWireGuardKeys(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetNewWireGuardKeysAPIResponse(rsp)
+}
+
+// SetWireGuardPeerWithBodyWithResponse Set WireGuard Peer
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+func (c *ClientWithResponses) SetWireGuardPeerWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardPeerAPIResponse, error) {
+	rsp, err := c.SetWireGuardPeerWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardPeerAPIResponse(rsp)
+}
+
+// SetWireGuardPeerWithResponse Set WireGuard Peer
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /vpn/wg/peer (the `SetWireGuardPeer` operationId).
+func (c *ClientWithResponses) SetWireGuardPeerWithResponse(ctx context.Context, body SetWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardPeerAPIResponse, error) {
+	rsp, err := c.SetWireGuardPeer(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardPeerAPIResponse(rsp)
+}
+
+// DeleteWireGuardPeerWithResponse Delete WireGuard Peer
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /vpn/wg/peer/{pubkey} (the `DeleteWireGuardPeer` operationId).
+func (c *ClientWithResponses) DeleteWireGuardPeerWithResponse(ctx context.Context, pubkey string, reqEditors ...RequestEditorFn) (*DeleteWireGuardPeerAPIResponse, error) {
+	rsp, err := c.DeleteWireGuardPeer(ctx, pubkey, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWireGuardPeerAPIResponse(rsp)
+}
+
+// UpdateWireGuardPeerWithBodyWithResponse Update WireGuard Peer
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+func (c *ClientWithResponses) UpdateWireGuardPeerWithBodyWithResponse(ctx context.Context, pubkey string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWireGuardPeerAPIResponse, error) {
+	rsp, err := c.UpdateWireGuardPeerWithBody(ctx, pubkey, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWireGuardPeerAPIResponse(rsp)
+}
+
+// UpdateWireGuardPeerWithResponse Update WireGuard Peer
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/peer/{pubkey} (the `UpdateWireGuardPeer` operationId).
+func (c *ClientWithResponses) UpdateWireGuardPeerWithResponse(ctx context.Context, pubkey string, body UpdateWireGuardPeerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWireGuardPeerAPIResponse, error) {
+	rsp, err := c.UpdateWireGuardPeer(ctx, pubkey, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWireGuardPeerAPIResponse(rsp)
+}
+
+// SetWireGuardSettingsWithBodyWithResponse Set WireGuard Settings
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+func (c *ClientWithResponses) SetWireGuardSettingsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardSettingsAPIResponse, error) {
+	rsp, err := c.SetWireGuardSettingsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardSettingsAPIResponse(rsp)
+}
+
+// SetWireGuardSettingsWithResponse Set WireGuard Settings
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/settings (the `SetWireGuardSettings` operationId).
+func (c *ClientWithResponses) SetWireGuardSettingsWithResponse(ctx context.Context, body SetWireGuardSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardSettingsAPIResponse, error) {
+	rsp, err := c.SetWireGuardSettings(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardSettingsAPIResponse(rsp)
+}
+
 // GetWireGuardStatusWithResponse Get Wireguard status
 //
 // Returns a wrapper object for the known response body format(s).
@@ -10917,6 +12374,84 @@ func (c *ClientWithResponses) GetWireGuardStatusWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetWireGuardStatusAPIResponse(rsp)
+}
+
+// SetWireGuardTunnelWithBodyWithResponse Set WireGuard Tunnel
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+func (c *ClientWithResponses) SetWireGuardTunnelWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetWireGuardTunnelAPIResponse, error) {
+	rsp, err := c.SetWireGuardTunnelWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardTunnelAPIResponse(rsp)
+}
+
+// SetWireGuardTunnelWithResponse Set WireGuard Tunnel
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /vpn/wg/tunnel (the `SetWireGuardTunnel` operationId).
+func (c *ClientWithResponses) SetWireGuardTunnelWithResponse(ctx context.Context, body SetWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*SetWireGuardTunnelAPIResponse, error) {
+	rsp, err := c.SetWireGuardTunnel(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetWireGuardTunnelAPIResponse(rsp)
+}
+
+// DeleteWireGuardTunnelWithResponse Delete WireGuard Tunnel
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /vpn/wg/tunnel/{name} (the `DeleteWireGuardTunnel` operationId).
+func (c *ClientWithResponses) DeleteWireGuardTunnelWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*DeleteWireGuardTunnelAPIResponse, error) {
+	rsp, err := c.DeleteWireGuardTunnel(ctx, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWireGuardTunnelAPIResponse(rsp)
+}
+
+// UpdateWireGuardTunnelWithBodyWithResponse Update WireGuard Tunnel
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+func (c *ClientWithResponses) UpdateWireGuardTunnelWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWireGuardTunnelAPIResponse, error) {
+	rsp, err := c.UpdateWireGuardTunnelWithBody(ctx, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWireGuardTunnelAPIResponse(rsp)
+}
+
+// UpdateWireGuardTunnelWithResponse Update WireGuard Tunnel
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vpn/wg/tunnel/{name} (the `UpdateWireGuardTunnel` operationId).
+func (c *ClientWithResponses) UpdateWireGuardTunnelWithResponse(ctx context.Context, name string, body UpdateWireGuardTunnelJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWireGuardTunnelAPIResponse, error) {
+	rsp, err := c.UpdateWireGuardTunnel(ctx, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWireGuardTunnelAPIResponse(rsp)
+}
+
+// GetWireGuardTunnelConfWithResponse Get Wireguard Tunnel Conf
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vpn/wg/tunnel/{name}/conf (the `GetWireGuardTunnelConf` operationId).
+func (c *ClientWithResponses) GetWireGuardTunnelConfWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*GetWireGuardTunnelConfAPIResponse, error) {
+	rsp, err := c.GetWireGuardTunnelConf(ctx, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWireGuardTunnelConfAPIResponse(rsp)
 }
 
 // ParseFirewallGetAliasesAPIResponse parses an HTTP response from a FirewallGetAliasesWithResponse call
@@ -12998,6 +14533,204 @@ func ParseGetOpenVPNStatusAPIResponse(rsp *http.Response) (*GetOpenVPNStatusAPIR
 	return response, nil
 }
 
+// ParseGetWireGuardAPIResponse parses an HTTP response from a GetWireGuardWithResponse call
+func ParseGetWireGuardAPIResponse(rsp *http.Response) (*GetWireGuardAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWireGuardAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WireGuardSettings
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetNewWireGuardKeysAPIResponse parses an HTTP response from a GetNewWireGuardKeysWithResponse call
+func ParseGetNewWireGuardKeysAPIResponse(rsp *http.Response) (*GetNewWireGuardKeysAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetNewWireGuardKeysAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WireGuardKeys
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetWireGuardPeerAPIResponse parses an HTTP response from a SetWireGuardPeerWithResponse call
+func ParseSetWireGuardPeerAPIResponse(rsp *http.Response) (*SetWireGuardPeerAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetWireGuardPeerAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWireGuardPeerAPIResponse parses an HTTP response from a DeleteWireGuardPeerWithResponse call
+func ParseDeleteWireGuardPeerAPIResponse(rsp *http.Response) (*DeleteWireGuardPeerAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWireGuardPeerAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWireGuardPeerAPIResponse parses an HTTP response from a UpdateWireGuardPeerWithResponse call
+func ParseUpdateWireGuardPeerAPIResponse(rsp *http.Response) (*UpdateWireGuardPeerAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWireGuardPeerAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetWireGuardSettingsAPIResponse parses an HTTP response from a SetWireGuardSettingsWithResponse call
+func ParseSetWireGuardSettingsAPIResponse(rsp *http.Response) (*SetWireGuardSettingsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetWireGuardSettingsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetWireGuardStatusAPIResponse parses an HTTP response from a GetWireGuardStatusWithResponse call
 func ParseGetWireGuardStatusAPIResponse(rsp *http.Response) (*GetWireGuardStatusAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -13014,6 +14747,138 @@ func ParseGetWireGuardStatusAPIResponse(rsp *http.Response) (*GetWireGuardStatus
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest WireGuardStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetWireGuardTunnelAPIResponse parses an HTTP response from a SetWireGuardTunnelWithResponse call
+func ParseSetWireGuardTunnelAPIResponse(rsp *http.Response) (*SetWireGuardTunnelAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetWireGuardTunnelAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWireGuardTunnelAPIResponse parses an HTTP response from a DeleteWireGuardTunnelWithResponse call
+func ParseDeleteWireGuardTunnelAPIResponse(rsp *http.Response) (*DeleteWireGuardTunnelAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWireGuardTunnelAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWireGuardTunnelAPIResponse parses an HTTP response from a UpdateWireGuardTunnelWithResponse call
+func ParseUpdateWireGuardTunnelAPIResponse(rsp *http.Response) (*UpdateWireGuardTunnelAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWireGuardTunnelAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWireGuardTunnelConfAPIResponse parses an HTTP response from a GetWireGuardTunnelConfWithResponse call
+func ParseGetWireGuardTunnelConfAPIResponse(rsp *http.Response) (*GetWireGuardTunnelConfAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWireGuardTunnelConfAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WGTunnelConf
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

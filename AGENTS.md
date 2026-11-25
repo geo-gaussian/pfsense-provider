@@ -4,22 +4,22 @@
 
 This repository implements an experimental Terraform provider in Go, published
 as `geo-gaussian/pfsense-nexus`. It wraps the Nexus API described in
-`docs/nexus.openapi.yaml`. It has an experimental firewall alias resource and
-selected read-only data sources for firewall, network, service, VPN, and system
-configuration or status. Login and alias listing have been tested on one
-appliance; alias writes and the additional data sources have only been tested
-with mock servers. Compatibility with other appliance versions remains
-unverified.
+`docs/nexus.openapi.yaml`. It has experimental firewall alias and WireGuard
+settings, tunnel, and peer resources, selected read-only data sources, and a
+WireGuard ephemeral key-pair resource. Login and alias listing have been tested
+on one appliance; resource writes, key generation, and additional data sources
+have only been tested with mock servers. Compatibility with other appliance
+versions remains unverified.
 
 ## 📐 Architectural Rules & Constraints
 
 1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serializes HTTP requests per configured client, not across separate clients or Terraform processes.
 2. **Preserve Generated Files vs. Custom Logic:**
-   - HashiCorp's OpenAPI generator is configured for the alias resource; the selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and data-source registration.
+   - HashiCorp's OpenAPI resource generator is configured for the alias resource. WireGuard resources, the ephemeral key-pair resource, and selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and registration.
 3. **Explicit Apply / Reload Lifecycle:**
    - If an endpoint in `docs/nexus.openapi.yaml` stages changes without immediately activating them, trigger its corresponding apply or reload operation after `Create`, `Update`, and `Delete`. The alias resource initiates a filter reload but does not confirm completion.
 4. **Strict Secret Handling:**
-   - Any field holding keys, passwords, PSKs, or tokens (`private_key`, `preshared_key`, `password`, `tls_key`) MUST have `Sensitive: true` in its `schema.StringAttribute`.
+   - Any field holding keys, passwords, PSKs, or tokens (`private_key`, `privatekey`, `private_key_clamped`, `preshared_key`, `presharedkey`, `password`, `tls_key`) MUST have `Sensitive: true` in its `schema.StringAttribute`.
    - If a `GET` endpoint masks or omits a secret value, `Read()` MUST retain the existing `state` value rather than overwriting it with an empty string.
 5. **Graceful 404 Handling in `Read()`:**
    - When the Nexus API returns `HTTP 404 Not Found` during `Read()`, call `resp.State.RemoveResource(ctx)` and return without adding an error diagnostic so Terraform detects out-of-band deletion cleanly.

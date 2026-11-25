@@ -7,6 +7,7 @@ import (
 
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
 func NewIPSecWidget() datasource.DataSource {
@@ -21,6 +22,30 @@ func NewOpenVPNStatus() datasource.DataSource {
 	return newDataSource("openvpn_status", "Reads active OpenVPN server and client status.", nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetOpenVPNStatusWithResponse(ctx)
+		},
+	)
+}
+
+func NewWireGuardConfig() datasource.DataSource {
+	return newSensitiveDataSource(
+		"wireguard_config",
+		"Reads the full WireGuard configuration, including private-key fields. Protect Terraform state and saved plans.",
+		nil,
+		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
+			return client.GetWireGuardWithResponse(ctx)
+		},
+	)
+}
+
+func NewWireGuardTunnelConf() datasource.DataSource {
+	return newSensitiveDataSource(
+		"wireguard_tunnel_conf",
+		"Reads a rendered WireGuard tunnel configuration. The result can contain private keys.",
+		map[string]schema.Attribute{
+			"name": schema.StringAttribute{Required: true, Description: "WireGuard tunnel name."},
+		},
+		func(ctx context.Context, client *api.ClientWithResponses, arguments map[string]string) (apiResponse, error) {
+			return client.GetWireGuardTunnelConfWithResponse(ctx, arguments["name"])
 		},
 	)
 }

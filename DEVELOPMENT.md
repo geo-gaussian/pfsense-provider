@@ -30,9 +30,10 @@ argument lists.
    the necessary operation IDs in `oapi-codegen.yaml`. Use the existing alias
    mapping as an example; methods and paths vary by endpoint.
 3. Run `make generate`, which uses the repository's pinned generator versions.
-   The current HashiCorp codegen mapping generates the alias resource; the
-   selected read-only data sources use custom Terraform Framework code. Review
-   generated changes and preserve custom resource lifecycle code.
+   The current HashiCorp codegen mapping generates the alias resource; selected
+   read-only data sources and WireGuard resources use custom Terraform
+   Framework code. Review generated changes and preserve custom resource
+   lifecycle code.
 4. Implement the lifecycle and import methods, register the resource in
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.
@@ -54,6 +55,15 @@ argument lists.
    status projection, omit them rather than exposing them in state.
 5. Add mock HTTP coverage for the endpoint and its relevant error cases. Run
    `go test -race ./...` and `pnpm run lint`.
+
+## 🔐 WireGuard resources and ephemeral keys
+
+The WireGuard settings, tunnel, and peer resources are custom Terraform
+Framework implementations. Their write-only private and preshared keys must be
+marked sensitive and retained from prior state when GET responses mask them.
+WireGuard key generation is an action exposed as an ephemeral resource, not a
+repeatable data source. Use `NexusClient.DoRequest` for every API operation;
+the OpenAPI contract currently defines no WireGuard-specific apply endpoint.
 
 ## 📥 Implementing `ImportState` for Brownfield HCL Generation
 
