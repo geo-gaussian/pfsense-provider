@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -17,7 +17,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before specification)**:
 - Check if `.specify/extensions.yml` exists in the project root.
@@ -53,14 +53,14 @@ You **MUST** consider the user input before proceeding (if not empty).
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Outline
+## 🧭 Outline
 
 The text the user typed after `/speckit-specify` in the triggering message **is** the feature description. Assume you always have it available in this conversation even if `$ARGUMENTS` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
 
 Given that feature description, do this:
 
 1. **Generate a concise short name** (2-4 words) for the feature:
-   - Analyze the feature description and extract the most meaningful keywords
+   - Analyse the feature description and extract the most meaningful keywords
    - Create a 2-4 word short name that captures the essence of the feature
    - Use action-noun format when possible (e.g., "add-user-auth", "fix-payment-bug")
    - Preserve technical terms and acronyms (OAuth2, API, JWT, etc.)
@@ -233,7 +233,7 @@ Given that feature description, do this:
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-## Mandatory Post-Execution Hooks
+## 🔄 Mandatory Post-Execution Hooks
 
 **You MUST complete this section before reporting completion to the user.**
 
@@ -268,7 +268,7 @@ Check if `.specify/extensions.yml` exists in the project root.
     To execute: `/{command}`
     ```
 
-## Completion Report
+## 📋 Completion Report
 
 Report completion to the user with:
 - `SPECIFY_FEATURE_DIRECTORY` — the feature directory path
@@ -278,20 +278,20 @@ Report completion to the user with:
 
 **NOTE:** Branch creation is handled by the `before_specify` hook (git extension). Spec directory and file creation are always handled by this core command.
 
-## Quick Guidelines
+## 📝 Quick Guidelines
 
 - Focus on **WHAT** users need and **WHY**.
 - Avoid HOW to implement (no tech stack, APIs, code structure).
 - Written for business stakeholders, not developers.
 - DO NOT create any checklists that are embedded in the spec. That will be a separate command.
 
-### Section Requirements
+### 📋 Section Requirements
 
 - **Mandatory sections**: Must be completed for every feature
 - **Optional sections**: Include only when relevant to the feature
 - When a section doesn't apply, remove it entirely (don't leave as "N/A")
 
-### For AI Generation
+### 🤖 For AI Generation
 
 When creating this spec from a user prompt:
 
@@ -316,7 +316,7 @@ When creating this spec from a user prompt:
 - Authentication method: Standard session-based or OAuth2 for web apps
 - Integration patterns: Use project-appropriate patterns (REST/GraphQL for web services, function calls for libraries, CLI args for tools, etc.)
 
-### Success Criteria Guidelines
+### ✅ Success Criteria Guidelines
 
 Success criteria must be:
 
@@ -339,7 +339,7 @@ Success criteria must be:
 - "React components render efficiently" (framework-specific)
 - "Redis cache hit rate above 80%" (technology-specific)
 
-## Done When
+## ✅ Done When
 
 - [ ] Specification written to `SPEC_FILE` and validated against quality checklist
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above

@@ -4,29 +4,31 @@
 [![Live acceptance coverage unavailable](https://img.shields.io/badge/acceptance-unavailable-lightgrey)](#-coverage)
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
-This experimental provider manages a firewall alias and reads selected
-firewall, network, service, VPN, and system configuration or status from a
-local pfSense firewall through the Nexus controller. It uses Netgate's OpenAPI
-specification and HashiCorp's Terraform Plugin Framework.
+This experimental provider manages firewall aliases and WireGuard settings,
+tunnels, and peers, and reads selected firewall, network, service, VPN, and
+system configuration or status from a local pfSense firewall through the Nexus
+controller. WireGuard key generation is available as an ephemeral resource.
+It uses Netgate's OpenAPI specification and HashiCorp's Terraform Plugin
+Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
-Alias writes and reloads have only been tested against mock servers. Do not use
-the resource on a production firewall. Verify API behaviour, compatibility,
-and recovery in an isolated environment first.
-The read-only data sources have only been tested against mock servers and the
-included OpenAPI specification; their behaviour on appliances remains
-unverified.
+Alias writes/reloads, WireGuard operations, and read-only data sources other
+than alias listing have only been tested against mock servers and the included
+OpenAPI specification. Do not use these resources on a production firewall.
+Verify API behaviour, compatibility, and recovery in an isolated environment
+first.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
 
-The provider routes firewall operations through
+The provider routes firewall and WireGuard operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
-installations have not been verified. Firewall writes initiate a filter reload,
-but do not establish that the resulting rules are active. Requests are
-serialized per configured client, not across separate provider configurations
-or Terraform processes.
+installations have not been verified. Firewall alias writes initiate a filter
+reload, but WireGuard mutations use the documented API operations without an
+additional apply call because the included specification defines no
+WireGuard-specific apply endpoint. Requests are serialised per configured
+client, not across separate provider configurations or Terraform processes.
 If a write or reload fails, check the firewall configuration and initiate a
 reload manually before retrying: Terraform refresh may observe the changed
 configuration without retrying the failed reload. A failed create with an
@@ -36,6 +38,7 @@ uncertain API response may also require importing the existing alias.
 
 - Go 1.25 or newer to build
 - Terraform 1.8 or newer
+- Terraform 1.10 or newer to use the WireGuard ephemeral key-pair resource
 - Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
   repository lint checks
 - jq for the Pages deployment guard and its offline tests
@@ -107,12 +110,12 @@ only. Terraform state can contain sensitive configuration; protect it.
 
 ## 🔍 Read-only data sources
 
-Read-only data sources expose selected firewall, network, service, and VPN
-configuration or status as JSON; use `jsondecode()` to select fields. Some
-outputs are sensitive, and the WireGuard status source omits key material. For
-example, read aliases, configured interfaces, and firewall NAT rules:
+Read-only data sources expose selected firewall, network, service, VPN, and
+system configuration or status as JSON; use `jsondecode()` to select fields.
+Some outputs are sensitive, and the WireGuard status source omits key material.
+For example, read aliases, configured interfaces, and firewall NAT rules:
 
-The catalog also includes DHCP lease and service status reads, system summary
+The catalogue also includes DHCP lease and service status reads, system summary
 and health information, gateway and interface status, and monitoring metadata.
 Sensitive outputs are marked in their individual data source documentation.
 
@@ -159,8 +162,8 @@ output "port_forward_rules" {
 
 With the development override configured, run `terraform plan`. Data sources
 perform API reads and do not write configuration or reload the firewall.
-Authentication may create a session or audit record. The added data sources
-Protect Terraform state and saved plans, especially for sensitive data sources.
+Authentication may create a session or audit record. Protect Terraform state
+and saved plans, especially when using sensitive data sources.
 
 The output contains the name, type, description (`descr`), and `truncated` flag
 for user-defined aliases, not system aliases or alias contents. Fields omitted
@@ -186,15 +189,15 @@ existing aliases under the new resource type. Review the plan before applying.
 [docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) corresponds to
 Netgate's [pfapi_openapi.yml](https://github.com/Netgate/pfsense-api/blob/b4acd7ca21dbca739a530403a1f62a7440f7726f/pfapi_openapi.yml)
 at commit `b4acd7ca21dbca739a530403a1f62a7440f7726f`, with whitespace
-changes. The upstream project is Apache-2.0 licensed; see the included
-[license](docs/NETGATE-LICENSE).
+changes. The upstream project is distributed under the Apache 2.0 licence; see
+the included [licence](docs/NETGATE-LICENSE).
 
 Run `make generate` to regenerate the Terraform alias schema and the Go HTTP
 client using pinned generator versions. The generated `*_gen.go` files are not
 hand-edited. The selected read-only Terraform data sources are custom
 implementations; `make generate` does not generate their schemas or behaviour.
 Terraform CRUD, data-source behaviour, session management, request
-serialization, and reload handling remain custom code.
+serialisation, and reload handling remain custom code.
 
 ## 💻 Development
 

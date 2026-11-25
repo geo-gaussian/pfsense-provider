@@ -5,6 +5,8 @@ DoRequest
 pfapi
 OpenAPI
 WireGuard
+WGIP
+privkey
 Unbound
 CoreDNS
 ACME

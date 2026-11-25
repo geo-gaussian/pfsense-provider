@@ -1,50 +1,100 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version change: 1.0.0 → 1.1.0
+Modified principles: III. Regression Tests and Coverage (absolute target replaced by non-regression policy).
+Modified sections: Quality Workflow and Gates.
+Added sections: none.
+Removed sections: none.
+Follow-up TODO: confirm the original ratification date.
+-->
 
-## Core Principles
+# 🏛️ pfSense Nexus Provider Constitution
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## 🧭 Core Principles
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 🧱 I. Contract-Faithful Provider
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+Provider behaviour MUST match the Nexus API contract in `docs/nexus.openapi.yaml`.
+Review request paths, methods, payloads, response handling, and endpoint side effects
+before implementation. This keeps Terraform state and appliance behaviour aligned.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### 🧱 II. Safe and Complete Terraform Lifecycles
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Every managed resource MUST implement its applicable lifecycle methods and import
+behaviour. Reads MUST handle out-of-band deletion without an error diagnostic, and
+write operations MUST verify success. When an API masks or omits a secret, reads
+MUST retain its prior state value. Fields containing secrets MUST be marked
+sensitive.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### 🧱 III. Regression Tests and Coverage
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+Every change to provider behaviour MUST include focused tests for the changed
+behaviour, including relevant success, validation, API failure, malformed-response,
+and state-preservation paths. Tests MUST assert outcomes and diagnostics rather
+than merely execute lines.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Contributors MUST run `pnpm run coverage` and compare the reported unit
+statement-coverage ratio with the base revision using the same tooling and
+coverage rules. A change MUST NOT lower coverage unless its pull request gives
+a clear justification for the decrease and receives explicit reviewer
+approval. When statement totals differ, compare ratios rather than covered
+counts alone. The command does not enforce this comparison, so the pull request
+MUST report both values and include any required justification.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+When a defensive error path cannot be reached through a valid Terraform schema,
+isolate the conversion boundary so the error behaviour can be tested without
+weakening production error handling. Coverage is a regression guard, not a
+substitute for meaningful assertions.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### 🧱 IV. Explicit API and Code-Generation Boundaries
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+All pfSense HTTP requests MUST use the configured `NexusClient.DoRequest` path.
+Generated API clients and custom Terraform lifecycle logic MUST remain distinct;
+regeneration MUST preserve custom resource and data-source code and registration.
+Operations that stage changes MUST trigger their required apply or reload operation
+after create, update, and delete.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### 🧱 V. Honest Documentation and Compatibility
+
+Project documentation MUST use British English and describe tested behaviour
+accurately. Mock-server evidence MUST NOT be presented as live appliance
+compatibility. Documented examples MUST contain no credentials or other sensitive
+values.
+
+## 📋 Additional Engineering Constraints
+
+- Project-owned shell scripts MUST use POSIX shell syntax and `#!/bin/sh`.
+- Executable programs and reusable test fixtures MUST live in standalone files;
+  do not embed programs in shell commands, workflow blocks, or other languages.
+- Follow `AGENTS.md` for detailed implementation constraints, secret-handling
+  rules, and repository-specific conventions.
+- Use the repository's pinned generators and tooling; do not make unrelated
+  generated-file or dependency changes.
+
+## 📋 Quality Workflow and Gates
+
+- Spec Kit implementation plans MUST include a Constitution Check that covers
+  the principles above. Behaviour-changing work MUST include test tasks even
+  when a generic Spec Kit template describes tests as optional.
+- Before completion, run `pnpm run coverage`, compare its report with the base
+  revision, and run `pnpm run lint`. Any coverage decrease MUST have a
+  documented justification and explicit reviewer approval.
+- Run `go test -race ./...` when the coverage command has not already run it.
+- Review tests for meaningful assertions, representative error cases, and
+  absence of dependence on a live appliance.
+- Any intentional exception MUST be documented in the change and approved
+  through project review; exceptions MUST NOT silently lower coverage.
+
+## ⚖️ Governance
+
+This constitution governs project decisions and takes precedence over generic
+Spec Kit guidance when they conflict. Amendments MUST be made through review,
+include a rationale, and update the version and amendment date.
+
+Use semantic versioning for this constitution: MAJOR for incompatible principle
+changes, MINOR for new principles or materially expanded requirements, and PATCH
+for clarifications that do not change obligations. Reviewers MUST check proposed
+changes against these principles and the current `AGENTS.md` and `DEVELOPMENT.md`
+guidance.
+
+**Version**: 1.1.0 | **Ratified**: TODO | **Last Amended**: 2026-11-25

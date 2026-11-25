@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -17,7 +17,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before analysis)**:
 - Check if `.specify/extensions.yml` exists in the project root.
@@ -53,19 +53,19 @@ You **MUST** consider the user input before proceeding (if not empty).
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Goal
+## 🎯 Goal
 
 Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. When `data-model.md` exists, also check constrained-field task citations and constraint consistency against it. This command MUST run only after `/speckit-tasks` has successfully produced a complete `tasks.md`.
 
-## Operating Constraints
+## 🛡️ Operating Constraints
 
 **STRICTLY READ-ONLY**: Do **not** modify any files. Output a structured analysis report. Offer an optional remediation plan (user must explicitly approve before any follow-up editing commands would be invoked manually).
 
 **Constitution Authority**: The project constitution (`.specify/memory/constitution.md`) is **non-negotiable** within this analysis scope. Constitution conflicts are automatically CRITICAL and require adjustment of the spec, plan, or tasks—not dilution, reinterpretation, or silent ignoring of the principle. If a principle itself needs to change, that must occur in a separate, explicit constitution update outside `/speckit-analyze`.
 
-## Execution Steps
+## 🔄 Execution Steps
 
-### 1. Initialize Analysis Context
+### 1. Initialise Analysis Context
 
 Run `.specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks` once from repo root and parse JSON for FEATURE_DIR and AVAILABLE_DOCS. Derive absolute paths:
 
@@ -180,7 +180,7 @@ Use this heuristic to prioritize findings:
 
 Output a Markdown report (no file writes) with the following structure:
 
-## Specification Analysis Report
+## 📋 Specification Analysis Report
 
 | ID | Category | Severity | Location(s) | Summary | Recommendation |
 |----|----------|----------|-------------|---------|----------------|
@@ -258,16 +258,16 @@ After reporting, check if `.specify/extensions.yml` exists in the project root.
     After emitting the block above you MUST actually invoke the hook and wait for it to finish before continuing. Run it the same way you would run the command yourself in this agent/session (the invocation may differ from the literal `{command}` id shown above, e.g. a skills-mode agent runs it as `/skill:speckit-...` or `$speckit-...`). Emitting the block alone does not run the hook.
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Operating Principles
+## 🧭 Operating Principles
 
-### Context Efficiency
+### ⚡ Context Efficiency
 
 - **Minimal high-signal tokens**: Focus on actionable findings, not exhaustive documentation
 - **Progressive disclosure**: Load artifacts incrementally; don't dump all content into analysis
 - **Token-efficient output**: Limit findings table to 50 rows; summarize overflow
 - **Deterministic results**: Rerunning without changes should produce consistent IDs and counts
 
-### Analysis Guidelines
+### 🔍 Analysis Guidelines
 
 - **NEVER modify files** (this is read-only analysis)
 - **NEVER hallucinate missing sections** (if absent, report them accurately)
@@ -275,6 +275,6 @@ After reporting, check if `.specify/extensions.yml` exists in the project root.
 - **Use examples over exhaustive rules** (cite specific instances, not generic patterns)
 - **Report zero issues gracefully** (emit success report with coverage statistics)
 
-## Context
+## 📚 Context
 
 $ARGUMENTS

@@ -22,6 +22,10 @@ const checkExtensions = new Set([
 	".yaml",
 	".yml",
 ]);
+const yamlExtensionExceptions = new Set([
+	".specify/workflows/speckit/workflow.yml",
+	".specify/extensions.yml",
+]);
 const issues: string[] = [];
 
 function walk(directory: string): void {
@@ -37,6 +41,14 @@ function walk(directory: string): void {
 		}
 
 		const extension = path.extname(entry.name);
+		const relative = path.relative(root, absolute).split(path.sep).join("/");
+		const isSpecKitYamlException =
+			yamlExtensionExceptions.has(relative) ||
+			/^\.specify\/extensions\/[^/]+\/local-config\.yml$/.test(relative) ||
+			/^\.specify\/presets\/[^/]+\/preset\.yml$/.test(relative);
+		if (extension === ".yml" && !isSpecKitYamlException) {
+			issues.push(`${relative}: use the .yaml extension instead of .yml`);
+		}
 		if (
 			!checkExtensions.has(extension) &&
 			entry.name !== ".editorconfig" &&
@@ -46,7 +58,6 @@ function walk(directory: string): void {
 			continue;
 		}
 
-		const relative = path.relative(root, absolute).split(path.sep).join("/");
 		const text = fs.readFileSync(absolute, "utf8");
 		const lines = text.split("\n");
 		const tabsAllowed =

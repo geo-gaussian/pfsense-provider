@@ -60,15 +60,13 @@ overrides:
       - "/#.*/"
   - filename:
       - ".github/skills/speckit-*/**"
-      - ".specify/scripts/**"
       - ".specify/templates/*"
       - ".specify/workflows/speckit/**"
-    language: "en-GB,en-US"
+    language: "en-GB"
     words:
       # cspell:disable
       - TKTK
       - Measurability
-      - tradeoffs
       - pycache
       - venv
       - rlib
@@ -96,6 +94,25 @@ overrides:
       - pytest
       - TXXX
       - alquimia
+      # cspell:enable
+  - filename: ".specify/scripts/**"
+    language: "en-GB,en-US"
+    words:
+      # cspell:disable
+      - behavior
+      - honor
+      - unparseable
+      - isinstance
+      - RSTART
+      - RLENGTH
+      - lexists
+      - TMPL
+      - runpy
+      - strat
+      - uncollapsed
+      - isalpha
+      - isdecimal
+      - shlex
       # cspell:enable
 
 allowCompoundWords: true

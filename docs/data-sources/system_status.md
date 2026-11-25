@@ -1,7 +1,7 @@
 # 🧭 pfsense_system_status (Data Source)
 
 Reads system and interface status details. The JSON result is marked sensitive
-because it may include license and controller information.
+because it may include licence and controller information.
 
 ## 🧪 Example Usage
 

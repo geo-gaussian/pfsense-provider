@@ -4,22 +4,22 @@
 
 This repository implements an experimental Terraform provider in Go, published
 as `geo-gaussian/pfsense-nexus`. It wraps the Nexus API described in
-`docs/nexus.openapi.yaml`. It has an experimental firewall alias resource and
-selected read-only data sources for firewall, network, service, VPN, and system
-configuration or status. Login and alias listing have been tested on one
-appliance; alias writes and the additional data sources have only been tested
-with mock servers. Compatibility with other appliance versions remains
-unverified.
+`docs/nexus.openapi.yaml`. It has experimental firewall alias and WireGuard
+settings, tunnel, and peer resources, selected read-only data sources, and a
+WireGuard ephemeral key-pair resource. Login and alias listing have been tested
+on one appliance; resource writes, key generation, and additional data sources
+have only been tested with mock servers. Compatibility with other appliance
+versions remains unverified.
 
 ## 📐 Architectural Rules & Constraints
 
-1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serializes HTTP requests per configured client, not across separate clients or Terraform processes.
+1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serialises HTTP requests per configured client, not across separate clients or Terraform processes.
 2. **Preserve Generated Files vs. Custom Logic:**
-   - HashiCorp's OpenAPI generator is configured for the alias resource; the selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and data-source registration.
+   - HashiCorp's OpenAPI resource generator is configured for the alias resource. WireGuard resources, the ephemeral key-pair resource, and selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and registration.
 3. **Explicit Apply / Reload Lifecycle:**
    - If an endpoint in `docs/nexus.openapi.yaml` stages changes without immediately activating them, trigger its corresponding apply or reload operation after `Create`, `Update`, and `Delete`. The alias resource initiates a filter reload but does not confirm completion.
 4. **Strict Secret Handling:**
-   - Any field holding keys, passwords, PSKs, or tokens (`private_key`, `preshared_key`, `password`, `tls_key`) MUST have `Sensitive: true` in its `schema.StringAttribute`.
+   - Any field holding keys, passwords, PSKs, or tokens (`private_key`, `privatekey`, `private_key_clamped`, `preshared_key`, `presharedkey`, `password`, `tls_key`) MUST have `Sensitive: true` in its `schema.StringAttribute`.
    - If a `GET` endpoint masks or omits a secret value, `Read()` MUST retain the existing `state` value rather than overwriting it with an empty string.
 5. **Graceful 404 Handling in `Read()`:**
    - When the Nexus API returns `HTTP 404 Not Found` during `Read()`, call `resp.State.RemoveResource(ctx)` and return without adding an error diagnostic so Terraform detects out-of-band deletion cleanly.
@@ -34,8 +34,11 @@ unverified.
 ## 📝 Documentation Rules
 
 - Markdown headings at levels 1, 2, and 3 MUST include a relevant emoji.
+- Use `.yaml` for project-owned YAML files. Keep `.yml` only where an external
+  tool requires that exact filename.
 - Use two-space indentation in Markdown and preserve rendered list and code
   block structure.
+- Write project documentation in British English.
 - Follow the repository's cspell configuration and update documentation when
   behaviour or development workflows change.
 - Keep examples free of credentials and other sensitive information.
@@ -52,15 +55,36 @@ sequenceDiagram
     participant Gen as OpenAPI code generators
     participant Impl as Provider implementation
     participant Client as internal/client (Mutex + Auth)
-    participant Test as go test (httptest / provider protocol)
+    participant Test as go test + coverage
 
     Dev->>Gen: 1. Update generator mappings or API operation IDs; regenerate
     Gen->>Impl: 2. Generate resource schemas and selected API client methods
     Dev->>Impl: 3. Implement resource lifecycle or custom read-only data source
     Impl->>Client: Route every HTTP request through NexusClient.DoRequest
     Dev->>Test: 4. Add mock HTTP and provider-protocol tests as applicable
-    Test-->>Dev: 5. Verify pass with `go test -race ./...`
+    Test-->>Dev: 5. Compare coverage with the base revision; justify any decrease, then lint
 ```
+
+## 🧪 Test Quality and Coverage
+
+- Every behaviour change MUST include focused regression tests for the changed
+  behaviour. Cover success and relevant validation, API failure, malformed or
+  missing response, state-preservation, and out-of-band deletion paths.
+- Tests MUST assert expected state, outputs, and diagnostics. Do not add tests
+  solely to execute statements or weaken runtime checks to improve coverage.
+- Run `pnpm run coverage` and compare its unit statement-coverage ratio with the
+  base revision using the same tooling. Compare ratios when the statement totals
+  differ; a larger covered-statement count alone does not prove coverage did
+  not regress.
+- If coverage decreases, the pull request MUST explain the cause, impact, and
+  risk mitigation, and receive explicit reviewer approval. The command does not
+  enforce this comparison, so report the before-and-after values in the pull
+  request. New or changed behaviour still requires meaningful tests.
+- If a defensive error path cannot be reached with a valid Terraform schema,
+  isolate its conversion boundary and test the error behaviour without
+  weakening production error handling.
+- `pnpm run coverage` already runs `go test -race ./...`; run that Go command
+  separately only when race testing is needed without a coverage report.
 
 ## ✅ Definition of Done for Any New Resource
 
@@ -69,13 +93,19 @@ Before marking a resource complete, verify:
 - [ ] Endpoint paths and JSON field tags match `docs/nexus.openapi.yaml`.
 - [ ] `Create`, `Read`, `Update`, `Delete`, and `ImportState` are all implemented.
 - [ ] Sensitive fields are marked `Sensitive: true`.
-- [ ] Offline unit test in `internal/client` or `internal/provider` passes under `go test -race ./...`.
+- [ ] Mock HTTP tests cover successful lifecycle behaviour and relevant
+  validation, API-error, malformed-response, and secret-preservation paths.
+- [ ] `pnpm run coverage` has been compared with the base revision; any decrease
+  has a reviewed justification. `pnpm run lint` passes.
 - [ ] No hardcoded credentials, IPs, or private keys appear in code or examples.
 
 ## 📖 Definition of Done for Any New Data Source
 
 - [ ] The OpenAPI operation is a safe read and its request, response, and endpoint behaviour have been reviewed.
-- [ ] The selected operation ID is in `oapi-codegen.yml`, and the custom data source is registered in `internal/provider/provider.go`.
+- [ ] The selected operation ID is in `oapi-codegen.yaml`, and the custom data source is registered in `internal/provider/provider.go`.
 - [ ] Sensitive or identifying JSON output is marked sensitive; secret material is omitted from status projections where appropriate.
-- [ ] A data-source page exists under `docs/data-sources/`, and mock HTTP tests cover the endpoint and relevant failures.
-- [ ] `go test -race ./...` and `pnpm run lint` pass; live appliance compatibility is clearly described as unverified unless tested.
+- [ ] A data-source page exists under `docs/data-sources/`, and mock HTTP tests
+  cover the endpoint and relevant failures.
+- [ ] `pnpm run coverage` has been compared with the base revision; any decrease
+  has a reviewed justification. `pnpm run lint` passes, and live appliance
+  compatibility is clearly described as unverified unless tested.

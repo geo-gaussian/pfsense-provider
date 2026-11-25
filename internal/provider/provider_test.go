@@ -62,12 +62,18 @@ func TestConfigure(t *testing.T) {
 				t.Fatal(resp.Diagnostics)
 			}
 			client, ok := resp.ResourceData.(*api.ClientWithResponses)
-			if !ok || client == nil || resp.ResourceData != resp.DataSourceData {
-				t.Fatalf("unexpected configured clients: %#v %#v", resp.ResourceData, resp.DataSourceData)
+			ephemeralClient, ephemeralOK := resp.EphemeralResourceData.(*api.ClientWithResponses)
+			if !ok || !ephemeralOK || client == nil || ephemeralClient != client ||
+				resp.ResourceData != resp.DataSourceData || resp.ResourceData != resp.EphemeralResourceData {
+				t.Fatalf("unexpected configured clients: resource=%#v data source=%#v ephemeral=%#v", resp.ResourceData, resp.DataSourceData, resp.EphemeralResourceData)
 			}
 		})
 	}
-	if len(p.Resources(ctx)) != 1 || len(p.DataSources(ctx)) != 56 {
-		t.Fatal("expected alias resource and fifty-six data sources")
+	if len(p.Resources(ctx)) != 4 || len(p.DataSources(ctx)) != 58 {
+		t.Fatal("expected four resources and fifty-eight data sources")
+	}
+	ephemeralProvider, ok := p.(frameworkprovider.ProviderWithEphemeralResources)
+	if !ok || len(ephemeralProvider.EphemeralResources(ctx)) != 1 {
+		t.Fatal("expected the WireGuard key-pair ephemeral resource")
 	}
 }

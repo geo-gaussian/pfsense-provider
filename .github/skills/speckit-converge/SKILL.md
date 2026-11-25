@@ -9,7 +9,7 @@ metadata:
 ---
 
 
-## User Input
+## 💬 User Input
 
 ```text
 $ARGUMENTS
@@ -17,7 +17,7 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## ✅ Pre-Execution Checks
 
 **Check for extension hooks (before convergence)**:
 
@@ -58,7 +58,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
-## Goal
+## 🎯 Goal
 
 Close the gap between what a feature's specification, plan, and tasks call for and what the
 codebase currently implements. Read `spec.md`, `plan.md`, and `tasks.md` as the **sole
@@ -72,7 +72,7 @@ of remaining work as a new, traceable task** at the bottom of `tasks.md` so that
 This is **not** a diff tool and does **not** track changes. It assesses the present state
 of the code relative to the feature's artifacts — no git, no branch comparison, no history.
 
-## Operating Constraints
+## 🛡️ Operating Constraints
 
 **APPEND-ONLY, NEVER REWRITE**: The command's **only** write is appending a new
 `## Phase N: Convergence` section to `tasks.md`. It MUST NOT:
@@ -91,9 +91,9 @@ When the codebase already satisfies everything, the command MUST leave `tasks.md
 produces a corresponding remediation task. If the constitution is an unfilled template,
 skip constitution checks gracefully rather than failing.
 
-## Execution Steps
+## 🔄 Execution Steps
 
-### 1. Initialize Convergence Context
+### 1. Initialise Convergence Context
 
 Run `.specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks` once from repo root and parse JSON for FEATURE_DIR and AVAILABLE_DOCS. Derive absolute paths:
 
@@ -149,9 +149,9 @@ Create an internal model (do not echo raw artifacts):
 ### 4. Assess the Codebase and Classify Findings
 
 Include every existing task in the intent inventory, regardless of checkbox state or
-Convergence phase: completion claims are not evidence. Verify current behavior against
+Convergence phase: completion claims are not evidence. Verify current behaviour against
 the spec, plan, tasks, and constitution; for corrective task chains, assess the resulting
-behavior, not superseded implementation details. Check both unmet obligations and
+behaviour, not superseded implementation details. Check both unmet obligations and
 implementation that contradicts, exceeds, or falls outside the stated intent.
 
 For each item in the intent inventory, inspect the current code in scope and produce a
@@ -189,7 +189,7 @@ severity, and a short human-readable description with the evidence (the file/are
 
 Before appending anything, output a compact, severity-graded summary (no file writes yet):
 
-## Convergence Findings
+## 📋 Convergence Findings
 
 | ID | Gap Type | Severity | Source | Evidence | Remaining Work |
 |----|----------|----------|--------|----------|----------------|

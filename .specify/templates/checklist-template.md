@@ -1,4 +1,4 @@
-# [CHECKLIST TYPE] Checklist: [FEATURE NAME]
+# 📋 [CHECKLIST TYPE] Checklist: [FEATURE NAME]
 
 **Purpose**: [Brief description of what this checklist covers]
 **Created**: [DATE]
@@ -22,19 +22,19 @@
   ============================================================================
 -->
 
-## [Category 1]
+## ✅ [Category 1]
 
 - [ ] CHK001 First checklist item with clear action
 - [ ] CHK002 Second checklist item
 - [ ] CHK003 Third checklist item
 
-## [Category 2]
+## ✅ [Category 2]
 
 - [ ] CHK004 Another category item
 - [ ] CHK005 Item with specific criteria
 - [ ] CHK006 Final item in this category
 
-## Notes
+## 📝 Notes
 
 - Mark items `[x]` only after review confirms the requirement-quality criterion is satisfied
 - Leave items unchecked when they still require clarification, correction, or reviewer evaluation

@@ -8,8 +8,11 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/client"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_firewall_aliases"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/data_readonly"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/ephemeral_wireguard"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_wireguard"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -17,6 +20,7 @@ import (
 )
 
 var _ provider.Provider = &pfsenseProvider{}
+var _ provider.ProviderWithEphemeralResources = &pfsenseProvider{}
 
 type pfsenseProvider struct {
 	version string
@@ -78,10 +82,16 @@ func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureR
 	}
 	resp.ResourceData = apiClient
 	resp.DataSourceData = apiClient
+	resp.EphemeralResourceData = apiClient
 }
 
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
-	return []func() resource.Resource{resource_firewall_alias.New}
+	return []func() resource.Resource{
+		resource_firewall_alias.New,
+		resource_wireguard.NewSettings,
+		resource_wireguard.NewTunnel,
+		resource_wireguard.NewPeer,
+	}
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
@@ -119,6 +129,8 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewRouterAdvertisements,
 		data_readonly.NewIPSecWidget,
 		data_readonly.NewOpenVPNStatus,
+		data_readonly.NewWireGuardConfig,
+		data_readonly.NewWireGuardTunnelConf,
 		data_readonly.NewWireGuardStatus,
 		data_readonly.NewDHCPLeases,
 		data_readonly.NewDNSResolverStatus,
@@ -143,4 +155,8 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewInterfaceWidgets,
 		data_readonly.NewInterfaceStatisticsWidget,
 	}
+}
+
+func (p *pfsenseProvider) EphemeralResources(context.Context) []func() ephemeral.EphemeralResource {
+	return []func() ephemeral.EphemeralResource{ephemeral_wireguard.New}
 }
