@@ -1,16 +1,34 @@
 # 🌐 pfSense Nexus Provider
 
-The experimental pfSense Nexus provider manages firewall aliases and
-WireGuard settings, tunnels, and peers, and reads selected firewall, network,
-service, VPN, and system configuration or status through the Nexus controller's
-local firewall API. WireGuard key generation is available as an ephemeral
-resource. Read-only data sources return JSON for use with Terraform's
-`jsondecode()` function. See [`resources/`](resources/),
+The experimental pfSense Nexus provider manages firewall aliases, NAT and
+filter rules, schedules, traffic shapers, limiters, packet-flow exporters,
+virtual IPs, and WireGuard settings, tunnels, and peers. It reads selected
+firewall, network, service, VPN, and system configuration or status through the
+Nexus controller's local firewall API. WireGuard key generation is available
+as an ephemeral resource. Read-only data sources return JSON for use with
+Terraform's `jsondecode()` function. See [`resources/`](resources/),
 [`ephemeral-resources/`](ephemeral-resources/), and
 [`data-sources/`](data-sources/) for details.
 
-!> Firewall alias writes/reloads and WireGuard operations have only been tested
-against mock servers. Do not use these resources on a production firewall.
+!> Firewall and WireGuard mutations have only been tested against mock
+servers. Do not use these resources on a production firewall.
+
+## 🔥 Managed Firewall Resources
+
+The provider manages [firewall aliases](resources/firewall_alias.md),
+[filter rules](resources/firewall_rule.md),
+[schedules](resources/firewall_schedule.md),
+[NPT NAT](resources/firewall_nat_npt.md),
+[one-to-one NAT](resources/firewall_nat_one_to_one.md),
+[port-forward NAT](resources/firewall_nat_port_forward.md),
+[ALTQ root queues](resources/firewall_altq.md),
+[limiters](resources/firewall_limiter.md),
+[PFlow exporters](resources/firewall_pflow_exporter.md), and
+[virtual IPs](resources/firewall_virtual_ip.md).
+
+Outbound NAT and global PFlow options are read-only because the API does not
+provide a complete delete or reset lifecycle. Firewall resource mutations
+initiate a filter reload but do not confirm its completion.
 
 ## 🧪 Example Usage
 
@@ -42,13 +60,14 @@ data "pfsense_firewall_aliases" "current" {}
 
 ## 🔍 Read-only Data Sources
 
-The read-only catalogue includes firewall NAT and rule configuration, interface
-and route discovery, service settings and status, VPN status/configuration,
-DHCP leases, system health, and monitoring information. These data sources do
-not apply configuration or reload the firewall. WireGuard status omits key
-material; full configuration and rendered tunnel configuration outputs are
-sensitive. All data sources other than alias listing have only been tested
-against mock servers; appliance behaviour and compatibility remain unverified.
+The read-only catalogue includes firewall NAT, rule, packet-flow, and virtual IP
+configuration, interface and route discovery, service settings and status, VPN
+status/configuration, DHCP leases, system health, and monitoring information.
+These data sources do not apply configuration or reload the firewall.
+WireGuard status omits key material; full configuration and rendered tunnel
+configuration outputs are sensitive. All data sources other than alias
+listing have only been tested against mock servers; appliance behaviour and
+compatibility remain unverified.
 
 ## ⚙️ Argument Reference
 

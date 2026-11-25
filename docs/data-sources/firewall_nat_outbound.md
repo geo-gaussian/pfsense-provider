@@ -18,3 +18,7 @@ output "nat_rules" {
 
 Use `jsondecode()` to access response fields. Terraform state and saved plans
 contain the response; protect them accordingly.
+
+The Nexus API does not provide an outbound-rule delete operation, so outbound
+NAT remains read-only in this provider rather than being exposed as a Terraform
+resource without a safe destroy lifecycle.

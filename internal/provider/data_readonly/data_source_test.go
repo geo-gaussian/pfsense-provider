@@ -122,6 +122,22 @@ func TestReadDataSource(t *testing.T) {
 			wantJSON:   `{}`,
 		},
 		{
+			name:       "packet flow settings",
+			dataSource: NewFirewallPFlow,
+			path:       "/firewall/pflow",
+			status:     http.StatusOK,
+			body:       `{"options":{"enable":true},"exporters":[]}`,
+			wantJSON:   `{"options":{"enable":true},"exporters":[]}`,
+		},
+		{
+			name:       "virtual IPs",
+			dataSource: NewFirewallVirtualIPs,
+			path:       "/firewall/virtualip",
+			status:     http.StatusOK,
+			body:       `{"virtualips":[]}`,
+			wantJSON:   `{"virtualips":[]}`,
+		},
+		{
 			name:       "network interfaces",
 			dataSource: NewInterfaces,
 			path:       "/interfaces",

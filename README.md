@@ -4,35 +4,48 @@
 [![Live acceptance coverage unavailable](https://img.shields.io/badge/acceptance-unavailable-lightgrey)](#-coverage)
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
-This experimental provider manages firewall aliases and WireGuard settings,
-tunnels, and peers, and reads selected firewall, network, service, VPN, and
-system configuration or status from a local pfSense firewall through the Nexus
-controller. WireGuard key generation is available as an ephemeral resource.
-It uses Netgate's OpenAPI specification and HashiCorp's Terraform Plugin
-Framework.
+This experimental provider manages firewall aliases, NAT and filter rules,
+schedules, traffic shapers, limiters, packet-flow exporters, virtual IPs, and
+WireGuard settings, tunnels, and peers. It also reads selected firewall,
+network, service, VPN, and system configuration or status from a local pfSense
+firewall through the Nexus controller. WireGuard key generation is available
+as an ephemeral resource. It uses Netgate's OpenAPI specification and
+HashiCorp's Terraform Plugin Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
-Alias writes/reloads, WireGuard operations, and read-only data sources other
-than alias listing have only been tested against mock servers and the included
-OpenAPI specification. Do not use these resources on a production firewall.
-Verify API behaviour, compatibility, and recovery in an isolated environment
-first.
+Firewall and WireGuard mutations, and read-only data sources other than alias
+listing, have only been tested against mock servers and the included OpenAPI
+specification. Do not use these resources on a production firewall. Verify API
+behaviour, compatibility, and recovery in an isolated environment first.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
 
+## 🔥 Managed firewall resources
+
+The provider manages firewall aliases, filter rules, schedules, NPT NAT,
+one-to-one NAT, port-forward NAT, ALTQ root queues, limiters, PFlow exporters,
+and virtual IPs. See the [resource documentation](docs/resources/) for
+individual resource schemas and import instructions.
+
+Outbound NAT and global PFlow options remain read-only: the API does not
+provide the complete delete or reset lifecycle needed to manage them safely.
+Firewall resource mutations initiate a filter reload but do not confirm its
+completion.
+
 The provider routes firewall and WireGuard operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
-installations have not been verified. Firewall alias writes initiate a filter
-reload, but WireGuard mutations use the documented API operations without an
-additional apply call because the included specification defines no
-WireGuard-specific apply endpoint. Requests are serialised per configured
-client, not across separate provider configurations or Terraform processes.
-If a write or reload fails, check the firewall configuration and initiate a
-reload manually before retrying: Terraform refresh may observe the changed
-configuration without retrying the failed reload. A failed create with an
-uncertain API response may also require importing the existing alias.
+installations have not been verified. Firewall resource mutations initiate a
+filter reload but do not confirm its completion. WireGuard mutations use the
+documented API operations without an additional apply call because the
+included specification defines no WireGuard-specific apply endpoint. Requests
+are serialised per configured client, not across separate provider
+configurations or Terraform processes. If a write or reload fails, check the
+firewall configuration and initiate the appropriate reload manually before
+retrying: Terraform refresh may observe changed configuration without retrying
+the failed reload. A failed create with an uncertain API response may require
+importing the existing resource.
 
 ## 📋 Requirements
 

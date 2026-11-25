@@ -28,3 +28,253 @@ resources:
         - status
         - display_values
         - truncated
+  firewall_nat_npt:
+    create:
+      path: /firewall/nat/npt
+      method: PUT
+    read:
+      path: /firewall/nat/npt
+      method: GET
+    delete:
+      path: /firewall/nat/npt/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - interfacelist
+        - rules
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_nat_one_to_one:
+    create:
+      path: /firewall/nat/onetoone
+      method: PUT
+    read:
+      path: /firewall/nat/onetoone
+      method: GET
+    delete:
+      path: /firewall/nat/onetoone/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - destlist
+        - interfacelist
+        - aliases
+        - sysaliases
+        - rules
+        - extlist
+        - srclist
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_nat_port_forward:
+    create:
+      path: /firewall/nat/port-forward
+      method: PUT
+    read:
+      path: /firewall/nat/port-forward
+      method: GET
+    update:
+      path: /firewall/nat/port-forward/{id}
+      method: POST
+    delete:
+      path: /firewall/nat/port-forward/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - destlist
+        - interfacelist
+        - locallist
+        - aliases
+        - sysaliases
+        - rules
+        - srclist
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_rule:
+    create:
+      path: /firewall/rules/interface/{interface}
+      method: POST
+    read:
+      path: /firewall/rules/interface/{interface}
+      method: GET
+    update:
+      path: /firewall/rules/interface/{interface}/{id}
+      method: PATCH
+    delete:
+      path: /firewall/rules/interface/{interface}/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - aliases
+        - nat_interfaces
+        - entries
+        - schedules
+        - gateways4
+        - gateways6
+        - queues
+        - limiters
+        - source.label
+        - destination.label
+        - state
+        - created
+        - updated
+        - fwids
+        - readonly
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_schedule:
+    create:
+      path: /firewall/schedules
+      method: POST
+    read:
+      path: /firewall/schedules
+      method: GET
+    update:
+      path: /firewall/schedules/{id}
+      method: PUT
+    delete:
+      path: /firewall/schedules/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - schedules
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_altq:
+    create:
+      path: /firewall/traffic-shaper/altq
+      method: PUT
+    read:
+      path: /firewall/traffic-shaper/altq
+      method: GET
+    update:
+      path: /firewall/traffic-shaper/altq/{name}
+      method: POST
+    delete:
+      path: /firewall/traffic-shaper/altq/{name}
+      method: DELETE
+    schema:
+      ignores:
+        - altq
+        - queue.queue
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_limiter:
+    create:
+      path: /firewall/traffic-shaper/limiter
+      method: PUT
+    read:
+      path: /firewall/traffic-shaper/limiter
+      method: GET
+    update:
+      path: /firewall/traffic-shaper/limiter/{name}
+      method: POST
+    delete:
+      path: /firewall/traffic-shaper/limiter/{name}
+      method: DELETE
+    schema:
+      ignores:
+        - limiter
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_pflow_exporter:
+    create:
+      path: /firewall/pflow/exporters
+      method: POST
+    read:
+      path: /firewall/pflow
+      method: GET
+    update:
+      path: /firewall/pflow/exporters/{id}
+      method: PUT
+    delete:
+      path: /firewall/pflow/exporters/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - options
+        - exporters
+        - src_ip_address
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result
+  firewall_virtual_ip:
+    create:
+      path: /firewall/virtualip
+      method: POST
+    read:
+      path: /firewall/virtualip
+      method: GET
+    update:
+      path: /firewall/virtualip/{id}
+      method: PUT
+    delete:
+      path: /firewall/virtualip/{id}
+      method: DELETE
+    schema:
+      ignores:
+        - virtualips
+        - interfaces
+        - alrt
+        - alrtclr
+        - alrtoln
+        - auth
+        - message
+        - sb
+        - status
+        - msg
+        - result

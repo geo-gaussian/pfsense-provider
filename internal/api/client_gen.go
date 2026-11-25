@@ -935,6 +935,17 @@ type FWAliases struct {
 	SystemAliases *[]FWSystemAlias `json:"system_aliases,omitempty"`
 }
 
+// FWBogonRule defines model for FWBogonRule.
+type FWBogonRule struct {
+	Enabled   *bool   `json:"enabled,omitempty"`
+	Interface *string `json:"interface,omitempty"`
+}
+
+// FWBogonState defines model for FWBogonState.
+type FWBogonState struct {
+	Enabled *bool `json:"enabled,omitempty"`
+}
+
 // FWFilterRule defines model for FWFilterRule.
 type FWFilterRule struct {
 	// Ackqueue acknowledgement shaper queue
@@ -1046,6 +1057,12 @@ type FWFirewallInterfaces struct {
 	Wan               *string                    `json:"wan,omitempty"`
 }
 
+// FWRuleItemOrder defines model for FWRuleItemOrder.
+type FWRuleItemOrder struct {
+	Id   *string `json:"id,omitempty"`
+	Rule *bool   `json:"rule,omitempty"`
+}
+
 // FWRuleState defines model for FWRuleState.
 type FWRuleState struct {
 	Bytes          *int    `json:"bytes,omitempty"`
@@ -1069,6 +1086,11 @@ type FWRules struct {
 	NatInterfaces *[]string               `json:"nat_interfaces,omitempty"`
 	Queues        *[]string               `json:"queues,omitempty"`
 	Schedules     *[]NameDescr            `json:"schedules,omitempty"`
+}
+
+// FWRulesOrder defines model for FWRulesOrder.
+type FWRulesOrder struct {
+	Entries *[]FWRuleItemOrder `json:"entries,omitempty"`
 }
 
 // FWSchedule defines model for FWSchedule.
@@ -1122,6 +1144,11 @@ type FWTarget struct {
 	Updatefreq *string `json:"updatefreq,omitempty"`
 }
 
+// FWToggleResult defines model for FWToggleResult.
+type FWToggleResult struct {
+	Status *ToggleRespStatus `json:"status,omitempty"`
+}
+
 // FWUpdateAliasReq defines model for FWUpdateAliasReq.
 type FWUpdateAliasReq struct {
 	// Address space separated list of addresses
@@ -1165,6 +1192,30 @@ type FilterSeparator struct {
 	If   *string `json:"if,omitempty"`
 	Row  *string `json:"row,omitempty"`
 	Text *string `json:"text,omitempty"`
+}
+
+// FwBulkCopy defines model for FwBulkCopy.
+type FwBulkCopy struct {
+	Iface *string   `json:"iface,omitempty"`
+	Rules *[]string `json:"rules,omitempty"`
+}
+
+// FwBulkDelete defines model for FwBulkDelete.
+type FwBulkDelete struct {
+	Rules *[]string `json:"rules,omitempty"`
+}
+
+// FwBulkToggle defines model for FwBulkToggle.
+type FwBulkToggle struct {
+	Rules *[]string `json:"rules,omitempty"`
+
+	// Value true to disable
+	Value *bool `json:"value,omitempty"`
+}
+
+// FwRuleToggle defines model for FwRuleToggle.
+type FwRuleToggle struct {
+	Value *bool `json:"value,omitempty"`
 }
 
 // FwRulesEntry defines model for FwRulesEntry.
@@ -1481,6 +1532,20 @@ type IfStatsSummary struct {
 	Bandwidth *[]IfStatsBandwidth `json:"bandwidth,omitempty"`
 	If        *string             `json:"if,omitempty"`
 	Ifstats   *IfStats            `json:"ifstats,omitempty"`
+}
+
+// InsertFilterRule defines model for InsertFilterRule.
+type InsertFilterRule struct {
+	After *bool         `json:"after,omitempty"`
+	Rule  *FWFilterRule `json:"rule,omitempty"`
+}
+
+// InsertFilterSeparator defines model for InsertFilterSeparator.
+type InsertFilterSeparator struct {
+	After *bool   `json:"after,omitempty"`
+	Color *string `json:"color,omitempty"`
+	Rule  *string `json:"rule,omitempty"`
+	Text  *string `json:"text,omitempty"`
 }
 
 // InterfaceAssignedName defines model for InterfaceAssignedName.
@@ -2237,6 +2302,21 @@ type NATNptRules struct {
 	Rules         *[]NATNptRule      `json:"rules,omitempty"`
 }
 
+// NATOutModeUpdateResponse defines model for NATOutModeUpdateResponse.
+type NATOutModeUpdateResponse struct {
+	Mode *string `json:"mode,omitempty"`
+}
+
+// NATOutUpdateResponse defines model for NATOutUpdateResponse.
+type NATOutUpdateResponse struct {
+	Rule *NATOutboundRule `json:"rule,omitempty"`
+}
+
+// NATOutboundMode defines model for NATOutboundMode.
+type NATOutboundMode struct {
+	Mode *string `json:"mode,omitempty"`
+}
+
 // NATOutboundRule defines model for NATOutboundRule.
 type NATOutboundRule struct {
 	Created       *FWUserTimestamp `json:"created,omitempty"`
@@ -2291,6 +2371,11 @@ type NATRule struct {
 	Updated               *FWUserTimestamp `json:"updated,omitempty"`
 }
 
+// NATRuleOrder defines model for NATRuleOrder.
+type NATRuleOrder struct {
+	Rule *[]string `json:"rule,omitempty"`
+}
+
 // NATRules defines model for NATRules.
 type NATRules struct {
 	Aliases       *[]FWAlias         `json:"aliases,omitempty"`
@@ -2306,6 +2391,11 @@ type NATRules struct {
 type NATRulesEntry struct {
 	Rule      *NATRule   `json:"rule,omitempty"`
 	Separator *Separator `json:"separator,omitempty"`
+}
+
+// NATUpdateResult defines model for NATUpdateResult.
+type NATUpdateResult struct {
+	Rule *NATRule `json:"rule,omitempty"`
 }
 
 // NDPEntry defines model for NDPEntry.
@@ -2583,6 +2673,32 @@ type OpenVPNStatus struct {
 	SkServers *[]OpenVPNActiveConn `json:"sk_servers,omitempty"`
 }
 
+// PFlowExporter defines model for PFlowExporter.
+type PFlowExporter struct {
+	Descr   *string `json:"descr,omitempty"`
+	Domain  *int    `json:"domain,omitempty"`
+	Dst     *string `json:"dst,omitempty"`
+	Dstport *int    `json:"dstport,omitempty"`
+	Enable  *bool   `json:"enable,omitempty"`
+	Id      *string `json:"id,omitempty"`
+	Proto   *string `json:"proto,omitempty"`
+	Src     *string `json:"src,omitempty"`
+	Srcport *int    `json:"srcport,omitempty"`
+}
+
+// PFlowGlobalOptions defines model for PFlowGlobalOptions.
+type PFlowGlobalOptions struct {
+	Exporters    *[]PFlowExporter   `json:"exporters,omitempty"`
+	Options      *PFlowOptions      `json:"options,omitempty"`
+	SrcIpAddress *map[string]string `json:"src_ip_address,omitempty"`
+}
+
+// PFlowOptions defines model for PFlowOptions.
+type PFlowOptions struct {
+	Default *bool `json:"default,omitempty"`
+	Enable  *bool `json:"enable,omitempty"`
+}
+
 // PackageStatus defines model for PackageStatus.
 type PackageStatus struct {
 	Descr   *string `json:"descr,omitempty"`
@@ -2834,6 +2950,12 @@ type Tier struct {
 	Status  *string `json:"status,omitempty"`
 }
 
+// ToggleRespStatus defines model for ToggleRespStatus.
+type ToggleRespStatus struct {
+	Disabled *bool   `json:"disabled,omitempty"`
+	Id       *string `json:"id,omitempty"`
+}
+
 // TrafficShapers defines model for TrafficShapers.
 type TrafficShapers struct {
 	Altq           *[]ALTQRootQueue        `json:"altq,omitempty"`
@@ -2946,6 +3068,34 @@ type VXLANInterface struct {
 type VXLANInterfaces struct {
 	Interfaces      *[]VXLANInterface        `json:"interfaces,omitempty"`
 	VxlanCapableIfs *[]VXLANCapableInterface `json:"vxlan_capable_ifs,omitempty"`
+}
+
+// VirtualIP defines model for VirtualIP.
+type VirtualIP struct {
+	Advbase         *int    `json:"advbase,omitempty"`
+	Advskew         *int    `json:"advskew,omitempty"`
+	CarpMode        *string `json:"carp_mode,omitempty"`
+	CarpPeer        *string `json:"carp_peer,omitempty"`
+	Descr           *string `json:"descr,omitempty"`
+	Id              *string `json:"id,omitempty"`
+	Interface       *string `json:"interface,omitempty"`
+	Mode            *string `json:"mode,omitempty"`
+	Password        *string `json:"password,omitempty"`
+	PasswordConfirm *string `json:"password_confirm,omitempty"`
+	Subnet          *string `json:"subnet,omitempty"`
+	Uniqid          *string `json:"uniqid,omitempty"`
+	Vhid            *int    `json:"vhid,omitempty"`
+}
+
+// VirtualIPResult defines model for VirtualIPResult.
+type VirtualIPResult struct {
+	Id *string `json:"id,omitempty"`
+}
+
+// VirtualIPs defines model for VirtualIPs.
+type VirtualIPs struct {
+	Interfaces *[]SimpleInterface `json:"interfaces,omitempty"`
+	Virtualips *[]VirtualIP       `json:"virtualips,omitempty"`
 }
 
 // WGConfig valid values:
@@ -3096,6 +3246,138 @@ type FirewallAddAliasJSONRequestBody = FWAliasReq
 // FirewallUpdateAliasJSONRequestBody defines body for FirewallUpdateAlias for application/json ContentType.
 type FirewallUpdateAliasJSONRequestBody = FWUpdateAliasReq
 
+// FirewallCreateNATNptJSONRequestBody defines body for FirewallCreateNATNpt for application/json ContentType.
+type FirewallCreateNATNptJSONRequestBody = NATNptRule
+
+// FirewallOrderNATNptRulesJSONRequestBody defines body for FirewallOrderNATNptRules for application/json ContentType.
+type FirewallOrderNATNptRulesJSONRequestBody = NATRuleOrder
+
+// FirewallToggleNATNptRulesJSONRequestBody defines body for FirewallToggleNATNptRules for application/json ContentType.
+type FirewallToggleNATNptRulesJSONRequestBody = FwBulkToggle
+
+// FirewallToggleNATNptRuleJSONRequestBody defines body for FirewallToggleNATNptRule for application/json ContentType.
+type FirewallToggleNATNptRuleJSONRequestBody = FwRuleToggle
+
+// FirewallCreateNAT1To1RuleJSONRequestBody defines body for FirewallCreateNAT1To1Rule for application/json ContentType.
+type FirewallCreateNAT1To1RuleJSONRequestBody = NAT1To1Rule
+
+// FirewallOrderNAT1To1RulesJSONRequestBody defines body for FirewallOrderNAT1To1Rules for application/json ContentType.
+type FirewallOrderNAT1To1RulesJSONRequestBody = NATRuleOrder
+
+// FirewallToggleNAT1To1RulesJSONRequestBody defines body for FirewallToggleNAT1To1Rules for application/json ContentType.
+type FirewallToggleNAT1To1RulesJSONRequestBody = FwRuleToggle
+
+// FirewallToggleNAT1To1RuleJSONRequestBody defines body for FirewallToggleNAT1To1Rule for application/json ContentType.
+type FirewallToggleNAT1To1RuleJSONRequestBody = FwBulkToggle
+
+// FirewallCreateNATOutJSONRequestBody defines body for FirewallCreateNATOut for application/json ContentType.
+type FirewallCreateNATOutJSONRequestBody = NATOutboundRule
+
+// FirewallUpdateNATOutModeJSONRequestBody defines body for FirewallUpdateNATOutMode for application/json ContentType.
+type FirewallUpdateNATOutModeJSONRequestBody = NATOutboundMode
+
+// FirewallOrderNATOutJSONRequestBody defines body for FirewallOrderNATOut for application/json ContentType.
+type FirewallOrderNATOutJSONRequestBody = NATRuleOrder
+
+// FirewallToggleNATOutJSONRequestBody defines body for FirewallToggleNATOut for application/json ContentType.
+type FirewallToggleNATOutJSONRequestBody = FwRuleToggle
+
+// FirewallUpdateNATOutJSONRequestBody defines body for FirewallUpdateNATOut for application/json ContentType.
+type FirewallUpdateNATOutJSONRequestBody = NATOutboundRule
+
+// FirewallCreateNATJSONRequestBody defines body for FirewallCreateNAT for application/json ContentType.
+type FirewallCreateNATJSONRequestBody = NATRule
+
+// FirewallOrderNATRulesJSONRequestBody defines body for FirewallOrderNATRules for application/json ContentType.
+type FirewallOrderNATRulesJSONRequestBody = FWRulesOrder
+
+// FirewallAddNATSeparatorJSONRequestBody defines body for FirewallAddNATSeparator for application/json ContentType.
+type FirewallAddNATSeparatorJSONRequestBody = InsertFilterSeparator
+
+// FirewallToggleNATRulesJSONRequestBody defines body for FirewallToggleNATRules for application/json ContentType.
+type FirewallToggleNATRulesJSONRequestBody = FwBulkToggle
+
+// FirewallToggleNATRuleJSONRequestBody defines body for FirewallToggleNATRule for application/json ContentType.
+type FirewallToggleNATRuleJSONRequestBody = FwRuleToggle
+
+// FirewallUpdateNATJSONRequestBody defines body for FirewallUpdateNAT for application/json ContentType.
+type FirewallUpdateNATJSONRequestBody = NATRule
+
+// FirewallSetPFlowJSONRequestBody defines body for FirewallSetPFlow for application/json ContentType.
+type FirewallSetPFlowJSONRequestBody = PFlowOptions
+
+// FirewallAddPFlowExporterJSONRequestBody defines body for FirewallAddPFlowExporter for application/json ContentType.
+type FirewallAddPFlowExporterJSONRequestBody = PFlowExporter
+
+// FirewallUpdatePFlowExporterJSONRequestBody defines body for FirewallUpdatePFlowExporter for application/json ContentType.
+type FirewallUpdatePFlowExporterJSONRequestBody = PFlowExporter
+
+// AppendFirewallRuleJSONRequestBody defines body for AppendFirewallRule for application/json ContentType.
+type AppendFirewallRuleJSONRequestBody = FWFilterRule
+
+// ToggleBogonRuleJSONRequestBody defines body for ToggleBogonRule for application/json ContentType.
+type ToggleBogonRuleJSONRequestBody = FWBogonState
+
+// CopyFirewallRulesJSONRequestBody defines body for CopyFirewallRules for application/json ContentType.
+type CopyFirewallRulesJSONRequestBody = FwBulkCopy
+
+// DeleteFirewallRulesJSONRequestBody defines body for DeleteFirewallRules for application/json ContentType.
+type DeleteFirewallRulesJSONRequestBody = FwBulkDelete
+
+// ReorderFirewallRulesJSONRequestBody defines body for ReorderFirewallRules for application/json ContentType.
+type ReorderFirewallRulesJSONRequestBody = FWRulesOrder
+
+// InsertFirewallSeparatorJSONRequestBody defines body for InsertFirewallSeparator for application/json ContentType.
+type InsertFirewallSeparatorJSONRequestBody = InsertFilterSeparator
+
+// ToggleFirewallRulesJSONRequestBody defines body for ToggleFirewallRules for application/json ContentType.
+type ToggleFirewallRulesJSONRequestBody = FwBulkToggle
+
+// ToggleFirewallRuleJSONRequestBody defines body for ToggleFirewallRule for application/json ContentType.
+type ToggleFirewallRuleJSONRequestBody = FwRuleToggle
+
+// UpdateFirewallRuleJSONRequestBody defines body for UpdateFirewallRule for application/json ContentType.
+type UpdateFirewallRuleJSONRequestBody = FWFilterRule
+
+// InsertFirewallRuleJSONRequestBody defines body for InsertFirewallRule for application/json ContentType.
+type InsertFirewallRuleJSONRequestBody = InsertFilterRule
+
+// FirewallAddScheduleJSONRequestBody defines body for FirewallAddSchedule for application/json ContentType.
+type FirewallAddScheduleJSONRequestBody = FWSchedule
+
+// FirewallUpdateScheduleJSONRequestBody defines body for FirewallUpdateSchedule for application/json ContentType.
+type FirewallUpdateScheduleJSONRequestBody = FWSchedule
+
+// FirewallAddALTQJSONRequestBody defines body for FirewallAddALTQ for application/json ContentType.
+type FirewallAddALTQJSONRequestBody = ALTQRootQueue
+
+// FirewallUpdateALTQJSONRequestBody defines body for FirewallUpdateALTQ for application/json ContentType.
+type FirewallUpdateALTQJSONRequestBody = ALTQRootQueue
+
+// FirewallAddALTQChildQueueJSONRequestBody defines body for FirewallAddALTQChildQueue for application/json ContentType.
+type FirewallAddALTQChildQueueJSONRequestBody = ALTQChildQueue
+
+// FirewallUpdateALTQChildQueueJSONRequestBody defines body for FirewallUpdateALTQChildQueue for application/json ContentType.
+type FirewallUpdateALTQChildQueueJSONRequestBody = ALTQChildQueue
+
+// FirewallAddLimiterJSONRequestBody defines body for FirewallAddLimiter for application/json ContentType.
+type FirewallAddLimiterJSONRequestBody = Limiter
+
+// FirewallUpdateLimiterJSONRequestBody defines body for FirewallUpdateLimiter for application/json ContentType.
+type FirewallUpdateLimiterJSONRequestBody = Limiter
+
+// FirewallAddLimiterQueueJSONRequestBody defines body for FirewallAddLimiterQueue for application/json ContentType.
+type FirewallAddLimiterQueueJSONRequestBody = LimiterQueue
+
+// FirewallUpdateLimiterQueueJSONRequestBody defines body for FirewallUpdateLimiterQueue for application/json ContentType.
+type FirewallUpdateLimiterQueueJSONRequestBody = LimiterQueue
+
+// FirewallSetVirtualIPJSONRequestBody defines body for FirewallSetVirtualIP for application/json ContentType.
+type FirewallSetVirtualIPJSONRequestBody = VirtualIP
+
+// FirewallUpdateVirtualIPJSONRequestBody defines body for FirewallUpdateVirtualIP for application/json ContentType.
+type FirewallUpdateVirtualIPJSONRequestBody = VirtualIP
+
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
 type LoginJSONRequestBody = LoginCredentials
 
@@ -3239,20 +3521,353 @@ type ClientInterface interface {
 	// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
 	FirewallGetNATNpt(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// FirewallCreateNATNptWithBody Create NAT NPt rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+	FirewallCreateNATNptWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNATNpt Create NAT NPt rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+	FirewallCreateNATNpt(ctx context.Context, body FirewallCreateNATNptJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATNptRulesWithBody Reorder NPt NAT rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+	FirewallOrderNATNptRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATNptRules Reorder NPt NAT rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+	FirewallOrderNATNptRules(ctx context.Context, body FirewallOrderNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATNptRulesWithBody Toggle NPt Rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+	FirewallToggleNATNptRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATNptRules Toggle NPt Rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+	FirewallToggleNATNptRules(ctx context.Context, body FirewallToggleNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATNptRuleWithBody Toggle NPt Rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+	FirewallToggleNATNptRuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATNptRule Toggle NPt Rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+	FirewallToggleNATNptRule(ctx context.Context, id string, body FirewallToggleNATNptRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteNATNptRules Delete NAT NPt rules
+	//
+	// Corresponds with DELETE /firewall/nat/npt/{id} (the `FirewallDeleteNATNptRules` operationId).
+	FirewallDeleteNATNptRules(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// FirewallGetNAT1To1Rules Get NAT 1:1 rules
 	//
 	// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
 	FirewallGetNAT1To1Rules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNAT1To1RuleWithBody Create 1:1 NAT rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+	FirewallCreateNAT1To1RuleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNAT1To1Rule Create 1:1 NAT rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+	FirewallCreateNAT1To1Rule(ctx context.Context, body FirewallCreateNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNAT1To1RulesWithBody Reorder 1:1 NAT rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+	FirewallOrderNAT1To1RulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNAT1To1Rules Reorder 1:1 NAT rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+	FirewallOrderNAT1To1Rules(ctx context.Context, body FirewallOrderNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNAT1To1RulesWithBody Toggle NAT 1:1 rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+	FirewallToggleNAT1To1RulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNAT1To1Rules Toggle NAT 1:1 rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+	FirewallToggleNAT1To1Rules(ctx context.Context, body FirewallToggleNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNAT1To1RuleWithBody Toggle NAT 1:1 rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+	FirewallToggleNAT1To1RuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNAT1To1Rule Toggle NAT 1:1 rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+	FirewallToggleNAT1To1Rule(ctx context.Context, id string, body FirewallToggleNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteNAT1To1Rules Delete NAT 1:1 rules
+	//
+	// Corresponds with DELETE /firewall/nat/onetoone/{id} (the `FirewallDeleteNAT1To1Rules` operationId).
+	FirewallDeleteNAT1To1Rules(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FirewallGetNATOut Get NAT Outbound Rules
 	//
 	// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
 	FirewallGetNATOut(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// FirewallCreateNATOutWithBody Create NAT Outbound Rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+	FirewallCreateNATOutWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNATOut Create NAT Outbound Rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+	FirewallCreateNATOut(ctx context.Context, body FirewallCreateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNATOutModeWithBody Update NAT Outbound Mode
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+	FirewallUpdateNATOutModeWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNATOutMode Update NAT Outbound Mode
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+	FirewallUpdateNATOutMode(ctx context.Context, body FirewallUpdateNATOutModeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATOutWithBody Reorder NAT Outbound Rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+	FirewallOrderNATOutWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATOut Reorder NAT Outbound Rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+	FirewallOrderNATOut(ctx context.Context, body FirewallOrderNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATOutWithBody Toggle NAT Outbound rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+	FirewallToggleNATOutWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATOut Toggle NAT Outbound rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+	FirewallToggleNATOut(ctx context.Context, id string, body FirewallToggleNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNATOutWithBody Update NAT Outbound Rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+	FirewallUpdateNATOutWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNATOut Update NAT Outbound Rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+	FirewallUpdateNATOut(ctx context.Context, id string, body FirewallUpdateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// FirewallGetNAT Get NAT Rules
 	//
 	// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
 	FirewallGetNAT(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNATWithBody Create NAT rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+	FirewallCreateNATWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallCreateNAT Create NAT rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+	FirewallCreateNAT(ctx context.Context, body FirewallCreateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATRulesWithBody Reorder NAT rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+	FirewallOrderNATRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallOrderNATRules Reorder NAT rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+	FirewallOrderNATRules(ctx context.Context, body FirewallOrderNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddNATSeparatorWithBody Create NAT separator before/after a rule identified by its index
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+	FirewallAddNATSeparatorWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddNATSeparator Create NAT separator before/after a rule identified by its index
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+	FirewallAddNATSeparator(ctx context.Context, body FirewallAddNATSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATRulesWithBody Toggle NAT Rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+	FirewallToggleNATRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATRules Toggle NAT Rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+	FirewallToggleNATRules(ctx context.Context, body FirewallToggleNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATRuleWithBody Toggle NAT Rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+	FirewallToggleNATRuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallToggleNATRule Toggle NAT Rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+	FirewallToggleNATRule(ctx context.Context, id string, body FirewallToggleNATRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteNAT Delete NAT rules
+	//
+	// Corresponds with DELETE /firewall/nat/port-forward/{id} (the `FirewallDeleteNAT` operationId).
+	FirewallDeleteNAT(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNATWithBody Update NAT rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+	FirewallUpdateNATWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateNAT Update NAT rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+	FirewallUpdateNAT(ctx context.Context, id string, body FirewallUpdateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetPFlow Get Global Packet Flow Options
+	//
+	// Corresponds with GET /firewall/pflow (the `FirewallGetPFlow` operationId).
+	FirewallGetPFlow(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallSetPFlowWithBody Change Global Packet Flow Options
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+	FirewallSetPFlowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallSetPFlow Change Global Packet Flow Options
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+	FirewallSetPFlow(ctx context.Context, body FirewallSetPFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddPFlowExporterWithBody Add Packet Flow Exporters
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+	FirewallAddPFlowExporterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddPFlowExporter Add Packet Flow Exporters
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+	FirewallAddPFlowExporter(ctx context.Context, body FirewallAddPFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeletePFlowExporter Delete Packet Flow Exporters
+	//
+	// Corresponds with DELETE /firewall/pflow/exporters/{id} (the `FirewallDeletePFlowExporter` operationId).
+	FirewallDeletePFlowExporter(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdatePFlowExporterWithBody Update Packet Flow Exporters
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+	FirewallUpdatePFlowExporterWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdatePFlowExporter Update Packet Flow Exporters
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+	FirewallUpdatePFlowExporter(ctx context.Context, id string, body FirewallUpdatePFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetFWInterfaces Get list of firewall interfaces
 	//
@@ -3264,10 +3879,198 @@ type ClientInterface interface {
 	// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
 	GetFirewallRules(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AppendFirewallRuleWithBody Append rule to the firewall
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+	AppendFirewallRuleWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AppendFirewallRule Append rule to the firewall
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+	AppendFirewallRule(ctx context.Context, pInterface string, body AppendFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// QueryBogonRule Get bogon rule for the specified interface
+	//
+	// Corresponds with GET /firewall/rules/interface/{interface}/bogon (the `QueryBogonRule` operationId).
+	QueryBogonRule(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleBogonRuleWithBody Toggles the bogon rule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+	ToggleBogonRuleWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleBogonRule Toggles the bogon rule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+	ToggleBogonRule(ctx context.Context, pInterface string, body ToggleBogonRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CopyFirewallRulesWithBody Bulk copy of rules to target interface
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+	CopyFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CopyFirewallRules Bulk copy of rules to target interface
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+	CopyFirewallRules(ctx context.Context, pInterface string, body CopyFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteFirewallRulesWithBody Bulk delete of rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+	DeleteFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteFirewallRules Bulk delete of rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+	DeleteFirewallRules(ctx context.Context, pInterface string, body DeleteFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReorderFirewallRulesWithBody Reorder rules and separators
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+	ReorderFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReorderFirewallRules Reorder rules and separators
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+	ReorderFirewallRules(ctx context.Context, pInterface string, body ReorderFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InsertFirewallSeparatorWithBody Create separator before/after a rule identified by its id
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+	InsertFirewallSeparatorWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InsertFirewallSeparator Create separator before/after a rule identified by its id
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+	InsertFirewallSeparator(ctx context.Context, pInterface string, body InsertFirewallSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteFirewallSeparator Delete firewall rule separator identified by id
+	//
+	// Corresponds with DELETE /firewall/rules/interface/{interface}/separators/{id} (the `DeleteFirewallSeparator` operationId).
+	DeleteFirewallSeparator(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleFirewallRulesWithBody Bulk toggle of rules
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+	ToggleFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleFirewallRules Bulk toggle of rules
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+	ToggleFirewallRules(ctx context.Context, pInterface string, body ToggleFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleFirewallRuleWithBody Toggle rule by id
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+	ToggleFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleFirewallRule Toggle rule by id
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+	ToggleFirewallRule(ctx context.Context, pInterface string, id string, body ToggleFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteFirewallRule Deletes a rule by its id
+	//
+	// Corresponds with DELETE /firewall/rules/interface/{interface}/{id} (the `DeleteFirewallRule` operationId).
+	DeleteFirewallRule(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateFirewallRuleWithBody Update rule identified by id
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+	UpdateFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateFirewallRule Update rule identified by id
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+	UpdateFirewallRule(ctx context.Context, pInterface string, id string, body UpdateFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InsertFirewallRuleWithBody Add rule before/after other rule identified by its id
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+	InsertFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InsertFirewallRule Add rule before/after other rule identified by its id
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+	InsertFirewallRule(ctx context.Context, pInterface string, id string, body InsertFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// FirewallGetSchedules Get Firewall Schedules
 	//
 	// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
 	FirewallGetSchedules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddScheduleWithBody Add Firewall Schedule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+	FirewallAddScheduleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddSchedule Add Firewall Schedule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+	FirewallAddSchedule(ctx context.Context, body FirewallAddScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteSchedule Delete schedule
+	//
+	// Corresponds with DELETE /firewall/schedules/{id} (the `FirewallDeleteSchedule` operationId).
+	FirewallDeleteSchedule(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateScheduleWithBody Update Firewall Schedule
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+	FirewallUpdateScheduleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateSchedule Update Firewall Schedule
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+	FirewallUpdateSchedule(ctx context.Context, id string, body FirewallUpdateScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FirewallGetTrafficShaper Get Traffic Shapers
 	//
@@ -3279,10 +4082,180 @@ type ClientInterface interface {
 	// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
 	FirewallGetALTQ(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// FirewallAddALTQWithBody Add ALTQ Root Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+	FirewallAddALTQWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddALTQ Add ALTQ Root Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+	FirewallAddALTQ(ctx context.Context, body FirewallAddALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteALTQ Delete ALTQ Root Queue
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/altq/{name} (the `FirewallDeleteALTQ` operationId).
+	FirewallDeleteALTQ(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateALTQWithBody Update ALTQ Root Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+	FirewallUpdateALTQWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateALTQ Update ALTQ Root Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+	FirewallUpdateALTQ(ctx context.Context, name string, body FirewallUpdateALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddALTQChildQueueWithBody Add ALTQ Child Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+	FirewallAddALTQChildQueueWithBody(ctx context.Context, name string, parentname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddALTQChildQueue Add ALTQ Child Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+	FirewallAddALTQChildQueue(ctx context.Context, name string, parentname string, body FirewallAddALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteALTQChildQueue Delete ALTQ Child Queue
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallDeleteALTQChildQueue` operationId).
+	FirewallDeleteALTQChildQueue(ctx context.Context, name string, parentname string, qname string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateALTQChildQueueWithBody Update ALTQ Child Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+	FirewallUpdateALTQChildQueueWithBody(ctx context.Context, name string, parentname string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateALTQChildQueue Update ALTQ Child Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+	FirewallUpdateALTQChildQueue(ctx context.Context, name string, parentname string, qname string, body FirewallUpdateALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// FirewallGetLimiter Get Limiters
 	//
 	// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
 	FirewallGetLimiter(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddLimiterWithBody Add Limiter
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+	FirewallAddLimiterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddLimiter Add Limiter
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+	FirewallAddLimiter(ctx context.Context, body FirewallAddLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteLimiter Delete Limiter
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name} (the `FirewallDeleteLimiter` operationId).
+	FirewallDeleteLimiter(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateLimiterWithBody Update Limiter
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+	FirewallUpdateLimiterWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateLimiter Update Limiter
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+	FirewallUpdateLimiter(ctx context.Context, name string, body FirewallUpdateLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddLimiterQueueWithBody Add Limiter Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+	FirewallAddLimiterQueueWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallAddLimiterQueue Add Limiter Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+	FirewallAddLimiterQueue(ctx context.Context, name string, body FirewallAddLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteLimiterQueue Delete Limiter Queue
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallDeleteLimiterQueue` operationId).
+	FirewallDeleteLimiterQueue(ctx context.Context, name string, qname string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateLimiterQueueWithBody Update Limiter Queue
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+	FirewallUpdateLimiterQueueWithBody(ctx context.Context, name string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateLimiterQueue Update Limiter Queue
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+	FirewallUpdateLimiterQueue(ctx context.Context, name string, qname string, body FirewallUpdateLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallGetVirtualIPs List Virtual IPs
+	//
+	// Corresponds with GET /firewall/virtualip (the `FirewallGetVirtualIPs` operationId).
+	FirewallGetVirtualIPs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallSetVirtualIPWithBody Add Virtual IP
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+	FirewallSetVirtualIPWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallSetVirtualIP Add Virtual IP
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+	FirewallSetVirtualIP(ctx context.Context, body FirewallSetVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallDeleteVirtualIP Delete Virtual IP
+	//
+	// Corresponds with DELETE /firewall/virtualip/{id} (the `FirewallDeleteVirtualIP` operationId).
+	FirewallDeleteVirtualIP(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateVirtualIPWithBody Update Virtual IP
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+	FirewallUpdateVirtualIPWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FirewallUpdateVirtualIP Update Virtual IP
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+	FirewallUpdateVirtualIP(ctx context.Context, id string, body FirewallUpdateVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetInterfaces Get network interfaces
 	//
@@ -3788,11 +4761,313 @@ func (c *Client) FirewallGetNATNpt(ctx context.Context, reqEditors ...RequestEdi
 	return c.Client.Do(req)
 }
 
+// FirewallCreateNATNptWithBody Create NAT NPt rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+func (c *Client) FirewallCreateNATNptWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATNptRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNATNpt Create NAT NPt rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+func (c *Client) FirewallCreateNATNpt(ctx context.Context, body FirewallCreateNATNptJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATNptRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATNptRulesWithBody Reorder NPt NAT rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+func (c *Client) FirewallOrderNATNptRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATNptRulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATNptRules Reorder NPt NAT rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+func (c *Client) FirewallOrderNATNptRules(ctx context.Context, body FirewallOrderNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATNptRulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATNptRulesWithBody Toggle NPt Rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+func (c *Client) FirewallToggleNATNptRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATNptRulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATNptRules Toggle NPt Rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+func (c *Client) FirewallToggleNATNptRules(ctx context.Context, body FirewallToggleNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATNptRulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATNptRuleWithBody Toggle NPt Rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+func (c *Client) FirewallToggleNATNptRuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATNptRuleRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATNptRule Toggle NPt Rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+func (c *Client) FirewallToggleNATNptRule(ctx context.Context, id string, body FirewallToggleNATNptRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATNptRuleRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteNATNptRules Delete NAT NPt rules
+//
+// Corresponds with DELETE /firewall/nat/npt/{id} (the `FirewallDeleteNATNptRules` operationId).
+func (c *Client) FirewallDeleteNATNptRules(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteNATNptRulesRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // FirewallGetNAT1To1Rules Get NAT 1:1 rules
 //
 // Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
 func (c *Client) FirewallGetNAT1To1Rules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFirewallGetNAT1To1RulesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNAT1To1RuleWithBody Create 1:1 NAT rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+func (c *Client) FirewallCreateNAT1To1RuleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNAT1To1RuleRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNAT1To1Rule Create 1:1 NAT rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+func (c *Client) FirewallCreateNAT1To1Rule(ctx context.Context, body FirewallCreateNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNAT1To1RuleRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNAT1To1RulesWithBody Reorder 1:1 NAT rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+func (c *Client) FirewallOrderNAT1To1RulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNAT1To1RulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNAT1To1Rules Reorder 1:1 NAT rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+func (c *Client) FirewallOrderNAT1To1Rules(ctx context.Context, body FirewallOrderNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNAT1To1RulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNAT1To1RulesWithBody Toggle NAT 1:1 rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+func (c *Client) FirewallToggleNAT1To1RulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNAT1To1RulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNAT1To1Rules Toggle NAT 1:1 rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+func (c *Client) FirewallToggleNAT1To1Rules(ctx context.Context, body FirewallToggleNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNAT1To1RulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNAT1To1RuleWithBody Toggle NAT 1:1 rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+func (c *Client) FirewallToggleNAT1To1RuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNAT1To1RuleRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNAT1To1Rule Toggle NAT 1:1 rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+func (c *Client) FirewallToggleNAT1To1Rule(ctx context.Context, id string, body FirewallToggleNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNAT1To1RuleRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteNAT1To1Rules Delete NAT 1:1 rules
+//
+// Corresponds with DELETE /firewall/nat/onetoone/{id} (the `FirewallDeleteNAT1To1Rules` operationId).
+func (c *Client) FirewallDeleteNAT1To1Rules(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteNAT1To1RulesRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -3818,11 +5093,532 @@ func (c *Client) FirewallGetNATOut(ctx context.Context, reqEditors ...RequestEdi
 	return c.Client.Do(req)
 }
 
+// FirewallCreateNATOutWithBody Create NAT Outbound Rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+func (c *Client) FirewallCreateNATOutWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATOutRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNATOut Create NAT Outbound Rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+func (c *Client) FirewallCreateNATOut(ctx context.Context, body FirewallCreateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATOutRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNATOutModeWithBody Update NAT Outbound Mode
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+func (c *Client) FirewallUpdateNATOutModeWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATOutModeRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNATOutMode Update NAT Outbound Mode
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+func (c *Client) FirewallUpdateNATOutMode(ctx context.Context, body FirewallUpdateNATOutModeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATOutModeRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATOutWithBody Reorder NAT Outbound Rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+func (c *Client) FirewallOrderNATOutWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATOutRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATOut Reorder NAT Outbound Rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+func (c *Client) FirewallOrderNATOut(ctx context.Context, body FirewallOrderNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATOutRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATOutWithBody Toggle NAT Outbound rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+func (c *Client) FirewallToggleNATOutWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATOutRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATOut Toggle NAT Outbound rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+func (c *Client) FirewallToggleNATOut(ctx context.Context, id string, body FirewallToggleNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATOutRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNATOutWithBody Update NAT Outbound Rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+func (c *Client) FirewallUpdateNATOutWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATOutRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNATOut Update NAT Outbound Rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+func (c *Client) FirewallUpdateNATOut(ctx context.Context, id string, body FirewallUpdateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATOutRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // FirewallGetNAT Get NAT Rules
 //
 // Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
 func (c *Client) FirewallGetNAT(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFirewallGetNATRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNATWithBody Create NAT rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+func (c *Client) FirewallCreateNATWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallCreateNAT Create NAT rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+func (c *Client) FirewallCreateNAT(ctx context.Context, body FirewallCreateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallCreateNATRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATRulesWithBody Reorder NAT rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+func (c *Client) FirewallOrderNATRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATRulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallOrderNATRules Reorder NAT rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+func (c *Client) FirewallOrderNATRules(ctx context.Context, body FirewallOrderNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallOrderNATRulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddNATSeparatorWithBody Create NAT separator before/after a rule identified by its index
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+func (c *Client) FirewallAddNATSeparatorWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddNATSeparatorRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddNATSeparator Create NAT separator before/after a rule identified by its index
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+func (c *Client) FirewallAddNATSeparator(ctx context.Context, body FirewallAddNATSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddNATSeparatorRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATRulesWithBody Toggle NAT Rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+func (c *Client) FirewallToggleNATRulesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATRulesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATRules Toggle NAT Rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+func (c *Client) FirewallToggleNATRules(ctx context.Context, body FirewallToggleNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATRulesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATRuleWithBody Toggle NAT Rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+func (c *Client) FirewallToggleNATRuleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATRuleRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallToggleNATRule Toggle NAT Rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+func (c *Client) FirewallToggleNATRule(ctx context.Context, id string, body FirewallToggleNATRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallToggleNATRuleRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteNAT Delete NAT rules
+//
+// Corresponds with DELETE /firewall/nat/port-forward/{id} (the `FirewallDeleteNAT` operationId).
+func (c *Client) FirewallDeleteNAT(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteNATRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNATWithBody Update NAT rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+func (c *Client) FirewallUpdateNATWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateNAT Update NAT rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+func (c *Client) FirewallUpdateNAT(ctx context.Context, id string, body FirewallUpdateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateNATRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetPFlow Get Global Packet Flow Options
+//
+// Corresponds with GET /firewall/pflow (the `FirewallGetPFlow` operationId).
+func (c *Client) FirewallGetPFlow(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetPFlowRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallSetPFlowWithBody Change Global Packet Flow Options
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+func (c *Client) FirewallSetPFlowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallSetPFlowRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallSetPFlow Change Global Packet Flow Options
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+func (c *Client) FirewallSetPFlow(ctx context.Context, body FirewallSetPFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallSetPFlowRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddPFlowExporterWithBody Add Packet Flow Exporters
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+func (c *Client) FirewallAddPFlowExporterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddPFlowExporterRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddPFlowExporter Add Packet Flow Exporters
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+func (c *Client) FirewallAddPFlowExporter(ctx context.Context, body FirewallAddPFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddPFlowExporterRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeletePFlowExporter Delete Packet Flow Exporters
+//
+// Corresponds with DELETE /firewall/pflow/exporters/{id} (the `FirewallDeletePFlowExporter` operationId).
+func (c *Client) FirewallDeletePFlowExporter(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeletePFlowExporterRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdatePFlowExporterWithBody Update Packet Flow Exporters
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+func (c *Client) FirewallUpdatePFlowExporterWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdatePFlowExporterRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdatePFlowExporter Update Packet Flow Exporters
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+func (c *Client) FirewallUpdatePFlowExporter(ctx context.Context, id string, body FirewallUpdatePFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdatePFlowExporterRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3863,11 +5659,479 @@ func (c *Client) GetFirewallRules(ctx context.Context, pInterface string, reqEdi
 	return c.Client.Do(req)
 }
 
+// AppendFirewallRuleWithBody Append rule to the firewall
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+func (c *Client) AppendFirewallRuleWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAppendFirewallRuleRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AppendFirewallRule Append rule to the firewall
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+func (c *Client) AppendFirewallRule(ctx context.Context, pInterface string, body AppendFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAppendFirewallRuleRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// QueryBogonRule Get bogon rule for the specified interface
+//
+// Corresponds with GET /firewall/rules/interface/{interface}/bogon (the `QueryBogonRule` operationId).
+func (c *Client) QueryBogonRule(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewQueryBogonRuleRequest(c.Server, pInterface)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleBogonRuleWithBody Toggles the bogon rule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+func (c *Client) ToggleBogonRuleWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleBogonRuleRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleBogonRule Toggles the bogon rule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+func (c *Client) ToggleBogonRule(ctx context.Context, pInterface string, body ToggleBogonRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleBogonRuleRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CopyFirewallRulesWithBody Bulk copy of rules to target interface
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+func (c *Client) CopyFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCopyFirewallRulesRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CopyFirewallRules Bulk copy of rules to target interface
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+func (c *Client) CopyFirewallRules(ctx context.Context, pInterface string, body CopyFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCopyFirewallRulesRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteFirewallRulesWithBody Bulk delete of rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+func (c *Client) DeleteFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFirewallRulesRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteFirewallRules Bulk delete of rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+func (c *Client) DeleteFirewallRules(ctx context.Context, pInterface string, body DeleteFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFirewallRulesRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReorderFirewallRulesWithBody Reorder rules and separators
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+func (c *Client) ReorderFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReorderFirewallRulesRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReorderFirewallRules Reorder rules and separators
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+func (c *Client) ReorderFirewallRules(ctx context.Context, pInterface string, body ReorderFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReorderFirewallRulesRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// InsertFirewallSeparatorWithBody Create separator before/after a rule identified by its id
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+func (c *Client) InsertFirewallSeparatorWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInsertFirewallSeparatorRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// InsertFirewallSeparator Create separator before/after a rule identified by its id
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+func (c *Client) InsertFirewallSeparator(ctx context.Context, pInterface string, body InsertFirewallSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInsertFirewallSeparatorRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteFirewallSeparator Delete firewall rule separator identified by id
+//
+// Corresponds with DELETE /firewall/rules/interface/{interface}/separators/{id} (the `DeleteFirewallSeparator` operationId).
+func (c *Client) DeleteFirewallSeparator(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFirewallSeparatorRequest(c.Server, pInterface, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleFirewallRulesWithBody Bulk toggle of rules
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+func (c *Client) ToggleFirewallRulesWithBody(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleFirewallRulesRequestWithBody(c.Server, pInterface, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleFirewallRules Bulk toggle of rules
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+func (c *Client) ToggleFirewallRules(ctx context.Context, pInterface string, body ToggleFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleFirewallRulesRequest(c.Server, pInterface, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleFirewallRuleWithBody Toggle rule by id
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+func (c *Client) ToggleFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleFirewallRuleRequestWithBody(c.Server, pInterface, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ToggleFirewallRule Toggle rule by id
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+func (c *Client) ToggleFirewallRule(ctx context.Context, pInterface string, id string, body ToggleFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewToggleFirewallRuleRequest(c.Server, pInterface, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteFirewallRule Deletes a rule by its id
+//
+// Corresponds with DELETE /firewall/rules/interface/{interface}/{id} (the `DeleteFirewallRule` operationId).
+func (c *Client) DeleteFirewallRule(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteFirewallRuleRequest(c.Server, pInterface, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateFirewallRuleWithBody Update rule identified by id
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+func (c *Client) UpdateFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateFirewallRuleRequestWithBody(c.Server, pInterface, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateFirewallRule Update rule identified by id
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+func (c *Client) UpdateFirewallRule(ctx context.Context, pInterface string, id string, body UpdateFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateFirewallRuleRequest(c.Server, pInterface, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// InsertFirewallRuleWithBody Add rule before/after other rule identified by its id
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+func (c *Client) InsertFirewallRuleWithBody(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInsertFirewallRuleRequestWithBody(c.Server, pInterface, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// InsertFirewallRule Add rule before/after other rule identified by its id
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+func (c *Client) InsertFirewallRule(ctx context.Context, pInterface string, id string, body InsertFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInsertFirewallRuleRequest(c.Server, pInterface, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // FirewallGetSchedules Get Firewall Schedules
 //
 // Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
 func (c *Client) FirewallGetSchedules(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFirewallGetSchedulesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddScheduleWithBody Add Firewall Schedule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+func (c *Client) FirewallAddScheduleWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddScheduleRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddSchedule Add Firewall Schedule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+func (c *Client) FirewallAddSchedule(ctx context.Context, body FirewallAddScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddScheduleRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteSchedule Delete schedule
+//
+// Corresponds with DELETE /firewall/schedules/{id} (the `FirewallDeleteSchedule` operationId).
+func (c *Client) FirewallDeleteSchedule(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteScheduleRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateScheduleWithBody Update Firewall Schedule
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+func (c *Client) FirewallUpdateScheduleWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateScheduleRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateSchedule Update Firewall Schedule
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+func (c *Client) FirewallUpdateSchedule(ctx context.Context, id string, body FirewallUpdateScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateScheduleRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3908,11 +6172,441 @@ func (c *Client) FirewallGetALTQ(ctx context.Context, reqEditors ...RequestEdito
 	return c.Client.Do(req)
 }
 
+// FirewallAddALTQWithBody Add ALTQ Root Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+func (c *Client) FirewallAddALTQWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddALTQRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddALTQ Add ALTQ Root Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+func (c *Client) FirewallAddALTQ(ctx context.Context, body FirewallAddALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddALTQRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteALTQ Delete ALTQ Root Queue
+//
+// Corresponds with DELETE /firewall/traffic-shaper/altq/{name} (the `FirewallDeleteALTQ` operationId).
+func (c *Client) FirewallDeleteALTQ(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteALTQRequest(c.Server, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateALTQWithBody Update ALTQ Root Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+func (c *Client) FirewallUpdateALTQWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateALTQRequestWithBody(c.Server, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateALTQ Update ALTQ Root Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+func (c *Client) FirewallUpdateALTQ(ctx context.Context, name string, body FirewallUpdateALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateALTQRequest(c.Server, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddALTQChildQueueWithBody Add ALTQ Child Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+func (c *Client) FirewallAddALTQChildQueueWithBody(ctx context.Context, name string, parentname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddALTQChildQueueRequestWithBody(c.Server, name, parentname, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddALTQChildQueue Add ALTQ Child Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+func (c *Client) FirewallAddALTQChildQueue(ctx context.Context, name string, parentname string, body FirewallAddALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddALTQChildQueueRequest(c.Server, name, parentname, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteALTQChildQueue Delete ALTQ Child Queue
+//
+// Corresponds with DELETE /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallDeleteALTQChildQueue` operationId).
+func (c *Client) FirewallDeleteALTQChildQueue(ctx context.Context, name string, parentname string, qname string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteALTQChildQueueRequest(c.Server, name, parentname, qname)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateALTQChildQueueWithBody Update ALTQ Child Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+func (c *Client) FirewallUpdateALTQChildQueueWithBody(ctx context.Context, name string, parentname string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateALTQChildQueueRequestWithBody(c.Server, name, parentname, qname, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateALTQChildQueue Update ALTQ Child Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+func (c *Client) FirewallUpdateALTQChildQueue(ctx context.Context, name string, parentname string, qname string, body FirewallUpdateALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateALTQChildQueueRequest(c.Server, name, parentname, qname, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // FirewallGetLimiter Get Limiters
 //
 // Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
 func (c *Client) FirewallGetLimiter(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFirewallGetLimiterRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddLimiterWithBody Add Limiter
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+func (c *Client) FirewallAddLimiterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddLimiterRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddLimiter Add Limiter
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+func (c *Client) FirewallAddLimiter(ctx context.Context, body FirewallAddLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddLimiterRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteLimiter Delete Limiter
+//
+// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name} (the `FirewallDeleteLimiter` operationId).
+func (c *Client) FirewallDeleteLimiter(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteLimiterRequest(c.Server, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateLimiterWithBody Update Limiter
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+func (c *Client) FirewallUpdateLimiterWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateLimiterRequestWithBody(c.Server, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateLimiter Update Limiter
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+func (c *Client) FirewallUpdateLimiter(ctx context.Context, name string, body FirewallUpdateLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateLimiterRequest(c.Server, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddLimiterQueueWithBody Add Limiter Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+func (c *Client) FirewallAddLimiterQueueWithBody(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddLimiterQueueRequestWithBody(c.Server, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallAddLimiterQueue Add Limiter Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+func (c *Client) FirewallAddLimiterQueue(ctx context.Context, name string, body FirewallAddLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallAddLimiterQueueRequest(c.Server, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteLimiterQueue Delete Limiter Queue
+//
+// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallDeleteLimiterQueue` operationId).
+func (c *Client) FirewallDeleteLimiterQueue(ctx context.Context, name string, qname string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteLimiterQueueRequest(c.Server, name, qname)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateLimiterQueueWithBody Update Limiter Queue
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+func (c *Client) FirewallUpdateLimiterQueueWithBody(ctx context.Context, name string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateLimiterQueueRequestWithBody(c.Server, name, qname, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateLimiterQueue Update Limiter Queue
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+func (c *Client) FirewallUpdateLimiterQueue(ctx context.Context, name string, qname string, body FirewallUpdateLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateLimiterQueueRequest(c.Server, name, qname, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallGetVirtualIPs List Virtual IPs
+//
+// Corresponds with GET /firewall/virtualip (the `FirewallGetVirtualIPs` operationId).
+func (c *Client) FirewallGetVirtualIPs(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallGetVirtualIPsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallSetVirtualIPWithBody Add Virtual IP
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+func (c *Client) FirewallSetVirtualIPWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallSetVirtualIPRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallSetVirtualIP Add Virtual IP
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+func (c *Client) FirewallSetVirtualIP(ctx context.Context, body FirewallSetVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallSetVirtualIPRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallDeleteVirtualIP Delete Virtual IP
+//
+// Corresponds with DELETE /firewall/virtualip/{id} (the `FirewallDeleteVirtualIP` operationId).
+func (c *Client) FirewallDeleteVirtualIP(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallDeleteVirtualIPRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateVirtualIPWithBody Update Virtual IP
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+func (c *Client) FirewallUpdateVirtualIPWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateVirtualIPRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// FirewallUpdateVirtualIP Update Virtual IP
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+func (c *Client) FirewallUpdateVirtualIP(ctx context.Context, id string, body FirewallUpdateVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFirewallUpdateVirtualIPRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5194,6 +7888,207 @@ func NewFirewallGetNATNptRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewFirewallCreateNATNptRequest calls the generic FirewallCreateNATNpt builder with application/json body
+func NewFirewallCreateNATNptRequest(server string, body FirewallCreateNATNptJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallCreateNATNptRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallCreateNATNptRequestWithBody constructs an http.Request for the FirewallCreateNATNpt method, with any body, and a specified content type
+func NewFirewallCreateNATNptRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallOrderNATNptRulesRequest calls the generic FirewallOrderNATNptRules builder with application/json body
+func NewFirewallOrderNATNptRulesRequest(server string, body FirewallOrderNATNptRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallOrderNATNptRulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallOrderNATNptRulesRequestWithBody constructs an http.Request for the FirewallOrderNATNptRules method, with any body, and a specified content type
+func NewFirewallOrderNATNptRulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt/reorder")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNATNptRulesRequest calls the generic FirewallToggleNATNptRules builder with application/json body
+func NewFirewallToggleNATNptRulesRequest(server string, body FirewallToggleNATNptRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNATNptRulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNATNptRulesRequestWithBody constructs an http.Request for the FirewallToggleNATNptRules method, with any body, and a specified content type
+func NewFirewallToggleNATNptRulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt/toggle")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNATNptRuleRequest calls the generic FirewallToggleNATNptRule builder with application/json body
+func NewFirewallToggleNATNptRuleRequest(server string, id string, body FirewallToggleNATNptRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNATNptRuleRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNATNptRuleRequestWithBody constructs an http.Request for the FirewallToggleNATNptRule method, with any body, and a specified content type
+func NewFirewallToggleNATNptRuleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt/toggle/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteNATNptRulesRequest constructs an http.Request for the FirewallDeleteNATNptRules method
+func NewFirewallDeleteNATNptRulesRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/npt/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewFirewallGetNAT1To1RulesRequest constructs an http.Request for the FirewallGetNAT1To1Rules method
 func NewFirewallGetNAT1To1RulesRequest(server string) (*http.Request, error) {
 	var err error
@@ -5214,6 +8109,207 @@ func NewFirewallGetNAT1To1RulesRequest(server string) (*http.Request, error) {
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallCreateNAT1To1RuleRequest calls the generic FirewallCreateNAT1To1Rule builder with application/json body
+func NewFirewallCreateNAT1To1RuleRequest(server string, body FirewallCreateNAT1To1RuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallCreateNAT1To1RuleRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallCreateNAT1To1RuleRequestWithBody constructs an http.Request for the FirewallCreateNAT1To1Rule method, with any body, and a specified content type
+func NewFirewallCreateNAT1To1RuleRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallOrderNAT1To1RulesRequest calls the generic FirewallOrderNAT1To1Rules builder with application/json body
+func NewFirewallOrderNAT1To1RulesRequest(server string, body FirewallOrderNAT1To1RulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallOrderNAT1To1RulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallOrderNAT1To1RulesRequestWithBody constructs an http.Request for the FirewallOrderNAT1To1Rules method, with any body, and a specified content type
+func NewFirewallOrderNAT1To1RulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone/reorder")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNAT1To1RulesRequest calls the generic FirewallToggleNAT1To1Rules builder with application/json body
+func NewFirewallToggleNAT1To1RulesRequest(server string, body FirewallToggleNAT1To1RulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNAT1To1RulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNAT1To1RulesRequestWithBody constructs an http.Request for the FirewallToggleNAT1To1Rules method, with any body, and a specified content type
+func NewFirewallToggleNAT1To1RulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone/toggle")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNAT1To1RuleRequest calls the generic FirewallToggleNAT1To1Rule builder with application/json body
+func NewFirewallToggleNAT1To1RuleRequest(server string, id string, body FirewallToggleNAT1To1RuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNAT1To1RuleRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNAT1To1RuleRequestWithBody constructs an http.Request for the FirewallToggleNAT1To1Rule method, with any body, and a specified content type
+func NewFirewallToggleNAT1To1RuleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone/toggle/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteNAT1To1RulesRequest constructs an http.Request for the FirewallDeleteNAT1To1Rules method
+func NewFirewallDeleteNAT1To1RulesRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/onetoone/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -5248,6 +8344,220 @@ func NewFirewallGetNATOutRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewFirewallCreateNATOutRequest calls the generic FirewallCreateNATOut builder with application/json body
+func NewFirewallCreateNATOutRequest(server string, body FirewallCreateNATOutJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallCreateNATOutRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallCreateNATOutRequestWithBody constructs an http.Request for the FirewallCreateNATOut method, with any body, and a specified content type
+func NewFirewallCreateNATOutRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallUpdateNATOutModeRequest calls the generic FirewallUpdateNATOutMode builder with application/json body
+func NewFirewallUpdateNATOutModeRequest(server string, body FirewallUpdateNATOutModeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateNATOutModeRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateNATOutModeRequestWithBody constructs an http.Request for the FirewallUpdateNATOutMode method, with any body, and a specified content type
+func NewFirewallUpdateNATOutModeRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound/mode")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallOrderNATOutRequest calls the generic FirewallOrderNATOut builder with application/json body
+func NewFirewallOrderNATOutRequest(server string, body FirewallOrderNATOutJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallOrderNATOutRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallOrderNATOutRequestWithBody constructs an http.Request for the FirewallOrderNATOut method, with any body, and a specified content type
+func NewFirewallOrderNATOutRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound/reorder")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNATOutRequest calls the generic FirewallToggleNATOut builder with application/json body
+func NewFirewallToggleNATOutRequest(server string, id string, body FirewallToggleNATOutJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNATOutRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNATOutRequestWithBody constructs an http.Request for the FirewallToggleNATOut method, with any body, and a specified content type
+func NewFirewallToggleNATOutRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound/toggle/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallUpdateNATOutRequest calls the generic FirewallUpdateNATOut builder with application/json body
+func NewFirewallUpdateNATOutRequest(server string, id string, body FirewallUpdateNATOutJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateNATOutRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateNATOutRequestWithBody constructs an http.Request for the FirewallUpdateNATOut method, with any body, and a specified content type
+func NewFirewallUpdateNATOutRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/outbound/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewFirewallGetNATRequest constructs an http.Request for the FirewallGetNAT method
 func NewFirewallGetNATRequest(server string) (*http.Request, error) {
 	var err error
@@ -5271,6 +8581,482 @@ func NewFirewallGetNATRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewFirewallCreateNATRequest calls the generic FirewallCreateNAT builder with application/json body
+func NewFirewallCreateNATRequest(server string, body FirewallCreateNATJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallCreateNATRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallCreateNATRequestWithBody constructs an http.Request for the FirewallCreateNAT method, with any body, and a specified content type
+func NewFirewallCreateNATRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallOrderNATRulesRequest calls the generic FirewallOrderNATRules builder with application/json body
+func NewFirewallOrderNATRulesRequest(server string, body FirewallOrderNATRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallOrderNATRulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallOrderNATRulesRequestWithBody constructs an http.Request for the FirewallOrderNATRules method, with any body, and a specified content type
+func NewFirewallOrderNATRulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/reorder")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallAddNATSeparatorRequest calls the generic FirewallAddNATSeparator builder with application/json body
+func NewFirewallAddNATSeparatorRequest(server string, body FirewallAddNATSeparatorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddNATSeparatorRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallAddNATSeparatorRequestWithBody constructs an http.Request for the FirewallAddNATSeparator method, with any body, and a specified content type
+func NewFirewallAddNATSeparatorRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/separators")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNATRulesRequest calls the generic FirewallToggleNATRules builder with application/json body
+func NewFirewallToggleNATRulesRequest(server string, body FirewallToggleNATRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNATRulesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNATRulesRequestWithBody constructs an http.Request for the FirewallToggleNATRules method, with any body, and a specified content type
+func NewFirewallToggleNATRulesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/toggle")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallToggleNATRuleRequest calls the generic FirewallToggleNATRule builder with application/json body
+func NewFirewallToggleNATRuleRequest(server string, id string, body FirewallToggleNATRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallToggleNATRuleRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallToggleNATRuleRequestWithBody constructs an http.Request for the FirewallToggleNATRule method, with any body, and a specified content type
+func NewFirewallToggleNATRuleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/toggle/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteNATRequest constructs an http.Request for the FirewallDeleteNAT method
+func NewFirewallDeleteNATRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateNATRequest calls the generic FirewallUpdateNAT builder with application/json body
+func NewFirewallUpdateNATRequest(server string, id string, body FirewallUpdateNATJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateNATRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateNATRequestWithBody constructs an http.Request for the FirewallUpdateNAT method, with any body, and a specified content type
+func NewFirewallUpdateNATRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/nat/port-forward/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallGetPFlowRequest constructs an http.Request for the FirewallGetPFlow method
+func NewFirewallGetPFlowRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/pflow")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallSetPFlowRequest calls the generic FirewallSetPFlow builder with application/json body
+func NewFirewallSetPFlowRequest(server string, body FirewallSetPFlowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallSetPFlowRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallSetPFlowRequestWithBody constructs an http.Request for the FirewallSetPFlow method, with any body, and a specified content type
+func NewFirewallSetPFlowRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/pflow")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallAddPFlowExporterRequest calls the generic FirewallAddPFlowExporter builder with application/json body
+func NewFirewallAddPFlowExporterRequest(server string, body FirewallAddPFlowExporterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddPFlowExporterRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallAddPFlowExporterRequestWithBody constructs an http.Request for the FirewallAddPFlowExporter method, with any body, and a specified content type
+func NewFirewallAddPFlowExporterRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/pflow/exporters")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeletePFlowExporterRequest constructs an http.Request for the FirewallDeletePFlowExporter method
+func NewFirewallDeletePFlowExporterRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/pflow/exporters/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdatePFlowExporterRequest calls the generic FirewallUpdatePFlowExporter builder with application/json body
+func NewFirewallUpdatePFlowExporterRequest(server string, id string, body FirewallUpdatePFlowExporterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdatePFlowExporterRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallUpdatePFlowExporterRequestWithBody constructs an http.Request for the FirewallUpdatePFlowExporter method, with any body, and a specified content type
+func NewFirewallUpdatePFlowExporterRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/pflow/exporters/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -5336,6 +9122,613 @@ func NewGetFirewallRulesRequest(server string, pInterface string) (*http.Request
 	return req, nil
 }
 
+// NewAppendFirewallRuleRequest calls the generic AppendFirewallRule builder with application/json body
+func NewAppendFirewallRuleRequest(server string, pInterface string, body AppendFirewallRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAppendFirewallRuleRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewAppendFirewallRuleRequestWithBody constructs an http.Request for the AppendFirewallRule method, with any body, and a specified content type
+func NewAppendFirewallRuleRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewQueryBogonRuleRequest constructs an http.Request for the QueryBogonRule method
+func NewQueryBogonRuleRequest(server string, pInterface string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/bogon", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewToggleBogonRuleRequest calls the generic ToggleBogonRule builder with application/json body
+func NewToggleBogonRuleRequest(server string, pInterface string, body ToggleBogonRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewToggleBogonRuleRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewToggleBogonRuleRequestWithBody constructs an http.Request for the ToggleBogonRule method, with any body, and a specified content type
+func NewToggleBogonRuleRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/bogon", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCopyFirewallRulesRequest calls the generic CopyFirewallRules builder with application/json body
+func NewCopyFirewallRulesRequest(server string, pInterface string, body CopyFirewallRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCopyFirewallRulesRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewCopyFirewallRulesRequestWithBody constructs an http.Request for the CopyFirewallRules method, with any body, and a specified content type
+func NewCopyFirewallRulesRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/copy", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteFirewallRulesRequest calls the generic DeleteFirewallRules builder with application/json body
+func NewDeleteFirewallRulesRequest(server string, pInterface string, body DeleteFirewallRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteFirewallRulesRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewDeleteFirewallRulesRequestWithBody constructs an http.Request for the DeleteFirewallRules method, with any body, and a specified content type
+func NewDeleteFirewallRulesRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/delete", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReorderFirewallRulesRequest calls the generic ReorderFirewallRules builder with application/json body
+func NewReorderFirewallRulesRequest(server string, pInterface string, body ReorderFirewallRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReorderFirewallRulesRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewReorderFirewallRulesRequestWithBody constructs an http.Request for the ReorderFirewallRules method, with any body, and a specified content type
+func NewReorderFirewallRulesRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/reorder", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewInsertFirewallSeparatorRequest calls the generic InsertFirewallSeparator builder with application/json body
+func NewInsertFirewallSeparatorRequest(server string, pInterface string, body InsertFirewallSeparatorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewInsertFirewallSeparatorRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewInsertFirewallSeparatorRequestWithBody constructs an http.Request for the InsertFirewallSeparator method, with any body, and a specified content type
+func NewInsertFirewallSeparatorRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/separators", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteFirewallSeparatorRequest constructs an http.Request for the DeleteFirewallSeparator method
+func NewDeleteFirewallSeparatorRequest(server string, pInterface string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/separators/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewToggleFirewallRulesRequest calls the generic ToggleFirewallRules builder with application/json body
+func NewToggleFirewallRulesRequest(server string, pInterface string, body ToggleFirewallRulesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewToggleFirewallRulesRequestWithBody(server, pInterface, "application/json", bodyReader)
+}
+
+// NewToggleFirewallRulesRequestWithBody constructs an http.Request for the ToggleFirewallRules method, with any body, and a specified content type
+func NewToggleFirewallRulesRequestWithBody(server string, pInterface string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/toggle", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewToggleFirewallRuleRequest calls the generic ToggleFirewallRule builder with application/json body
+func NewToggleFirewallRuleRequest(server string, pInterface string, id string, body ToggleFirewallRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewToggleFirewallRuleRequestWithBody(server, pInterface, id, "application/json", bodyReader)
+}
+
+// NewToggleFirewallRuleRequestWithBody constructs an http.Request for the ToggleFirewallRule method, with any body, and a specified content type
+func NewToggleFirewallRuleRequestWithBody(server string, pInterface string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/toggle/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteFirewallRuleRequest constructs an http.Request for the DeleteFirewallRule method
+func NewDeleteFirewallRuleRequest(server string, pInterface string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateFirewallRuleRequest calls the generic UpdateFirewallRule builder with application/json body
+func NewUpdateFirewallRuleRequest(server string, pInterface string, id string, body UpdateFirewallRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateFirewallRuleRequestWithBody(server, pInterface, id, "application/json", bodyReader)
+}
+
+// NewUpdateFirewallRuleRequestWithBody constructs an http.Request for the UpdateFirewallRule method, with any body, and a specified content type
+func NewUpdateFirewallRuleRequestWithBody(server string, pInterface string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewInsertFirewallRuleRequest calls the generic InsertFirewallRule builder with application/json body
+func NewInsertFirewallRuleRequest(server string, pInterface string, id string, body InsertFirewallRuleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewInsertFirewallRuleRequestWithBody(server, pInterface, id, "application/json", bodyReader)
+}
+
+// NewInsertFirewallRuleRequestWithBody constructs an http.Request for the InsertFirewallRule method, with any body, and a specified content type
+func NewInsertFirewallRuleRequestWithBody(server string, pInterface string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "interface", pInterface, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/rules/interface/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewFirewallGetSchedulesRequest constructs an http.Request for the FirewallGetSchedules method
 func NewFirewallGetSchedulesRequest(server string) (*http.Request, error) {
 	var err error
@@ -5359,6 +9752,127 @@ func NewFirewallGetSchedulesRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewFirewallAddScheduleRequest calls the generic FirewallAddSchedule builder with application/json body
+func NewFirewallAddScheduleRequest(server string, body FirewallAddScheduleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddScheduleRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallAddScheduleRequestWithBody constructs an http.Request for the FirewallAddSchedule method, with any body, and a specified content type
+func NewFirewallAddScheduleRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/schedules")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteScheduleRequest constructs an http.Request for the FirewallDeleteSchedule method
+func NewFirewallDeleteScheduleRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/schedules/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateScheduleRequest calls the generic FirewallUpdateSchedule builder with application/json body
+func NewFirewallUpdateScheduleRequest(server string, id string, body FirewallUpdateScheduleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateScheduleRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateScheduleRequestWithBody constructs an http.Request for the FirewallUpdateSchedule method, with any body, and a specified content type
+func NewFirewallUpdateScheduleRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/schedules/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -5417,6 +9931,290 @@ func NewFirewallGetALTQRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewFirewallAddALTQRequest calls the generic FirewallAddALTQ builder with application/json body
+func NewFirewallAddALTQRequest(server string, body FirewallAddALTQJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddALTQRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallAddALTQRequestWithBody constructs an http.Request for the FirewallAddALTQ method, with any body, and a specified content type
+func NewFirewallAddALTQRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteALTQRequest constructs an http.Request for the FirewallDeleteALTQ method
+func NewFirewallDeleteALTQRequest(server string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateALTQRequest calls the generic FirewallUpdateALTQ builder with application/json body
+func NewFirewallUpdateALTQRequest(server string, name string, body FirewallUpdateALTQJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateALTQRequestWithBody(server, name, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateALTQRequestWithBody constructs an http.Request for the FirewallUpdateALTQ method, with any body, and a specified content type
+func NewFirewallUpdateALTQRequestWithBody(server string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallAddALTQChildQueueRequest calls the generic FirewallAddALTQChildQueue builder with application/json body
+func NewFirewallAddALTQChildQueueRequest(server string, name string, parentname string, body FirewallAddALTQChildQueueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddALTQChildQueueRequestWithBody(server, name, parentname, "application/json", bodyReader)
+}
+
+// NewFirewallAddALTQChildQueueRequestWithBody constructs an http.Request for the FirewallAddALTQChildQueue method, with any body, and a specified content type
+func NewFirewallAddALTQChildQueueRequestWithBody(server string, name string, parentname string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "parentname", parentname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq/%s/queue/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteALTQChildQueueRequest constructs an http.Request for the FirewallDeleteALTQChildQueue method
+func NewFirewallDeleteALTQChildQueueRequest(server string, name string, parentname string, qname string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "parentname", parentname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "qname", qname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq/%s/queue/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateALTQChildQueueRequest calls the generic FirewallUpdateALTQChildQueue builder with application/json body
+func NewFirewallUpdateALTQChildQueueRequest(server string, name string, parentname string, qname string, body FirewallUpdateALTQChildQueueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateALTQChildQueueRequestWithBody(server, name, parentname, qname, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateALTQChildQueueRequestWithBody constructs an http.Request for the FirewallUpdateALTQChildQueue method, with any body, and a specified content type
+func NewFirewallUpdateALTQChildQueueRequestWithBody(server string, name string, parentname string, qname string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "parentname", parentname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "qname", qname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/altq/%s/queue/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewFirewallGetLimiterRequest constructs an http.Request for the FirewallGetLimiter method
 func NewFirewallGetLimiterRequest(server string) (*http.Request, error) {
 	var err error
@@ -5440,6 +10238,417 @@ func NewFirewallGetLimiterRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewFirewallAddLimiterRequest calls the generic FirewallAddLimiter builder with application/json body
+func NewFirewallAddLimiterRequest(server string, body FirewallAddLimiterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddLimiterRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallAddLimiterRequestWithBody constructs an http.Request for the FirewallAddLimiter method, with any body, and a specified content type
+func NewFirewallAddLimiterRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteLimiterRequest constructs an http.Request for the FirewallDeleteLimiter method
+func NewFirewallDeleteLimiterRequest(server string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateLimiterRequest calls the generic FirewallUpdateLimiter builder with application/json body
+func NewFirewallUpdateLimiterRequest(server string, name string, body FirewallUpdateLimiterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateLimiterRequestWithBody(server, name, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateLimiterRequestWithBody constructs an http.Request for the FirewallUpdateLimiter method, with any body, and a specified content type
+func NewFirewallUpdateLimiterRequestWithBody(server string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallAddLimiterQueueRequest calls the generic FirewallAddLimiterQueue builder with application/json body
+func NewFirewallAddLimiterQueueRequest(server string, name string, body FirewallAddLimiterQueueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallAddLimiterQueueRequestWithBody(server, name, "application/json", bodyReader)
+}
+
+// NewFirewallAddLimiterQueueRequestWithBody constructs an http.Request for the FirewallAddLimiterQueue method, with any body, and a specified content type
+func NewFirewallAddLimiterQueueRequestWithBody(server string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter/%s/queue", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteLimiterQueueRequest constructs an http.Request for the FirewallDeleteLimiterQueue method
+func NewFirewallDeleteLimiterQueueRequest(server string, name string, qname string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "qname", qname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter/%s/queue/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateLimiterQueueRequest calls the generic FirewallUpdateLimiterQueue builder with application/json body
+func NewFirewallUpdateLimiterQueueRequest(server string, name string, qname string, body FirewallUpdateLimiterQueueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateLimiterQueueRequestWithBody(server, name, qname, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateLimiterQueueRequestWithBody constructs an http.Request for the FirewallUpdateLimiterQueue method, with any body, and a specified content type
+func NewFirewallUpdateLimiterQueueRequestWithBody(server string, name string, qname string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "qname", qname, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/traffic-shaper/limiter/%s/queue/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallGetVirtualIPsRequest constructs an http.Request for the FirewallGetVirtualIPs method
+func NewFirewallGetVirtualIPsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/virtualip")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallSetVirtualIPRequest calls the generic FirewallSetVirtualIP builder with application/json body
+func NewFirewallSetVirtualIPRequest(server string, body FirewallSetVirtualIPJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallSetVirtualIPRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFirewallSetVirtualIPRequestWithBody constructs an http.Request for the FirewallSetVirtualIP method, with any body, and a specified content type
+func NewFirewallSetVirtualIPRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/virtualip")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFirewallDeleteVirtualIPRequest constructs an http.Request for the FirewallDeleteVirtualIP method
+func NewFirewallDeleteVirtualIPRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/virtualip/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFirewallUpdateVirtualIPRequest calls the generic FirewallUpdateVirtualIP builder with application/json body
+func NewFirewallUpdateVirtualIPRequest(server string, id string, body FirewallUpdateVirtualIPJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFirewallUpdateVirtualIPRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewFirewallUpdateVirtualIPRequestWithBody constructs an http.Request for the FirewallUpdateVirtualIP method, with any body, and a specified content type
+func NewFirewallUpdateVirtualIPRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/firewall/virtualip/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -7263,12 +12472,138 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /firewall/nat/npt (the `FirewallGetNATNpt` operationId).
 	FirewallGetNATNptWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATNptAPIResponse, error)
 
+	// FirewallCreateNATNptWithBodyWithResponse Create NAT NPt rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+	FirewallCreateNATNptWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATNptAPIResponse, error)
+
+	// FirewallCreateNATNptWithResponse Create NAT NPt rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+	FirewallCreateNATNptWithResponse(ctx context.Context, body FirewallCreateNATNptJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATNptAPIResponse, error)
+
+	// FirewallOrderNATNptRulesWithBodyWithResponse Reorder NPt NAT rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+	FirewallOrderNATNptRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATNptRulesAPIResponse, error)
+
+	// FirewallOrderNATNptRulesWithResponse Reorder NPt NAT rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+	FirewallOrderNATNptRulesWithResponse(ctx context.Context, body FirewallOrderNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATNptRulesAPIResponse, error)
+
+	// FirewallToggleNATNptRulesWithBodyWithResponse Toggle NPt Rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+	FirewallToggleNATNptRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRulesAPIResponse, error)
+
+	// FirewallToggleNATNptRulesWithResponse Toggle NPt Rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+	FirewallToggleNATNptRulesWithResponse(ctx context.Context, body FirewallToggleNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRulesAPIResponse, error)
+
+	// FirewallToggleNATNptRuleWithBodyWithResponse Toggle NPt Rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+	FirewallToggleNATNptRuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRuleAPIResponse, error)
+
+	// FirewallToggleNATNptRuleWithResponse Toggle NPt Rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+	FirewallToggleNATNptRuleWithResponse(ctx context.Context, id string, body FirewallToggleNATNptRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRuleAPIResponse, error)
+
+	// FirewallDeleteNATNptRulesWithResponse Delete NAT NPt rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/nat/npt/{id} (the `FirewallDeleteNATNptRules` operationId).
+	FirewallDeleteNATNptRulesWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNATNptRulesAPIResponse, error)
+
 	// FirewallGetNAT1To1RulesWithResponse Get NAT 1:1 rules
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /firewall/nat/onetoone (the `FirewallGetNAT1To1Rules` operationId).
 	FirewallGetNAT1To1RulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNAT1To1RulesAPIResponse, error)
+
+	// FirewallCreateNAT1To1RuleWithBodyWithResponse Create 1:1 NAT rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+	FirewallCreateNAT1To1RuleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNAT1To1RuleAPIResponse, error)
+
+	// FirewallCreateNAT1To1RuleWithResponse Create 1:1 NAT rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+	FirewallCreateNAT1To1RuleWithResponse(ctx context.Context, body FirewallCreateNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNAT1To1RuleAPIResponse, error)
+
+	// FirewallOrderNAT1To1RulesWithBodyWithResponse Reorder 1:1 NAT rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+	FirewallOrderNAT1To1RulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNAT1To1RulesAPIResponse, error)
+
+	// FirewallOrderNAT1To1RulesWithResponse Reorder 1:1 NAT rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+	FirewallOrderNAT1To1RulesWithResponse(ctx context.Context, body FirewallOrderNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNAT1To1RulesAPIResponse, error)
+
+	// FirewallToggleNAT1To1RulesWithBodyWithResponse Toggle NAT 1:1 rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+	FirewallToggleNAT1To1RulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RulesAPIResponse, error)
+
+	// FirewallToggleNAT1To1RulesWithResponse Toggle NAT 1:1 rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+	FirewallToggleNAT1To1RulesWithResponse(ctx context.Context, body FirewallToggleNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RulesAPIResponse, error)
+
+	// FirewallToggleNAT1To1RuleWithBodyWithResponse Toggle NAT 1:1 rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+	FirewallToggleNAT1To1RuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RuleAPIResponse, error)
+
+	// FirewallToggleNAT1To1RuleWithResponse Toggle NAT 1:1 rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+	FirewallToggleNAT1To1RuleWithResponse(ctx context.Context, id string, body FirewallToggleNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RuleAPIResponse, error)
+
+	// FirewallDeleteNAT1To1RulesWithResponse Delete NAT 1:1 rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/nat/onetoone/{id} (the `FirewallDeleteNAT1To1Rules` operationId).
+	FirewallDeleteNAT1To1RulesWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNAT1To1RulesAPIResponse, error)
 
 	// FirewallGetNATOutWithResponse Get NAT Outbound Rules
 	//
@@ -7277,12 +12612,229 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /firewall/nat/outbound (the `FirewallGetNATOut` operationId).
 	FirewallGetNATOutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATOutAPIResponse, error)
 
+	// FirewallCreateNATOutWithBodyWithResponse Create NAT Outbound Rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+	FirewallCreateNATOutWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATOutAPIResponse, error)
+
+	// FirewallCreateNATOutWithResponse Create NAT Outbound Rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+	FirewallCreateNATOutWithResponse(ctx context.Context, body FirewallCreateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATOutAPIResponse, error)
+
+	// FirewallUpdateNATOutModeWithBodyWithResponse Update NAT Outbound Mode
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+	FirewallUpdateNATOutModeWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutModeAPIResponse, error)
+
+	// FirewallUpdateNATOutModeWithResponse Update NAT Outbound Mode
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+	FirewallUpdateNATOutModeWithResponse(ctx context.Context, body FirewallUpdateNATOutModeJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutModeAPIResponse, error)
+
+	// FirewallOrderNATOutWithBodyWithResponse Reorder NAT Outbound Rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+	FirewallOrderNATOutWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATOutAPIResponse, error)
+
+	// FirewallOrderNATOutWithResponse Reorder NAT Outbound Rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+	FirewallOrderNATOutWithResponse(ctx context.Context, body FirewallOrderNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATOutAPIResponse, error)
+
+	// FirewallToggleNATOutWithBodyWithResponse Toggle NAT Outbound rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+	FirewallToggleNATOutWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATOutAPIResponse, error)
+
+	// FirewallToggleNATOutWithResponse Toggle NAT Outbound rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+	FirewallToggleNATOutWithResponse(ctx context.Context, id string, body FirewallToggleNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATOutAPIResponse, error)
+
+	// FirewallUpdateNATOutWithBodyWithResponse Update NAT Outbound Rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+	FirewallUpdateNATOutWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutAPIResponse, error)
+
+	// FirewallUpdateNATOutWithResponse Update NAT Outbound Rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+	FirewallUpdateNATOutWithResponse(ctx context.Context, id string, body FirewallUpdateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutAPIResponse, error)
+
 	// FirewallGetNATWithResponse Get NAT Rules
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /firewall/nat/port-forward (the `FirewallGetNAT` operationId).
 	FirewallGetNATWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetNATAPIResponse, error)
+
+	// FirewallCreateNATWithBodyWithResponse Create NAT rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+	FirewallCreateNATWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATAPIResponse, error)
+
+	// FirewallCreateNATWithResponse Create NAT rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+	FirewallCreateNATWithResponse(ctx context.Context, body FirewallCreateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATAPIResponse, error)
+
+	// FirewallOrderNATRulesWithBodyWithResponse Reorder NAT rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+	FirewallOrderNATRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATRulesAPIResponse, error)
+
+	// FirewallOrderNATRulesWithResponse Reorder NAT rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+	FirewallOrderNATRulesWithResponse(ctx context.Context, body FirewallOrderNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATRulesAPIResponse, error)
+
+	// FirewallAddNATSeparatorWithBodyWithResponse Create NAT separator before/after a rule identified by its index
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+	FirewallAddNATSeparatorWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddNATSeparatorAPIResponse, error)
+
+	// FirewallAddNATSeparatorWithResponse Create NAT separator before/after a rule identified by its index
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+	FirewallAddNATSeparatorWithResponse(ctx context.Context, body FirewallAddNATSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddNATSeparatorAPIResponse, error)
+
+	// FirewallToggleNATRulesWithBodyWithResponse Toggle NAT Rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+	FirewallToggleNATRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATRulesAPIResponse, error)
+
+	// FirewallToggleNATRulesWithResponse Toggle NAT Rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+	FirewallToggleNATRulesWithResponse(ctx context.Context, body FirewallToggleNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATRulesAPIResponse, error)
+
+	// FirewallToggleNATRuleWithBodyWithResponse Toggle NAT Rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+	FirewallToggleNATRuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATRuleAPIResponse, error)
+
+	// FirewallToggleNATRuleWithResponse Toggle NAT Rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+	FirewallToggleNATRuleWithResponse(ctx context.Context, id string, body FirewallToggleNATRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATRuleAPIResponse, error)
+
+	// FirewallDeleteNATWithResponse Delete NAT rules
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/nat/port-forward/{id} (the `FirewallDeleteNAT` operationId).
+	FirewallDeleteNATWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNATAPIResponse, error)
+
+	// FirewallUpdateNATWithBodyWithResponse Update NAT rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+	FirewallUpdateNATWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATAPIResponse, error)
+
+	// FirewallUpdateNATWithResponse Update NAT rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+	FirewallUpdateNATWithResponse(ctx context.Context, id string, body FirewallUpdateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATAPIResponse, error)
+
+	// FirewallGetPFlowWithResponse Get Global Packet Flow Options
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/pflow (the `FirewallGetPFlow` operationId).
+	FirewallGetPFlowWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetPFlowAPIResponse, error)
+
+	// FirewallSetPFlowWithBodyWithResponse Change Global Packet Flow Options
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+	FirewallSetPFlowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallSetPFlowAPIResponse, error)
+
+	// FirewallSetPFlowWithResponse Change Global Packet Flow Options
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+	FirewallSetPFlowWithResponse(ctx context.Context, body FirewallSetPFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallSetPFlowAPIResponse, error)
+
+	// FirewallAddPFlowExporterWithBodyWithResponse Add Packet Flow Exporters
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+	FirewallAddPFlowExporterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddPFlowExporterAPIResponse, error)
+
+	// FirewallAddPFlowExporterWithResponse Add Packet Flow Exporters
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+	FirewallAddPFlowExporterWithResponse(ctx context.Context, body FirewallAddPFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddPFlowExporterAPIResponse, error)
+
+	// FirewallDeletePFlowExporterWithResponse Delete Packet Flow Exporters
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/pflow/exporters/{id} (the `FirewallDeletePFlowExporter` operationId).
+	FirewallDeletePFlowExporterWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeletePFlowExporterAPIResponse, error)
+
+	// FirewallUpdatePFlowExporterWithBodyWithResponse Update Packet Flow Exporters
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+	FirewallUpdatePFlowExporterWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdatePFlowExporterAPIResponse, error)
+
+	// FirewallUpdatePFlowExporterWithResponse Update Packet Flow Exporters
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+	FirewallUpdatePFlowExporterWithResponse(ctx context.Context, id string, body FirewallUpdatePFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdatePFlowExporterAPIResponse, error)
 
 	// GetFWInterfacesWithResponse Get list of firewall interfaces
 	//
@@ -7298,12 +12850,208 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /firewall/rules/interface/{interface} (the `GetFirewallRules` operationId).
 	GetFirewallRulesWithResponse(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*GetFirewallRulesAPIResponse, error)
 
+	// AppendFirewallRuleWithBodyWithResponse Append rule to the firewall
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+	AppendFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AppendFirewallRuleAPIResponse, error)
+
+	// AppendFirewallRuleWithResponse Append rule to the firewall
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+	AppendFirewallRuleWithResponse(ctx context.Context, pInterface string, body AppendFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*AppendFirewallRuleAPIResponse, error)
+
+	// QueryBogonRuleWithResponse Get bogon rule for the specified interface
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/rules/interface/{interface}/bogon (the `QueryBogonRule` operationId).
+	QueryBogonRuleWithResponse(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*QueryBogonRuleAPIResponse, error)
+
+	// ToggleBogonRuleWithBodyWithResponse Toggles the bogon rule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+	ToggleBogonRuleWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleBogonRuleAPIResponse, error)
+
+	// ToggleBogonRuleWithResponse Toggles the bogon rule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+	ToggleBogonRuleWithResponse(ctx context.Context, pInterface string, body ToggleBogonRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleBogonRuleAPIResponse, error)
+
+	// CopyFirewallRulesWithBodyWithResponse Bulk copy of rules to target interface
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+	CopyFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CopyFirewallRulesAPIResponse, error)
+
+	// CopyFirewallRulesWithResponse Bulk copy of rules to target interface
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+	CopyFirewallRulesWithResponse(ctx context.Context, pInterface string, body CopyFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*CopyFirewallRulesAPIResponse, error)
+
+	// DeleteFirewallRulesWithBodyWithResponse Bulk delete of rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+	DeleteFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteFirewallRulesAPIResponse, error)
+
+	// DeleteFirewallRulesWithResponse Bulk delete of rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+	DeleteFirewallRulesWithResponse(ctx context.Context, pInterface string, body DeleteFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteFirewallRulesAPIResponse, error)
+
+	// ReorderFirewallRulesWithBodyWithResponse Reorder rules and separators
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+	ReorderFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReorderFirewallRulesAPIResponse, error)
+
+	// ReorderFirewallRulesWithResponse Reorder rules and separators
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+	ReorderFirewallRulesWithResponse(ctx context.Context, pInterface string, body ReorderFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*ReorderFirewallRulesAPIResponse, error)
+
+	// InsertFirewallSeparatorWithBodyWithResponse Create separator before/after a rule identified by its id
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+	InsertFirewallSeparatorWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InsertFirewallSeparatorAPIResponse, error)
+
+	// InsertFirewallSeparatorWithResponse Create separator before/after a rule identified by its id
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+	InsertFirewallSeparatorWithResponse(ctx context.Context, pInterface string, body InsertFirewallSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*InsertFirewallSeparatorAPIResponse, error)
+
+	// DeleteFirewallSeparatorWithResponse Delete firewall rule separator identified by id
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/rules/interface/{interface}/separators/{id} (the `DeleteFirewallSeparator` operationId).
+	DeleteFirewallSeparatorWithResponse(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*DeleteFirewallSeparatorAPIResponse, error)
+
+	// ToggleFirewallRulesWithBodyWithResponse Bulk toggle of rules
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+	ToggleFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleFirewallRulesAPIResponse, error)
+
+	// ToggleFirewallRulesWithResponse Bulk toggle of rules
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+	ToggleFirewallRulesWithResponse(ctx context.Context, pInterface string, body ToggleFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleFirewallRulesAPIResponse, error)
+
+	// ToggleFirewallRuleWithBodyWithResponse Toggle rule by id
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+	ToggleFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleFirewallRuleAPIResponse, error)
+
+	// ToggleFirewallRuleWithResponse Toggle rule by id
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+	ToggleFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body ToggleFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleFirewallRuleAPIResponse, error)
+
+	// DeleteFirewallRuleWithResponse Deletes a rule by its id
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/rules/interface/{interface}/{id} (the `DeleteFirewallRule` operationId).
+	DeleteFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*DeleteFirewallRuleAPIResponse, error)
+
+	// UpdateFirewallRuleWithBodyWithResponse Update rule identified by id
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+	UpdateFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateFirewallRuleAPIResponse, error)
+
+	// UpdateFirewallRuleWithResponse Update rule identified by id
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+	UpdateFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body UpdateFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFirewallRuleAPIResponse, error)
+
+	// InsertFirewallRuleWithBodyWithResponse Add rule before/after other rule identified by its id
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+	InsertFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InsertFirewallRuleAPIResponse, error)
+
+	// InsertFirewallRuleWithResponse Add rule before/after other rule identified by its id
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+	InsertFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body InsertFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*InsertFirewallRuleAPIResponse, error)
+
 	// FirewallGetSchedulesWithResponse Get Firewall Schedules
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /firewall/schedules (the `FirewallGetSchedules` operationId).
 	FirewallGetSchedulesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetSchedulesAPIResponse, error)
+
+	// FirewallAddScheduleWithBodyWithResponse Add Firewall Schedule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+	FirewallAddScheduleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddScheduleAPIResponse, error)
+
+	// FirewallAddScheduleWithResponse Add Firewall Schedule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+	FirewallAddScheduleWithResponse(ctx context.Context, body FirewallAddScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddScheduleAPIResponse, error)
+
+	// FirewallDeleteScheduleWithResponse Delete schedule
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/schedules/{id} (the `FirewallDeleteSchedule` operationId).
+	FirewallDeleteScheduleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteScheduleAPIResponse, error)
+
+	// FirewallUpdateScheduleWithBodyWithResponse Update Firewall Schedule
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+	FirewallUpdateScheduleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateScheduleAPIResponse, error)
+
+	// FirewallUpdateScheduleWithResponse Update Firewall Schedule
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+	FirewallUpdateScheduleWithResponse(ctx context.Context, id string, body FirewallUpdateScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateScheduleAPIResponse, error)
 
 	// FirewallGetTrafficShaperWithResponse Get Traffic Shapers
 	//
@@ -7319,12 +13067,194 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /firewall/traffic-shaper/altq (the `FirewallGetALTQ` operationId).
 	FirewallGetALTQWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetALTQAPIResponse, error)
 
+	// FirewallAddALTQWithBodyWithResponse Add ALTQ Root Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+	FirewallAddALTQWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddALTQAPIResponse, error)
+
+	// FirewallAddALTQWithResponse Add ALTQ Root Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+	FirewallAddALTQWithResponse(ctx context.Context, body FirewallAddALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddALTQAPIResponse, error)
+
+	// FirewallDeleteALTQWithResponse Delete ALTQ Root Queue
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/altq/{name} (the `FirewallDeleteALTQ` operationId).
+	FirewallDeleteALTQWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*FirewallDeleteALTQAPIResponse, error)
+
+	// FirewallUpdateALTQWithBodyWithResponse Update ALTQ Root Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+	FirewallUpdateALTQWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQAPIResponse, error)
+
+	// FirewallUpdateALTQWithResponse Update ALTQ Root Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+	FirewallUpdateALTQWithResponse(ctx context.Context, name string, body FirewallUpdateALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQAPIResponse, error)
+
+	// FirewallAddALTQChildQueueWithBodyWithResponse Add ALTQ Child Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+	FirewallAddALTQChildQueueWithBodyWithResponse(ctx context.Context, name string, parentname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddALTQChildQueueAPIResponse, error)
+
+	// FirewallAddALTQChildQueueWithResponse Add ALTQ Child Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+	FirewallAddALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, body FirewallAddALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddALTQChildQueueAPIResponse, error)
+
+	// FirewallDeleteALTQChildQueueWithResponse Delete ALTQ Child Queue
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallDeleteALTQChildQueue` operationId).
+	FirewallDeleteALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, qname string, reqEditors ...RequestEditorFn) (*FirewallDeleteALTQChildQueueAPIResponse, error)
+
+	// FirewallUpdateALTQChildQueueWithBodyWithResponse Update ALTQ Child Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+	FirewallUpdateALTQChildQueueWithBodyWithResponse(ctx context.Context, name string, parentname string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQChildQueueAPIResponse, error)
+
+	// FirewallUpdateALTQChildQueueWithResponse Update ALTQ Child Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+	FirewallUpdateALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, qname string, body FirewallUpdateALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQChildQueueAPIResponse, error)
+
 	// FirewallGetLimiterWithResponse Get Limiters
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /firewall/traffic-shaper/limiter (the `FirewallGetLimiter` operationId).
 	FirewallGetLimiterWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetLimiterAPIResponse, error)
+
+	// FirewallAddLimiterWithBodyWithResponse Add Limiter
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+	FirewallAddLimiterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddLimiterAPIResponse, error)
+
+	// FirewallAddLimiterWithResponse Add Limiter
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+	FirewallAddLimiterWithResponse(ctx context.Context, body FirewallAddLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddLimiterAPIResponse, error)
+
+	// FirewallDeleteLimiterWithResponse Delete Limiter
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name} (the `FirewallDeleteLimiter` operationId).
+	FirewallDeleteLimiterWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*FirewallDeleteLimiterAPIResponse, error)
+
+	// FirewallUpdateLimiterWithBodyWithResponse Update Limiter
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+	FirewallUpdateLimiterWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterAPIResponse, error)
+
+	// FirewallUpdateLimiterWithResponse Update Limiter
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+	FirewallUpdateLimiterWithResponse(ctx context.Context, name string, body FirewallUpdateLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterAPIResponse, error)
+
+	// FirewallAddLimiterQueueWithBodyWithResponse Add Limiter Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+	FirewallAddLimiterQueueWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddLimiterQueueAPIResponse, error)
+
+	// FirewallAddLimiterQueueWithResponse Add Limiter Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+	FirewallAddLimiterQueueWithResponse(ctx context.Context, name string, body FirewallAddLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddLimiterQueueAPIResponse, error)
+
+	// FirewallDeleteLimiterQueueWithResponse Delete Limiter Queue
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallDeleteLimiterQueue` operationId).
+	FirewallDeleteLimiterQueueWithResponse(ctx context.Context, name string, qname string, reqEditors ...RequestEditorFn) (*FirewallDeleteLimiterQueueAPIResponse, error)
+
+	// FirewallUpdateLimiterQueueWithBodyWithResponse Update Limiter Queue
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+	FirewallUpdateLimiterQueueWithBodyWithResponse(ctx context.Context, name string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterQueueAPIResponse, error)
+
+	// FirewallUpdateLimiterQueueWithResponse Update Limiter Queue
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+	FirewallUpdateLimiterQueueWithResponse(ctx context.Context, name string, qname string, body FirewallUpdateLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterQueueAPIResponse, error)
+
+	// FirewallGetVirtualIPsWithResponse List Virtual IPs
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /firewall/virtualip (the `FirewallGetVirtualIPs` operationId).
+	FirewallGetVirtualIPsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetVirtualIPsAPIResponse, error)
+
+	// FirewallSetVirtualIPWithBodyWithResponse Add Virtual IP
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+	FirewallSetVirtualIPWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallSetVirtualIPAPIResponse, error)
+
+	// FirewallSetVirtualIPWithResponse Add Virtual IP
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+	FirewallSetVirtualIPWithResponse(ctx context.Context, body FirewallSetVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallSetVirtualIPAPIResponse, error)
+
+	// FirewallDeleteVirtualIPWithResponse Delete Virtual IP
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /firewall/virtualip/{id} (the `FirewallDeleteVirtualIP` operationId).
+	FirewallDeleteVirtualIPWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteVirtualIPAPIResponse, error)
+
+	// FirewallUpdateVirtualIPWithBodyWithResponse Update Virtual IP
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+	FirewallUpdateVirtualIPWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateVirtualIPAPIResponse, error)
+
+	// FirewallUpdateVirtualIPWithResponse Update Virtual IP
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+	FirewallUpdateVirtualIPWithResponse(ctx context.Context, id string, body FirewallUpdateVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateVirtualIPAPIResponse, error)
 
 	// GetInterfacesWithResponse Get network interfaces
 	//
@@ -8094,6 +14024,246 @@ func (r FirewallGetNATNptAPIResponse) ContentType() string {
 	return ""
 }
 
+type FirewallCreateNATNptAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATNptRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallCreateNATNptAPIResponse) GetJSON200() *NATNptRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallCreateNATNptAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallCreateNATNptAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallCreateNATNptAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallCreateNATNptAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallCreateNATNptAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallOrderNATNptRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallOrderNATNptRulesAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallOrderNATNptRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallOrderNATNptRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallOrderNATNptRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallOrderNATNptRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallOrderNATNptRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNATNptRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNATNptRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNATNptRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNATNptRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNATNptRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNATNptRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNATNptRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNATNptRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNATNptRuleAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNATNptRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNATNptRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNATNptRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNATNptRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNATNptRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteNATNptRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteNATNptRulesAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteNATNptRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteNATNptRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteNATNptRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteNATNptRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteNATNptRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type FirewallGetNAT1To1RulesAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8136,6 +14306,246 @@ func (r FirewallGetNAT1To1RulesAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r FirewallGetNAT1To1RulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallCreateNAT1To1RuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NAT1To1Rules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallCreateNAT1To1RuleAPIResponse) GetJSON200() *NAT1To1Rules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallCreateNAT1To1RuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallCreateNAT1To1RuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallCreateNAT1To1RuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallCreateNAT1To1RuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallCreateNAT1To1RuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallOrderNAT1To1RulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallOrderNAT1To1RulesAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallOrderNAT1To1RulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallOrderNAT1To1RulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallOrderNAT1To1RulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallOrderNAT1To1RulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallOrderNAT1To1RulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNAT1To1RulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNAT1To1RulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNAT1To1RulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNAT1To1RulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNAT1To1RulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNAT1To1RulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNAT1To1RulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNAT1To1RuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWToggleResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNAT1To1RuleAPIResponse) GetJSON200() *FWToggleResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNAT1To1RuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNAT1To1RuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNAT1To1RuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNAT1To1RuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNAT1To1RuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteNAT1To1RulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteNAT1To1RulesAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteNAT1To1RulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteNAT1To1RulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteNAT1To1RulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteNAT1To1RulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteNAT1To1RulesAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -8190,6 +14600,246 @@ func (r FirewallGetNATOutAPIResponse) ContentType() string {
 	return ""
 }
 
+type FirewallCreateNATOutAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATOutboundRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallCreateNATOutAPIResponse) GetJSON200() *NATOutboundRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallCreateNATOutAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallCreateNATOutAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallCreateNATOutAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallCreateNATOutAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallCreateNATOutAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateNATOutModeAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATOutModeUpdateResponse
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateNATOutModeAPIResponse) GetJSON200() *NATOutModeUpdateResponse {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateNATOutModeAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateNATOutModeAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateNATOutModeAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateNATOutModeAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateNATOutModeAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallOrderNATOutAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallOrderNATOutAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallOrderNATOutAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallOrderNATOutAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallOrderNATOutAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallOrderNATOutAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallOrderNATOutAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNATOutAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWToggleResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNATOutAPIResponse) GetJSON200() *FWToggleResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNATOutAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNATOutAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNATOutAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNATOutAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNATOutAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateNATOutAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATOutUpdateResponse
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateNATOutAPIResponse) GetJSON200() *NATOutUpdateResponse {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateNATOutAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateNATOutAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateNATOutAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateNATOutAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateNATOutAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type FirewallGetNATAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8232,6 +14882,582 @@ func (r FirewallGetNATAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r FirewallGetNATAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallCreateNATAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATRules
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallCreateNATAPIResponse) GetJSON200() *NATRules {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallCreateNATAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallCreateNATAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallCreateNATAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallCreateNATAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallCreateNATAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallOrderNATRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallOrderNATRulesAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallOrderNATRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallOrderNATRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallOrderNATRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallOrderNATRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallOrderNATRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddNATSeparatorAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Separator
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddNATSeparatorAPIResponse) GetJSON200() *Separator {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddNATSeparatorAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddNATSeparatorAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddNATSeparatorAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddNATSeparatorAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddNATSeparatorAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNATRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNATRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNATRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNATRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNATRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNATRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNATRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallToggleNATRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallToggleNATRuleAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallToggleNATRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallToggleNATRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallToggleNATRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallToggleNATRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallToggleNATRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteNATAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteNATAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteNATAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteNATAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteNATAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteNATAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteNATAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateNATAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *NATUpdateResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateNATAPIResponse) GetJSON200() *NATUpdateResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateNATAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateNATAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateNATAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateNATAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateNATAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetPFlowAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PFlowGlobalOptions
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetPFlowAPIResponse) GetJSON200() *PFlowGlobalOptions {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetPFlowAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetPFlowAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetPFlowAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetPFlowAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetPFlowAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallSetPFlowAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallSetPFlowAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallSetPFlowAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallSetPFlowAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallSetPFlowAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallSetPFlowAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallSetPFlowAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddPFlowExporterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddPFlowExporterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddPFlowExporterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddPFlowExporterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddPFlowExporterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddPFlowExporterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddPFlowExporterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeletePFlowExporterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeletePFlowExporterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeletePFlowExporterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeletePFlowExporterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeletePFlowExporterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeletePFlowExporterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeletePFlowExporterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdatePFlowExporterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdatePFlowExporterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdatePFlowExporterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdatePFlowExporterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdatePFlowExporterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdatePFlowExporterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdatePFlowExporterAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -8334,6 +15560,630 @@ func (r GetFirewallRulesAPIResponse) ContentType() string {
 	return ""
 }
 
+type AppendFirewallRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWFilterRule
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r AppendFirewallRuleAPIResponse) GetJSON200() *FWFilterRule {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r AppendFirewallRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r AppendFirewallRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AppendFirewallRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AppendFirewallRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AppendFirewallRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type QueryBogonRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWBogonRule
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r QueryBogonRuleAPIResponse) GetJSON200() *FWBogonRule {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r QueryBogonRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r QueryBogonRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r QueryBogonRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r QueryBogonRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r QueryBogonRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ToggleBogonRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ToggleBogonRuleAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r ToggleBogonRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r ToggleBogonRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ToggleBogonRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ToggleBogonRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ToggleBogonRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CopyFirewallRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CopyFirewallRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r CopyFirewallRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r CopyFirewallRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CopyFirewallRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CopyFirewallRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CopyFirewallRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteFirewallRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteFirewallRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteFirewallRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteFirewallRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteFirewallRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteFirewallRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteFirewallRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReorderFirewallRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ReorderFirewallRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r ReorderFirewallRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r ReorderFirewallRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ReorderFirewallRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReorderFirewallRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReorderFirewallRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type InsertFirewallSeparatorAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Separator
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r InsertFirewallSeparatorAPIResponse) GetJSON200() *Separator {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r InsertFirewallSeparatorAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r InsertFirewallSeparatorAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r InsertFirewallSeparatorAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InsertFirewallSeparatorAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r InsertFirewallSeparatorAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteFirewallSeparatorAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteFirewallSeparatorAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteFirewallSeparatorAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteFirewallSeparatorAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteFirewallSeparatorAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteFirewallSeparatorAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteFirewallSeparatorAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ToggleFirewallRulesAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ToggleFirewallRulesAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r ToggleFirewallRulesAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r ToggleFirewallRulesAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ToggleFirewallRulesAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ToggleFirewallRulesAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ToggleFirewallRulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ToggleFirewallRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ToggleFirewallRuleAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r ToggleFirewallRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r ToggleFirewallRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ToggleFirewallRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ToggleFirewallRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ToggleFirewallRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteFirewallRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteFirewallRuleAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteFirewallRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteFirewallRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteFirewallRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteFirewallRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteFirewallRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateFirewallRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWFilterRule
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateFirewallRuleAPIResponse) GetJSON200() *FWFilterRule {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r UpdateFirewallRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateFirewallRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateFirewallRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateFirewallRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateFirewallRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type InsertFirewallRuleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *FWFilterRule
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r InsertFirewallRuleAPIResponse) GetJSON200() *FWFilterRule {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r InsertFirewallRuleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r InsertFirewallRuleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r InsertFirewallRuleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InsertFirewallRuleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r InsertFirewallRuleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type FirewallGetSchedulesAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8376,6 +16226,150 @@ func (r FirewallGetSchedulesAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r FirewallGetSchedulesAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddScheduleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddScheduleAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddScheduleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddScheduleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddScheduleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddScheduleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddScheduleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteScheduleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteScheduleAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteScheduleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteScheduleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteScheduleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteScheduleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteScheduleAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateScheduleAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateScheduleAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateScheduleAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateScheduleAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateScheduleAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateScheduleAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateScheduleAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -8478,6 +16472,294 @@ func (r FirewallGetALTQAPIResponse) ContentType() string {
 	return ""
 }
 
+type FirewallAddALTQAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddALTQAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddALTQAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddALTQAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddALTQAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddALTQAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddALTQAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteALTQAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteALTQAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteALTQAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteALTQAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteALTQAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteALTQAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteALTQAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateALTQAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateALTQAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateALTQAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateALTQAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateALTQAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateALTQAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateALTQAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddALTQChildQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddALTQChildQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddALTQChildQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddALTQChildQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddALTQChildQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddALTQChildQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddALTQChildQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteALTQChildQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteALTQChildQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteALTQChildQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteALTQChildQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteALTQChildQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteALTQChildQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteALTQChildQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateALTQChildQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateALTQChildQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateALTQChildQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateALTQChildQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateALTQChildQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateALTQChildQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateALTQChildQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type FirewallGetLimiterAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8520,6 +16802,486 @@ func (r FirewallGetLimiterAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r FirewallGetLimiterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddLimiterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddLimiterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddLimiterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddLimiterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddLimiterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddLimiterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddLimiterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteLimiterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteLimiterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteLimiterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteLimiterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteLimiterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteLimiterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteLimiterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateLimiterAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateLimiterAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateLimiterAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateLimiterAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateLimiterAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateLimiterAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateLimiterAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallAddLimiterQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallAddLimiterQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallAddLimiterQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallAddLimiterQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallAddLimiterQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallAddLimiterQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallAddLimiterQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteLimiterQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteLimiterQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteLimiterQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteLimiterQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteLimiterQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteLimiterQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteLimiterQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateLimiterQueueAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateLimiterQueueAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateLimiterQueueAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateLimiterQueueAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateLimiterQueueAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateLimiterQueueAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateLimiterQueueAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallGetVirtualIPsAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VirtualIPs
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallGetVirtualIPsAPIResponse) GetJSON200() *VirtualIPs {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallGetVirtualIPsAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallGetVirtualIPsAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallGetVirtualIPsAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallGetVirtualIPsAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallGetVirtualIPsAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallSetVirtualIPAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VirtualIPResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallSetVirtualIPAPIResponse) GetJSON200() *VirtualIPResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallSetVirtualIPAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallSetVirtualIPAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallSetVirtualIPAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallSetVirtualIPAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallSetVirtualIPAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallDeleteVirtualIPAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PfsenseResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallDeleteVirtualIPAPIResponse) GetJSON200() *PfsenseResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallDeleteVirtualIPAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallDeleteVirtualIPAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallDeleteVirtualIPAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallDeleteVirtualIPAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallDeleteVirtualIPAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FirewallUpdateVirtualIPAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VirtualIPResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r FirewallUpdateVirtualIPAPIResponse) GetJSON200() *VirtualIPResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FirewallUpdateVirtualIPAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r FirewallUpdateVirtualIPAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r FirewallUpdateVirtualIPAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FirewallUpdateVirtualIPAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FirewallUpdateVirtualIPAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -11462,6 +20224,123 @@ func (c *ClientWithResponses) FirewallGetNATNptWithResponse(ctx context.Context,
 	return ParseFirewallGetNATNptAPIResponse(rsp)
 }
 
+// FirewallCreateNATNptWithBodyWithResponse Create NAT NPt rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+func (c *ClientWithResponses) FirewallCreateNATNptWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATNptAPIResponse, error) {
+	rsp, err := c.FirewallCreateNATNptWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATNptAPIResponse(rsp)
+}
+
+// FirewallCreateNATNptWithResponse Create NAT NPt rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/npt (the `FirewallCreateNATNpt` operationId).
+func (c *ClientWithResponses) FirewallCreateNATNptWithResponse(ctx context.Context, body FirewallCreateNATNptJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATNptAPIResponse, error) {
+	rsp, err := c.FirewallCreateNATNpt(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATNptAPIResponse(rsp)
+}
+
+// FirewallOrderNATNptRulesWithBodyWithResponse Reorder NPt NAT rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+func (c *ClientWithResponses) FirewallOrderNATNptRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATNptRulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATNptRulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATNptRulesAPIResponse(rsp)
+}
+
+// FirewallOrderNATNptRulesWithResponse Reorder NPt NAT rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/reorder (the `FirewallOrderNATNptRules` operationId).
+func (c *ClientWithResponses) FirewallOrderNATNptRulesWithResponse(ctx context.Context, body FirewallOrderNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATNptRulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATNptRules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATNptRulesAPIResponse(rsp)
+}
+
+// FirewallToggleNATNptRulesWithBodyWithResponse Toggle NPt Rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+func (c *ClientWithResponses) FirewallToggleNATNptRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATNptRulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATNptRulesAPIResponse(rsp)
+}
+
+// FirewallToggleNATNptRulesWithResponse Toggle NPt Rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/toggle (the `FirewallToggleNATNptRules` operationId).
+func (c *ClientWithResponses) FirewallToggleNATNptRulesWithResponse(ctx context.Context, body FirewallToggleNATNptRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATNptRules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATNptRulesAPIResponse(rsp)
+}
+
+// FirewallToggleNATNptRuleWithBodyWithResponse Toggle NPt Rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+func (c *ClientWithResponses) FirewallToggleNATNptRuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATNptRuleWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATNptRuleAPIResponse(rsp)
+}
+
+// FirewallToggleNATNptRuleWithResponse Toggle NPt Rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/npt/toggle/{id} (the `FirewallToggleNATNptRule` operationId).
+func (c *ClientWithResponses) FirewallToggleNATNptRuleWithResponse(ctx context.Context, id string, body FirewallToggleNATNptRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATNptRuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATNptRule(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATNptRuleAPIResponse(rsp)
+}
+
+// FirewallDeleteNATNptRulesWithResponse Delete NAT NPt rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/nat/npt/{id} (the `FirewallDeleteNATNptRules` operationId).
+func (c *ClientWithResponses) FirewallDeleteNATNptRulesWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNATNptRulesAPIResponse, error) {
+	rsp, err := c.FirewallDeleteNATNptRules(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteNATNptRulesAPIResponse(rsp)
+}
+
 // FirewallGetNAT1To1RulesWithResponse Get NAT 1:1 rules
 //
 // Returns a wrapper object for the known response body format(s).
@@ -11473,6 +20352,123 @@ func (c *ClientWithResponses) FirewallGetNAT1To1RulesWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseFirewallGetNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallCreateNAT1To1RuleWithBodyWithResponse Create 1:1 NAT rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+func (c *ClientWithResponses) FirewallCreateNAT1To1RuleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNAT1To1RuleAPIResponse, error) {
+	rsp, err := c.FirewallCreateNAT1To1RuleWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNAT1To1RuleAPIResponse(rsp)
+}
+
+// FirewallCreateNAT1To1RuleWithResponse Create 1:1 NAT rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/onetoone (the `FirewallCreateNAT1To1Rule` operationId).
+func (c *ClientWithResponses) FirewallCreateNAT1To1RuleWithResponse(ctx context.Context, body FirewallCreateNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNAT1To1RuleAPIResponse, error) {
+	rsp, err := c.FirewallCreateNAT1To1Rule(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNAT1To1RuleAPIResponse(rsp)
+}
+
+// FirewallOrderNAT1To1RulesWithBodyWithResponse Reorder 1:1 NAT rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallOrderNAT1To1RulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNAT1To1RulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallOrderNAT1To1RulesWithResponse Reorder 1:1 NAT rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/reorder (the `FirewallOrderNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallOrderNAT1To1RulesWithResponse(ctx context.Context, body FirewallOrderNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNAT1To1Rules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallToggleNAT1To1RulesWithBodyWithResponse Toggle NAT 1:1 rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallToggleNAT1To1RulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNAT1To1RulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallToggleNAT1To1RulesWithResponse Toggle NAT 1:1 rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle (the `FirewallToggleNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallToggleNAT1To1RulesWithResponse(ctx context.Context, body FirewallToggleNAT1To1RulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNAT1To1Rules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNAT1To1RulesAPIResponse(rsp)
+}
+
+// FirewallToggleNAT1To1RuleWithBodyWithResponse Toggle NAT 1:1 rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+func (c *ClientWithResponses) FirewallToggleNAT1To1RuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNAT1To1RuleWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNAT1To1RuleAPIResponse(rsp)
+}
+
+// FirewallToggleNAT1To1RuleWithResponse Toggle NAT 1:1 rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/onetoone/toggle/{id} (the `FirewallToggleNAT1To1Rule` operationId).
+func (c *ClientWithResponses) FirewallToggleNAT1To1RuleWithResponse(ctx context.Context, id string, body FirewallToggleNAT1To1RuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNAT1To1RuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNAT1To1Rule(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNAT1To1RuleAPIResponse(rsp)
+}
+
+// FirewallDeleteNAT1To1RulesWithResponse Delete NAT 1:1 rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/nat/onetoone/{id} (the `FirewallDeleteNAT1To1Rules` operationId).
+func (c *ClientWithResponses) FirewallDeleteNAT1To1RulesWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNAT1To1RulesAPIResponse, error) {
+	rsp, err := c.FirewallDeleteNAT1To1Rules(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteNAT1To1RulesAPIResponse(rsp)
 }
 
 // FirewallGetNATOutWithResponse Get NAT Outbound Rules
@@ -11488,6 +20484,136 @@ func (c *ClientWithResponses) FirewallGetNATOutWithResponse(ctx context.Context,
 	return ParseFirewallGetNATOutAPIResponse(rsp)
 }
 
+// FirewallCreateNATOutWithBodyWithResponse Create NAT Outbound Rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+func (c *ClientWithResponses) FirewallCreateNATOutWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATOutAPIResponse, error) {
+	rsp, err := c.FirewallCreateNATOutWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATOutAPIResponse(rsp)
+}
+
+// FirewallCreateNATOutWithResponse Create NAT Outbound Rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/outbound (the `FirewallCreateNATOut` operationId).
+func (c *ClientWithResponses) FirewallCreateNATOutWithResponse(ctx context.Context, body FirewallCreateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATOutAPIResponse, error) {
+	rsp, err := c.FirewallCreateNATOut(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATOutAPIResponse(rsp)
+}
+
+// FirewallUpdateNATOutModeWithBodyWithResponse Update NAT Outbound Mode
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATOutModeWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutModeAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNATOutModeWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATOutModeAPIResponse(rsp)
+}
+
+// FirewallUpdateNATOutModeWithResponse Update NAT Outbound Mode
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/mode (the `FirewallUpdateNATOutMode` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATOutModeWithResponse(ctx context.Context, body FirewallUpdateNATOutModeJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutModeAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNATOutMode(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATOutModeAPIResponse(rsp)
+}
+
+// FirewallOrderNATOutWithBodyWithResponse Reorder NAT Outbound Rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+func (c *ClientWithResponses) FirewallOrderNATOutWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATOutAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATOutWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATOutAPIResponse(rsp)
+}
+
+// FirewallOrderNATOutWithResponse Reorder NAT Outbound Rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/reorder (the `FirewallOrderNATOut` operationId).
+func (c *ClientWithResponses) FirewallOrderNATOutWithResponse(ctx context.Context, body FirewallOrderNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATOutAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATOut(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATOutAPIResponse(rsp)
+}
+
+// FirewallToggleNATOutWithBodyWithResponse Toggle NAT Outbound rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+func (c *ClientWithResponses) FirewallToggleNATOutWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATOutAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATOutWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATOutAPIResponse(rsp)
+}
+
+// FirewallToggleNATOutWithResponse Toggle NAT Outbound rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/toggle/{id} (the `FirewallToggleNATOut` operationId).
+func (c *ClientWithResponses) FirewallToggleNATOutWithResponse(ctx context.Context, id string, body FirewallToggleNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATOutAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATOut(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATOutAPIResponse(rsp)
+}
+
+// FirewallUpdateNATOutWithBodyWithResponse Update NAT Outbound Rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATOutWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNATOutWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATOutAPIResponse(rsp)
+}
+
+// FirewallUpdateNATOutWithResponse Update NAT Outbound Rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/outbound/{id} (the `FirewallUpdateNATOut` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATOutWithResponse(ctx context.Context, id string, body FirewallUpdateNATOutJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATOutAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNATOut(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATOutAPIResponse(rsp)
+}
+
 // FirewallGetNATWithResponse Get NAT Rules
 //
 // Returns a wrapper object for the known response body format(s).
@@ -11499,6 +20625,279 @@ func (c *ClientWithResponses) FirewallGetNATWithResponse(ctx context.Context, re
 		return nil, err
 	}
 	return ParseFirewallGetNATAPIResponse(rsp)
+}
+
+// FirewallCreateNATWithBodyWithResponse Create NAT rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+func (c *ClientWithResponses) FirewallCreateNATWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallCreateNATAPIResponse, error) {
+	rsp, err := c.FirewallCreateNATWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATAPIResponse(rsp)
+}
+
+// FirewallCreateNATWithResponse Create NAT rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/port-forward (the `FirewallCreateNAT` operationId).
+func (c *ClientWithResponses) FirewallCreateNATWithResponse(ctx context.Context, body FirewallCreateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallCreateNATAPIResponse, error) {
+	rsp, err := c.FirewallCreateNAT(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallCreateNATAPIResponse(rsp)
+}
+
+// FirewallOrderNATRulesWithBodyWithResponse Reorder NAT rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+func (c *ClientWithResponses) FirewallOrderNATRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallOrderNATRulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATRulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATRulesAPIResponse(rsp)
+}
+
+// FirewallOrderNATRulesWithResponse Reorder NAT rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/reorder (the `FirewallOrderNATRules` operationId).
+func (c *ClientWithResponses) FirewallOrderNATRulesWithResponse(ctx context.Context, body FirewallOrderNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallOrderNATRulesAPIResponse, error) {
+	rsp, err := c.FirewallOrderNATRules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallOrderNATRulesAPIResponse(rsp)
+}
+
+// FirewallAddNATSeparatorWithBodyWithResponse Create NAT separator before/after a rule identified by its index
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+func (c *ClientWithResponses) FirewallAddNATSeparatorWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddNATSeparatorAPIResponse, error) {
+	rsp, err := c.FirewallAddNATSeparatorWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddNATSeparatorAPIResponse(rsp)
+}
+
+// FirewallAddNATSeparatorWithResponse Create NAT separator before/after a rule identified by its index
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/nat/port-forward/separators (the `FirewallAddNATSeparator` operationId).
+func (c *ClientWithResponses) FirewallAddNATSeparatorWithResponse(ctx context.Context, body FirewallAddNATSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddNATSeparatorAPIResponse, error) {
+	rsp, err := c.FirewallAddNATSeparator(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddNATSeparatorAPIResponse(rsp)
+}
+
+// FirewallToggleNATRulesWithBodyWithResponse Toggle NAT Rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+func (c *ClientWithResponses) FirewallToggleNATRulesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATRulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATRulesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATRulesAPIResponse(rsp)
+}
+
+// FirewallToggleNATRulesWithResponse Toggle NAT Rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle (the `FirewallToggleNATRules` operationId).
+func (c *ClientWithResponses) FirewallToggleNATRulesWithResponse(ctx context.Context, body FirewallToggleNATRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATRulesAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATRules(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATRulesAPIResponse(rsp)
+}
+
+// FirewallToggleNATRuleWithBodyWithResponse Toggle NAT Rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+func (c *ClientWithResponses) FirewallToggleNATRuleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallToggleNATRuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATRuleWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATRuleAPIResponse(rsp)
+}
+
+// FirewallToggleNATRuleWithResponse Toggle NAT Rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/toggle/{id} (the `FirewallToggleNATRule` operationId).
+func (c *ClientWithResponses) FirewallToggleNATRuleWithResponse(ctx context.Context, id string, body FirewallToggleNATRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallToggleNATRuleAPIResponse, error) {
+	rsp, err := c.FirewallToggleNATRule(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallToggleNATRuleAPIResponse(rsp)
+}
+
+// FirewallDeleteNATWithResponse Delete NAT rules
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/nat/port-forward/{id} (the `FirewallDeleteNAT` operationId).
+func (c *ClientWithResponses) FirewallDeleteNATWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteNATAPIResponse, error) {
+	rsp, err := c.FirewallDeleteNAT(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteNATAPIResponse(rsp)
+}
+
+// FirewallUpdateNATWithBodyWithResponse Update NAT rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateNATAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNATWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATAPIResponse(rsp)
+}
+
+// FirewallUpdateNATWithResponse Update NAT rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/nat/port-forward/{id} (the `FirewallUpdateNAT` operationId).
+func (c *ClientWithResponses) FirewallUpdateNATWithResponse(ctx context.Context, id string, body FirewallUpdateNATJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateNATAPIResponse, error) {
+	rsp, err := c.FirewallUpdateNAT(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateNATAPIResponse(rsp)
+}
+
+// FirewallGetPFlowWithResponse Get Global Packet Flow Options
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/pflow (the `FirewallGetPFlow` operationId).
+func (c *ClientWithResponses) FirewallGetPFlowWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetPFlowAPIResponse, error) {
+	rsp, err := c.FirewallGetPFlow(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetPFlowAPIResponse(rsp)
+}
+
+// FirewallSetPFlowWithBodyWithResponse Change Global Packet Flow Options
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+func (c *ClientWithResponses) FirewallSetPFlowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallSetPFlowAPIResponse, error) {
+	rsp, err := c.FirewallSetPFlowWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallSetPFlowAPIResponse(rsp)
+}
+
+// FirewallSetPFlowWithResponse Change Global Packet Flow Options
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/pflow (the `FirewallSetPFlow` operationId).
+func (c *ClientWithResponses) FirewallSetPFlowWithResponse(ctx context.Context, body FirewallSetPFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallSetPFlowAPIResponse, error) {
+	rsp, err := c.FirewallSetPFlow(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallSetPFlowAPIResponse(rsp)
+}
+
+// FirewallAddPFlowExporterWithBodyWithResponse Add Packet Flow Exporters
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+func (c *ClientWithResponses) FirewallAddPFlowExporterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddPFlowExporterAPIResponse, error) {
+	rsp, err := c.FirewallAddPFlowExporterWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddPFlowExporterAPIResponse(rsp)
+}
+
+// FirewallAddPFlowExporterWithResponse Add Packet Flow Exporters
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/pflow/exporters (the `FirewallAddPFlowExporter` operationId).
+func (c *ClientWithResponses) FirewallAddPFlowExporterWithResponse(ctx context.Context, body FirewallAddPFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddPFlowExporterAPIResponse, error) {
+	rsp, err := c.FirewallAddPFlowExporter(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddPFlowExporterAPIResponse(rsp)
+}
+
+// FirewallDeletePFlowExporterWithResponse Delete Packet Flow Exporters
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/pflow/exporters/{id} (the `FirewallDeletePFlowExporter` operationId).
+func (c *ClientWithResponses) FirewallDeletePFlowExporterWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeletePFlowExporterAPIResponse, error) {
+	rsp, err := c.FirewallDeletePFlowExporter(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeletePFlowExporterAPIResponse(rsp)
+}
+
+// FirewallUpdatePFlowExporterWithBodyWithResponse Update Packet Flow Exporters
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+func (c *ClientWithResponses) FirewallUpdatePFlowExporterWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdatePFlowExporterAPIResponse, error) {
+	rsp, err := c.FirewallUpdatePFlowExporterWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdatePFlowExporterAPIResponse(rsp)
+}
+
+// FirewallUpdatePFlowExporterWithResponse Update Packet Flow Exporters
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/pflow/exporters/{id} (the `FirewallUpdatePFlowExporter` operationId).
+func (c *ClientWithResponses) FirewallUpdatePFlowExporterWithResponse(ctx context.Context, id string, body FirewallUpdatePFlowExporterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdatePFlowExporterAPIResponse, error) {
+	rsp, err := c.FirewallUpdatePFlowExporter(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdatePFlowExporterAPIResponse(rsp)
 }
 
 // GetFWInterfacesWithResponse Get list of firewall interfaces
@@ -11527,6 +20926,305 @@ func (c *ClientWithResponses) GetFirewallRulesWithResponse(ctx context.Context, 
 	return ParseGetFirewallRulesAPIResponse(rsp)
 }
 
+// AppendFirewallRuleWithBodyWithResponse Append rule to the firewall
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+func (c *ClientWithResponses) AppendFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AppendFirewallRuleAPIResponse, error) {
+	rsp, err := c.AppendFirewallRuleWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAppendFirewallRuleAPIResponse(rsp)
+}
+
+// AppendFirewallRuleWithResponse Append rule to the firewall
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface} (the `AppendFirewallRule` operationId).
+func (c *ClientWithResponses) AppendFirewallRuleWithResponse(ctx context.Context, pInterface string, body AppendFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*AppendFirewallRuleAPIResponse, error) {
+	rsp, err := c.AppendFirewallRule(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAppendFirewallRuleAPIResponse(rsp)
+}
+
+// QueryBogonRuleWithResponse Get bogon rule for the specified interface
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/rules/interface/{interface}/bogon (the `QueryBogonRule` operationId).
+func (c *ClientWithResponses) QueryBogonRuleWithResponse(ctx context.Context, pInterface string, reqEditors ...RequestEditorFn) (*QueryBogonRuleAPIResponse, error) {
+	rsp, err := c.QueryBogonRule(ctx, pInterface, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseQueryBogonRuleAPIResponse(rsp)
+}
+
+// ToggleBogonRuleWithBodyWithResponse Toggles the bogon rule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+func (c *ClientWithResponses) ToggleBogonRuleWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleBogonRuleAPIResponse, error) {
+	rsp, err := c.ToggleBogonRuleWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleBogonRuleAPIResponse(rsp)
+}
+
+// ToggleBogonRuleWithResponse Toggles the bogon rule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/bogon (the `ToggleBogonRule` operationId).
+func (c *ClientWithResponses) ToggleBogonRuleWithResponse(ctx context.Context, pInterface string, body ToggleBogonRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleBogonRuleAPIResponse, error) {
+	rsp, err := c.ToggleBogonRule(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleBogonRuleAPIResponse(rsp)
+}
+
+// CopyFirewallRulesWithBodyWithResponse Bulk copy of rules to target interface
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+func (c *ClientWithResponses) CopyFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CopyFirewallRulesAPIResponse, error) {
+	rsp, err := c.CopyFirewallRulesWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCopyFirewallRulesAPIResponse(rsp)
+}
+
+// CopyFirewallRulesWithResponse Bulk copy of rules to target interface
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/copy (the `CopyFirewallRules` operationId).
+func (c *ClientWithResponses) CopyFirewallRulesWithResponse(ctx context.Context, pInterface string, body CopyFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*CopyFirewallRulesAPIResponse, error) {
+	rsp, err := c.CopyFirewallRules(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCopyFirewallRulesAPIResponse(rsp)
+}
+
+// DeleteFirewallRulesWithBodyWithResponse Bulk delete of rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+func (c *ClientWithResponses) DeleteFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteFirewallRulesAPIResponse, error) {
+	rsp, err := c.DeleteFirewallRulesWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFirewallRulesAPIResponse(rsp)
+}
+
+// DeleteFirewallRulesWithResponse Bulk delete of rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/delete (the `DeleteFirewallRules` operationId).
+func (c *ClientWithResponses) DeleteFirewallRulesWithResponse(ctx context.Context, pInterface string, body DeleteFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteFirewallRulesAPIResponse, error) {
+	rsp, err := c.DeleteFirewallRules(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFirewallRulesAPIResponse(rsp)
+}
+
+// ReorderFirewallRulesWithBodyWithResponse Reorder rules and separators
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+func (c *ClientWithResponses) ReorderFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReorderFirewallRulesAPIResponse, error) {
+	rsp, err := c.ReorderFirewallRulesWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReorderFirewallRulesAPIResponse(rsp)
+}
+
+// ReorderFirewallRulesWithResponse Reorder rules and separators
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/reorder (the `ReorderFirewallRules` operationId).
+func (c *ClientWithResponses) ReorderFirewallRulesWithResponse(ctx context.Context, pInterface string, body ReorderFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*ReorderFirewallRulesAPIResponse, error) {
+	rsp, err := c.ReorderFirewallRules(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReorderFirewallRulesAPIResponse(rsp)
+}
+
+// InsertFirewallSeparatorWithBodyWithResponse Create separator before/after a rule identified by its id
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+func (c *ClientWithResponses) InsertFirewallSeparatorWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InsertFirewallSeparatorAPIResponse, error) {
+	rsp, err := c.InsertFirewallSeparatorWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInsertFirewallSeparatorAPIResponse(rsp)
+}
+
+// InsertFirewallSeparatorWithResponse Create separator before/after a rule identified by its id
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/separators (the `InsertFirewallSeparator` operationId).
+func (c *ClientWithResponses) InsertFirewallSeparatorWithResponse(ctx context.Context, pInterface string, body InsertFirewallSeparatorJSONRequestBody, reqEditors ...RequestEditorFn) (*InsertFirewallSeparatorAPIResponse, error) {
+	rsp, err := c.InsertFirewallSeparator(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInsertFirewallSeparatorAPIResponse(rsp)
+}
+
+// DeleteFirewallSeparatorWithResponse Delete firewall rule separator identified by id
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/rules/interface/{interface}/separators/{id} (the `DeleteFirewallSeparator` operationId).
+func (c *ClientWithResponses) DeleteFirewallSeparatorWithResponse(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*DeleteFirewallSeparatorAPIResponse, error) {
+	rsp, err := c.DeleteFirewallSeparator(ctx, pInterface, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFirewallSeparatorAPIResponse(rsp)
+}
+
+// ToggleFirewallRulesWithBodyWithResponse Bulk toggle of rules
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+func (c *ClientWithResponses) ToggleFirewallRulesWithBodyWithResponse(ctx context.Context, pInterface string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleFirewallRulesAPIResponse, error) {
+	rsp, err := c.ToggleFirewallRulesWithBody(ctx, pInterface, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleFirewallRulesAPIResponse(rsp)
+}
+
+// ToggleFirewallRulesWithResponse Bulk toggle of rules
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle (the `ToggleFirewallRules` operationId).
+func (c *ClientWithResponses) ToggleFirewallRulesWithResponse(ctx context.Context, pInterface string, body ToggleFirewallRulesJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleFirewallRulesAPIResponse, error) {
+	rsp, err := c.ToggleFirewallRules(ctx, pInterface, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleFirewallRulesAPIResponse(rsp)
+}
+
+// ToggleFirewallRuleWithBodyWithResponse Toggle rule by id
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+func (c *ClientWithResponses) ToggleFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleFirewallRuleAPIResponse, error) {
+	rsp, err := c.ToggleFirewallRuleWithBody(ctx, pInterface, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleFirewallRuleAPIResponse(rsp)
+}
+
+// ToggleFirewallRuleWithResponse Toggle rule by id
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/toggle/{id} (the `ToggleFirewallRule` operationId).
+func (c *ClientWithResponses) ToggleFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body ToggleFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleFirewallRuleAPIResponse, error) {
+	rsp, err := c.ToggleFirewallRule(ctx, pInterface, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleFirewallRuleAPIResponse(rsp)
+}
+
+// DeleteFirewallRuleWithResponse Deletes a rule by its id
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/rules/interface/{interface}/{id} (the `DeleteFirewallRule` operationId).
+func (c *ClientWithResponses) DeleteFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, reqEditors ...RequestEditorFn) (*DeleteFirewallRuleAPIResponse, error) {
+	rsp, err := c.DeleteFirewallRule(ctx, pInterface, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteFirewallRuleAPIResponse(rsp)
+}
+
+// UpdateFirewallRuleWithBodyWithResponse Update rule identified by id
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+func (c *ClientWithResponses) UpdateFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateFirewallRuleAPIResponse, error) {
+	rsp, err := c.UpdateFirewallRuleWithBody(ctx, pInterface, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateFirewallRuleAPIResponse(rsp)
+}
+
+// UpdateFirewallRuleWithResponse Update rule identified by id
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /firewall/rules/interface/{interface}/{id} (the `UpdateFirewallRule` operationId).
+func (c *ClientWithResponses) UpdateFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body UpdateFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFirewallRuleAPIResponse, error) {
+	rsp, err := c.UpdateFirewallRule(ctx, pInterface, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateFirewallRuleAPIResponse(rsp)
+}
+
+// InsertFirewallRuleWithBodyWithResponse Add rule before/after other rule identified by its id
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+func (c *ClientWithResponses) InsertFirewallRuleWithBodyWithResponse(ctx context.Context, pInterface string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InsertFirewallRuleAPIResponse, error) {
+	rsp, err := c.InsertFirewallRuleWithBody(ctx, pInterface, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInsertFirewallRuleAPIResponse(rsp)
+}
+
+// InsertFirewallRuleWithResponse Add rule before/after other rule identified by its id
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/rules/interface/{interface}/{id} (the `InsertFirewallRule` operationId).
+func (c *ClientWithResponses) InsertFirewallRuleWithResponse(ctx context.Context, pInterface string, id string, body InsertFirewallRuleJSONRequestBody, reqEditors ...RequestEditorFn) (*InsertFirewallRuleAPIResponse, error) {
+	rsp, err := c.InsertFirewallRule(ctx, pInterface, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInsertFirewallRuleAPIResponse(rsp)
+}
+
 // FirewallGetSchedulesWithResponse Get Firewall Schedules
 //
 // Returns a wrapper object for the known response body format(s).
@@ -11538,6 +21236,71 @@ func (c *ClientWithResponses) FirewallGetSchedulesWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseFirewallGetSchedulesAPIResponse(rsp)
+}
+
+// FirewallAddScheduleWithBodyWithResponse Add Firewall Schedule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+func (c *ClientWithResponses) FirewallAddScheduleWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddScheduleAPIResponse, error) {
+	rsp, err := c.FirewallAddScheduleWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddScheduleAPIResponse(rsp)
+}
+
+// FirewallAddScheduleWithResponse Add Firewall Schedule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/schedules (the `FirewallAddSchedule` operationId).
+func (c *ClientWithResponses) FirewallAddScheduleWithResponse(ctx context.Context, body FirewallAddScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddScheduleAPIResponse, error) {
+	rsp, err := c.FirewallAddSchedule(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddScheduleAPIResponse(rsp)
+}
+
+// FirewallDeleteScheduleWithResponse Delete schedule
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/schedules/{id} (the `FirewallDeleteSchedule` operationId).
+func (c *ClientWithResponses) FirewallDeleteScheduleWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteScheduleAPIResponse, error) {
+	rsp, err := c.FirewallDeleteSchedule(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteScheduleAPIResponse(rsp)
+}
+
+// FirewallUpdateScheduleWithBodyWithResponse Update Firewall Schedule
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+func (c *ClientWithResponses) FirewallUpdateScheduleWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateScheduleAPIResponse, error) {
+	rsp, err := c.FirewallUpdateScheduleWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateScheduleAPIResponse(rsp)
+}
+
+// FirewallUpdateScheduleWithResponse Update Firewall Schedule
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/schedules/{id} (the `FirewallUpdateSchedule` operationId).
+func (c *ClientWithResponses) FirewallUpdateScheduleWithResponse(ctx context.Context, id string, body FirewallUpdateScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateScheduleAPIResponse, error) {
+	rsp, err := c.FirewallUpdateSchedule(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateScheduleAPIResponse(rsp)
 }
 
 // FirewallGetTrafficShaperWithResponse Get Traffic Shapers
@@ -11566,6 +21329,136 @@ func (c *ClientWithResponses) FirewallGetALTQWithResponse(ctx context.Context, r
 	return ParseFirewallGetALTQAPIResponse(rsp)
 }
 
+// FirewallAddALTQWithBodyWithResponse Add ALTQ Root Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+func (c *ClientWithResponses) FirewallAddALTQWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddALTQAPIResponse, error) {
+	rsp, err := c.FirewallAddALTQWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddALTQAPIResponse(rsp)
+}
+
+// FirewallAddALTQWithResponse Add ALTQ Root Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq (the `FirewallAddALTQ` operationId).
+func (c *ClientWithResponses) FirewallAddALTQWithResponse(ctx context.Context, body FirewallAddALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddALTQAPIResponse, error) {
+	rsp, err := c.FirewallAddALTQ(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddALTQAPIResponse(rsp)
+}
+
+// FirewallDeleteALTQWithResponse Delete ALTQ Root Queue
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/traffic-shaper/altq/{name} (the `FirewallDeleteALTQ` operationId).
+func (c *ClientWithResponses) FirewallDeleteALTQWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*FirewallDeleteALTQAPIResponse, error) {
+	rsp, err := c.FirewallDeleteALTQ(ctx, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteALTQAPIResponse(rsp)
+}
+
+// FirewallUpdateALTQWithBodyWithResponse Update ALTQ Root Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+func (c *ClientWithResponses) FirewallUpdateALTQWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQAPIResponse, error) {
+	rsp, err := c.FirewallUpdateALTQWithBody(ctx, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateALTQAPIResponse(rsp)
+}
+
+// FirewallUpdateALTQWithResponse Update ALTQ Root Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name} (the `FirewallUpdateALTQ` operationId).
+func (c *ClientWithResponses) FirewallUpdateALTQWithResponse(ctx context.Context, name string, body FirewallUpdateALTQJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQAPIResponse, error) {
+	rsp, err := c.FirewallUpdateALTQ(ctx, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateALTQAPIResponse(rsp)
+}
+
+// FirewallAddALTQChildQueueWithBodyWithResponse Add ALTQ Child Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+func (c *ClientWithResponses) FirewallAddALTQChildQueueWithBodyWithResponse(ctx context.Context, name string, parentname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddALTQChildQueueAPIResponse, error) {
+	rsp, err := c.FirewallAddALTQChildQueueWithBody(ctx, name, parentname, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddALTQChildQueueAPIResponse(rsp)
+}
+
+// FirewallAddALTQChildQueueWithResponse Add ALTQ Child Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/altq/{name}/queue/{parentname} (the `FirewallAddALTQChildQueue` operationId).
+func (c *ClientWithResponses) FirewallAddALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, body FirewallAddALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddALTQChildQueueAPIResponse, error) {
+	rsp, err := c.FirewallAddALTQChildQueue(ctx, name, parentname, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddALTQChildQueueAPIResponse(rsp)
+}
+
+// FirewallDeleteALTQChildQueueWithResponse Delete ALTQ Child Queue
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallDeleteALTQChildQueue` operationId).
+func (c *ClientWithResponses) FirewallDeleteALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, qname string, reqEditors ...RequestEditorFn) (*FirewallDeleteALTQChildQueueAPIResponse, error) {
+	rsp, err := c.FirewallDeleteALTQChildQueue(ctx, name, parentname, qname, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteALTQChildQueueAPIResponse(rsp)
+}
+
+// FirewallUpdateALTQChildQueueWithBodyWithResponse Update ALTQ Child Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+func (c *ClientWithResponses) FirewallUpdateALTQChildQueueWithBodyWithResponse(ctx context.Context, name string, parentname string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQChildQueueAPIResponse, error) {
+	rsp, err := c.FirewallUpdateALTQChildQueueWithBody(ctx, name, parentname, qname, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateALTQChildQueueAPIResponse(rsp)
+}
+
+// FirewallUpdateALTQChildQueueWithResponse Update ALTQ Child Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/altq/{name}/queue/{parentname}/{qname} (the `FirewallUpdateALTQChildQueue` operationId).
+func (c *ClientWithResponses) FirewallUpdateALTQChildQueueWithResponse(ctx context.Context, name string, parentname string, qname string, body FirewallUpdateALTQChildQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateALTQChildQueueAPIResponse, error) {
+	rsp, err := c.FirewallUpdateALTQChildQueue(ctx, name, parentname, qname, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateALTQChildQueueAPIResponse(rsp)
+}
+
 // FirewallGetLimiterWithResponse Get Limiters
 //
 // Returns a wrapper object for the known response body format(s).
@@ -11577,6 +21470,214 @@ func (c *ClientWithResponses) FirewallGetLimiterWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseFirewallGetLimiterAPIResponse(rsp)
+}
+
+// FirewallAddLimiterWithBodyWithResponse Add Limiter
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+func (c *ClientWithResponses) FirewallAddLimiterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddLimiterAPIResponse, error) {
+	rsp, err := c.FirewallAddLimiterWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddLimiterAPIResponse(rsp)
+}
+
+// FirewallAddLimiterWithResponse Add Limiter
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter (the `FirewallAddLimiter` operationId).
+func (c *ClientWithResponses) FirewallAddLimiterWithResponse(ctx context.Context, body FirewallAddLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddLimiterAPIResponse, error) {
+	rsp, err := c.FirewallAddLimiter(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddLimiterAPIResponse(rsp)
+}
+
+// FirewallDeleteLimiterWithResponse Delete Limiter
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name} (the `FirewallDeleteLimiter` operationId).
+func (c *ClientWithResponses) FirewallDeleteLimiterWithResponse(ctx context.Context, name string, reqEditors ...RequestEditorFn) (*FirewallDeleteLimiterAPIResponse, error) {
+	rsp, err := c.FirewallDeleteLimiter(ctx, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteLimiterAPIResponse(rsp)
+}
+
+// FirewallUpdateLimiterWithBodyWithResponse Update Limiter
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+func (c *ClientWithResponses) FirewallUpdateLimiterWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterAPIResponse, error) {
+	rsp, err := c.FirewallUpdateLimiterWithBody(ctx, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateLimiterAPIResponse(rsp)
+}
+
+// FirewallUpdateLimiterWithResponse Update Limiter
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name} (the `FirewallUpdateLimiter` operationId).
+func (c *ClientWithResponses) FirewallUpdateLimiterWithResponse(ctx context.Context, name string, body FirewallUpdateLimiterJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterAPIResponse, error) {
+	rsp, err := c.FirewallUpdateLimiter(ctx, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateLimiterAPIResponse(rsp)
+}
+
+// FirewallAddLimiterQueueWithBodyWithResponse Add Limiter Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+func (c *ClientWithResponses) FirewallAddLimiterQueueWithBodyWithResponse(ctx context.Context, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallAddLimiterQueueAPIResponse, error) {
+	rsp, err := c.FirewallAddLimiterQueueWithBody(ctx, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddLimiterQueueAPIResponse(rsp)
+}
+
+// FirewallAddLimiterQueueWithResponse Add Limiter Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/traffic-shaper/limiter/{name}/queue (the `FirewallAddLimiterQueue` operationId).
+func (c *ClientWithResponses) FirewallAddLimiterQueueWithResponse(ctx context.Context, name string, body FirewallAddLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallAddLimiterQueueAPIResponse, error) {
+	rsp, err := c.FirewallAddLimiterQueue(ctx, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallAddLimiterQueueAPIResponse(rsp)
+}
+
+// FirewallDeleteLimiterQueueWithResponse Delete Limiter Queue
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallDeleteLimiterQueue` operationId).
+func (c *ClientWithResponses) FirewallDeleteLimiterQueueWithResponse(ctx context.Context, name string, qname string, reqEditors ...RequestEditorFn) (*FirewallDeleteLimiterQueueAPIResponse, error) {
+	rsp, err := c.FirewallDeleteLimiterQueue(ctx, name, qname, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteLimiterQueueAPIResponse(rsp)
+}
+
+// FirewallUpdateLimiterQueueWithBodyWithResponse Update Limiter Queue
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+func (c *ClientWithResponses) FirewallUpdateLimiterQueueWithBodyWithResponse(ctx context.Context, name string, qname string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterQueueAPIResponse, error) {
+	rsp, err := c.FirewallUpdateLimiterQueueWithBody(ctx, name, qname, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateLimiterQueueAPIResponse(rsp)
+}
+
+// FirewallUpdateLimiterQueueWithResponse Update Limiter Queue
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/traffic-shaper/limiter/{name}/queue/{qname} (the `FirewallUpdateLimiterQueue` operationId).
+func (c *ClientWithResponses) FirewallUpdateLimiterQueueWithResponse(ctx context.Context, name string, qname string, body FirewallUpdateLimiterQueueJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateLimiterQueueAPIResponse, error) {
+	rsp, err := c.FirewallUpdateLimiterQueue(ctx, name, qname, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateLimiterQueueAPIResponse(rsp)
+}
+
+// FirewallGetVirtualIPsWithResponse List Virtual IPs
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /firewall/virtualip (the `FirewallGetVirtualIPs` operationId).
+func (c *ClientWithResponses) FirewallGetVirtualIPsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FirewallGetVirtualIPsAPIResponse, error) {
+	rsp, err := c.FirewallGetVirtualIPs(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallGetVirtualIPsAPIResponse(rsp)
+}
+
+// FirewallSetVirtualIPWithBodyWithResponse Add Virtual IP
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+func (c *ClientWithResponses) FirewallSetVirtualIPWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallSetVirtualIPAPIResponse, error) {
+	rsp, err := c.FirewallSetVirtualIPWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallSetVirtualIPAPIResponse(rsp)
+}
+
+// FirewallSetVirtualIPWithResponse Add Virtual IP
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /firewall/virtualip (the `FirewallSetVirtualIP` operationId).
+func (c *ClientWithResponses) FirewallSetVirtualIPWithResponse(ctx context.Context, body FirewallSetVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallSetVirtualIPAPIResponse, error) {
+	rsp, err := c.FirewallSetVirtualIP(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallSetVirtualIPAPIResponse(rsp)
+}
+
+// FirewallDeleteVirtualIPWithResponse Delete Virtual IP
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /firewall/virtualip/{id} (the `FirewallDeleteVirtualIP` operationId).
+func (c *ClientWithResponses) FirewallDeleteVirtualIPWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*FirewallDeleteVirtualIPAPIResponse, error) {
+	rsp, err := c.FirewallDeleteVirtualIP(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallDeleteVirtualIPAPIResponse(rsp)
+}
+
+// FirewallUpdateVirtualIPWithBodyWithResponse Update Virtual IP
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+func (c *ClientWithResponses) FirewallUpdateVirtualIPWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FirewallUpdateVirtualIPAPIResponse, error) {
+	rsp, err := c.FirewallUpdateVirtualIPWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateVirtualIPAPIResponse(rsp)
+}
+
+// FirewallUpdateVirtualIPWithResponse Update Virtual IP
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /firewall/virtualip/{id} (the `FirewallUpdateVirtualIP` operationId).
+func (c *ClientWithResponses) FirewallUpdateVirtualIPWithResponse(ctx context.Context, id string, body FirewallUpdateVirtualIPJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateVirtualIPAPIResponse, error) {
+	rsp, err := c.FirewallUpdateVirtualIP(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFirewallUpdateVirtualIPAPIResponse(rsp)
 }
 
 // GetInterfacesWithResponse Get network interfaces
@@ -12652,6 +22753,171 @@ func ParseFirewallGetNATNptAPIResponse(rsp *http.Response) (*FirewallGetNATNptAP
 	return response, nil
 }
 
+// ParseFirewallCreateNATNptAPIResponse parses an HTTP response from a FirewallCreateNATNptWithResponse call
+func ParseFirewallCreateNATNptAPIResponse(rsp *http.Response) (*FirewallCreateNATNptAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallCreateNATNptAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATNptRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallOrderNATNptRulesAPIResponse parses an HTTP response from a FirewallOrderNATNptRulesWithResponse call
+func ParseFirewallOrderNATNptRulesAPIResponse(rsp *http.Response) (*FirewallOrderNATNptRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallOrderNATNptRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNATNptRulesAPIResponse parses an HTTP response from a FirewallToggleNATNptRulesWithResponse call
+func ParseFirewallToggleNATNptRulesAPIResponse(rsp *http.Response) (*FirewallToggleNATNptRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNATNptRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNATNptRuleAPIResponse parses an HTTP response from a FirewallToggleNATNptRuleWithResponse call
+func ParseFirewallToggleNATNptRuleAPIResponse(rsp *http.Response) (*FirewallToggleNATNptRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNATNptRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteNATNptRulesAPIResponse parses an HTTP response from a FirewallDeleteNATNptRulesWithResponse call
+func ParseFirewallDeleteNATNptRulesAPIResponse(rsp *http.Response) (*FirewallDeleteNATNptRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteNATNptRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseFirewallGetNAT1To1RulesAPIResponse parses an HTTP response from a FirewallGetNAT1To1RulesWithResponse call
 func ParseFirewallGetNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallGetNAT1To1RulesAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12668,6 +22934,171 @@ func ParseFirewallGetNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallGetNA
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest NAT1To1Rules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallCreateNAT1To1RuleAPIResponse parses an HTTP response from a FirewallCreateNAT1To1RuleWithResponse call
+func ParseFirewallCreateNAT1To1RuleAPIResponse(rsp *http.Response) (*FirewallCreateNAT1To1RuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallCreateNAT1To1RuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NAT1To1Rules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallOrderNAT1To1RulesAPIResponse parses an HTTP response from a FirewallOrderNAT1To1RulesWithResponse call
+func ParseFirewallOrderNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallOrderNAT1To1RulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallOrderNAT1To1RulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNAT1To1RulesAPIResponse parses an HTTP response from a FirewallToggleNAT1To1RulesWithResponse call
+func ParseFirewallToggleNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallToggleNAT1To1RulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNAT1To1RulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNAT1To1RuleAPIResponse parses an HTTP response from a FirewallToggleNAT1To1RuleWithResponse call
+func ParseFirewallToggleNAT1To1RuleAPIResponse(rsp *http.Response) (*FirewallToggleNAT1To1RuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNAT1To1RuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWToggleResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteNAT1To1RulesAPIResponse parses an HTTP response from a FirewallDeleteNAT1To1RulesWithResponse call
+func ParseFirewallDeleteNAT1To1RulesAPIResponse(rsp *http.Response) (*FirewallDeleteNAT1To1RulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteNAT1To1RulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -12718,6 +23149,171 @@ func ParseFirewallGetNATOutAPIResponse(rsp *http.Response) (*FirewallGetNATOutAP
 	return response, nil
 }
 
+// ParseFirewallCreateNATOutAPIResponse parses an HTTP response from a FirewallCreateNATOutWithResponse call
+func ParseFirewallCreateNATOutAPIResponse(rsp *http.Response) (*FirewallCreateNATOutAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallCreateNATOutAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATOutboundRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateNATOutModeAPIResponse parses an HTTP response from a FirewallUpdateNATOutModeWithResponse call
+func ParseFirewallUpdateNATOutModeAPIResponse(rsp *http.Response) (*FirewallUpdateNATOutModeAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateNATOutModeAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATOutModeUpdateResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallOrderNATOutAPIResponse parses an HTTP response from a FirewallOrderNATOutWithResponse call
+func ParseFirewallOrderNATOutAPIResponse(rsp *http.Response) (*FirewallOrderNATOutAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallOrderNATOutAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNATOutAPIResponse parses an HTTP response from a FirewallToggleNATOutWithResponse call
+func ParseFirewallToggleNATOutAPIResponse(rsp *http.Response) (*FirewallToggleNATOutAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNATOutAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWToggleResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateNATOutAPIResponse parses an HTTP response from a FirewallUpdateNATOutWithResponse call
+func ParseFirewallUpdateNATOutAPIResponse(rsp *http.Response) (*FirewallUpdateNATOutAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateNATOutAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATOutUpdateResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseFirewallGetNATAPIResponse parses an HTTP response from a FirewallGetNATWithResponse call
 func ParseFirewallGetNATAPIResponse(rsp *http.Response) (*FirewallGetNATAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12734,6 +23330,402 @@ func ParseFirewallGetNATAPIResponse(rsp *http.Response) (*FirewallGetNATAPIRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest NATRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallCreateNATAPIResponse parses an HTTP response from a FirewallCreateNATWithResponse call
+func ParseFirewallCreateNATAPIResponse(rsp *http.Response) (*FirewallCreateNATAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallCreateNATAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATRules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallOrderNATRulesAPIResponse parses an HTTP response from a FirewallOrderNATRulesWithResponse call
+func ParseFirewallOrderNATRulesAPIResponse(rsp *http.Response) (*FirewallOrderNATRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallOrderNATRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddNATSeparatorAPIResponse parses an HTTP response from a FirewallAddNATSeparatorWithResponse call
+func ParseFirewallAddNATSeparatorAPIResponse(rsp *http.Response) (*FirewallAddNATSeparatorAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddNATSeparatorAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Separator
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNATRulesAPIResponse parses an HTTP response from a FirewallToggleNATRulesWithResponse call
+func ParseFirewallToggleNATRulesAPIResponse(rsp *http.Response) (*FirewallToggleNATRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNATRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallToggleNATRuleAPIResponse parses an HTTP response from a FirewallToggleNATRuleWithResponse call
+func ParseFirewallToggleNATRuleAPIResponse(rsp *http.Response) (*FirewallToggleNATRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallToggleNATRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteNATAPIResponse parses an HTTP response from a FirewallDeleteNATWithResponse call
+func ParseFirewallDeleteNATAPIResponse(rsp *http.Response) (*FirewallDeleteNATAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteNATAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateNATAPIResponse parses an HTTP response from a FirewallUpdateNATWithResponse call
+func ParseFirewallUpdateNATAPIResponse(rsp *http.Response) (*FirewallUpdateNATAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateNATAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest NATUpdateResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetPFlowAPIResponse parses an HTTP response from a FirewallGetPFlowWithResponse call
+func ParseFirewallGetPFlowAPIResponse(rsp *http.Response) (*FirewallGetPFlowAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetPFlowAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PFlowGlobalOptions
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallSetPFlowAPIResponse parses an HTTP response from a FirewallSetPFlowWithResponse call
+func ParseFirewallSetPFlowAPIResponse(rsp *http.Response) (*FirewallSetPFlowAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallSetPFlowAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddPFlowExporterAPIResponse parses an HTTP response from a FirewallAddPFlowExporterWithResponse call
+func ParseFirewallAddPFlowExporterAPIResponse(rsp *http.Response) (*FirewallAddPFlowExporterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddPFlowExporterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeletePFlowExporterAPIResponse parses an HTTP response from a FirewallDeletePFlowExporterWithResponse call
+func ParseFirewallDeletePFlowExporterAPIResponse(rsp *http.Response) (*FirewallDeletePFlowExporterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeletePFlowExporterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdatePFlowExporterAPIResponse parses an HTTP response from a FirewallUpdatePFlowExporterWithResponse call
+func ParseFirewallUpdatePFlowExporterAPIResponse(rsp *http.Response) (*FirewallUpdatePFlowExporterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdatePFlowExporterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -12817,6 +23809,435 @@ func ParseGetFirewallRulesAPIResponse(rsp *http.Response) (*GetFirewallRulesAPIR
 	return response, nil
 }
 
+// ParseAppendFirewallRuleAPIResponse parses an HTTP response from a AppendFirewallRuleWithResponse call
+func ParseAppendFirewallRuleAPIResponse(rsp *http.Response) (*AppendFirewallRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AppendFirewallRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWFilterRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseQueryBogonRuleAPIResponse parses an HTTP response from a QueryBogonRuleWithResponse call
+func ParseQueryBogonRuleAPIResponse(rsp *http.Response) (*QueryBogonRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &QueryBogonRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWBogonRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseToggleBogonRuleAPIResponse parses an HTTP response from a ToggleBogonRuleWithResponse call
+func ParseToggleBogonRuleAPIResponse(rsp *http.Response) (*ToggleBogonRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ToggleBogonRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCopyFirewallRulesAPIResponse parses an HTTP response from a CopyFirewallRulesWithResponse call
+func ParseCopyFirewallRulesAPIResponse(rsp *http.Response) (*CopyFirewallRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CopyFirewallRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteFirewallRulesAPIResponse parses an HTTP response from a DeleteFirewallRulesWithResponse call
+func ParseDeleteFirewallRulesAPIResponse(rsp *http.Response) (*DeleteFirewallRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteFirewallRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReorderFirewallRulesAPIResponse parses an HTTP response from a ReorderFirewallRulesWithResponse call
+func ParseReorderFirewallRulesAPIResponse(rsp *http.Response) (*ReorderFirewallRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReorderFirewallRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInsertFirewallSeparatorAPIResponse parses an HTTP response from a InsertFirewallSeparatorWithResponse call
+func ParseInsertFirewallSeparatorAPIResponse(rsp *http.Response) (*InsertFirewallSeparatorAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InsertFirewallSeparatorAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Separator
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteFirewallSeparatorAPIResponse parses an HTTP response from a DeleteFirewallSeparatorWithResponse call
+func ParseDeleteFirewallSeparatorAPIResponse(rsp *http.Response) (*DeleteFirewallSeparatorAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteFirewallSeparatorAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseToggleFirewallRulesAPIResponse parses an HTTP response from a ToggleFirewallRulesWithResponse call
+func ParseToggleFirewallRulesAPIResponse(rsp *http.Response) (*ToggleFirewallRulesAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ToggleFirewallRulesAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseToggleFirewallRuleAPIResponse parses an HTTP response from a ToggleFirewallRuleWithResponse call
+func ParseToggleFirewallRuleAPIResponse(rsp *http.Response) (*ToggleFirewallRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ToggleFirewallRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteFirewallRuleAPIResponse parses an HTTP response from a DeleteFirewallRuleWithResponse call
+func ParseDeleteFirewallRuleAPIResponse(rsp *http.Response) (*DeleteFirewallRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteFirewallRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateFirewallRuleAPIResponse parses an HTTP response from a UpdateFirewallRuleWithResponse call
+func ParseUpdateFirewallRuleAPIResponse(rsp *http.Response) (*UpdateFirewallRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateFirewallRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWFilterRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInsertFirewallRuleAPIResponse parses an HTTP response from a InsertFirewallRuleWithResponse call
+func ParseInsertFirewallRuleAPIResponse(rsp *http.Response) (*InsertFirewallRuleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InsertFirewallRuleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FWFilterRule
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseFirewallGetSchedulesAPIResponse parses an HTTP response from a FirewallGetSchedulesWithResponse call
 func ParseFirewallGetSchedulesAPIResponse(rsp *http.Response) (*FirewallGetSchedulesAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12833,6 +24254,105 @@ func ParseFirewallGetSchedulesAPIResponse(rsp *http.Response) (*FirewallGetSched
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest FWSchedules
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddScheduleAPIResponse parses an HTTP response from a FirewallAddScheduleWithResponse call
+func ParseFirewallAddScheduleAPIResponse(rsp *http.Response) (*FirewallAddScheduleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddScheduleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteScheduleAPIResponse parses an HTTP response from a FirewallDeleteScheduleWithResponse call
+func ParseFirewallDeleteScheduleAPIResponse(rsp *http.Response) (*FirewallDeleteScheduleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteScheduleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateScheduleAPIResponse parses an HTTP response from a FirewallUpdateScheduleWithResponse call
+func ParseFirewallUpdateScheduleAPIResponse(rsp *http.Response) (*FirewallUpdateScheduleAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateScheduleAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -12916,6 +24436,204 @@ func ParseFirewallGetALTQAPIResponse(rsp *http.Response) (*FirewallGetALTQAPIRes
 	return response, nil
 }
 
+// ParseFirewallAddALTQAPIResponse parses an HTTP response from a FirewallAddALTQWithResponse call
+func ParseFirewallAddALTQAPIResponse(rsp *http.Response) (*FirewallAddALTQAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddALTQAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteALTQAPIResponse parses an HTTP response from a FirewallDeleteALTQWithResponse call
+func ParseFirewallDeleteALTQAPIResponse(rsp *http.Response) (*FirewallDeleteALTQAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteALTQAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateALTQAPIResponse parses an HTTP response from a FirewallUpdateALTQWithResponse call
+func ParseFirewallUpdateALTQAPIResponse(rsp *http.Response) (*FirewallUpdateALTQAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateALTQAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddALTQChildQueueAPIResponse parses an HTTP response from a FirewallAddALTQChildQueueWithResponse call
+func ParseFirewallAddALTQChildQueueAPIResponse(rsp *http.Response) (*FirewallAddALTQChildQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddALTQChildQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteALTQChildQueueAPIResponse parses an HTTP response from a FirewallDeleteALTQChildQueueWithResponse call
+func ParseFirewallDeleteALTQChildQueueAPIResponse(rsp *http.Response) (*FirewallDeleteALTQChildQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteALTQChildQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateALTQChildQueueAPIResponse parses an HTTP response from a FirewallUpdateALTQChildQueueWithResponse call
+func ParseFirewallUpdateALTQChildQueueAPIResponse(rsp *http.Response) (*FirewallUpdateALTQChildQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateALTQChildQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseFirewallGetLimiterAPIResponse parses an HTTP response from a FirewallGetLimiterWithResponse call
 func ParseFirewallGetLimiterAPIResponse(rsp *http.Response) (*FirewallGetLimiterAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12932,6 +24650,336 @@ func ParseFirewallGetLimiterAPIResponse(rsp *http.Response) (*FirewallGetLimiter
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Limiters
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddLimiterAPIResponse parses an HTTP response from a FirewallAddLimiterWithResponse call
+func ParseFirewallAddLimiterAPIResponse(rsp *http.Response) (*FirewallAddLimiterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddLimiterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteLimiterAPIResponse parses an HTTP response from a FirewallDeleteLimiterWithResponse call
+func ParseFirewallDeleteLimiterAPIResponse(rsp *http.Response) (*FirewallDeleteLimiterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteLimiterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateLimiterAPIResponse parses an HTTP response from a FirewallUpdateLimiterWithResponse call
+func ParseFirewallUpdateLimiterAPIResponse(rsp *http.Response) (*FirewallUpdateLimiterAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateLimiterAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallAddLimiterQueueAPIResponse parses an HTTP response from a FirewallAddLimiterQueueWithResponse call
+func ParseFirewallAddLimiterQueueAPIResponse(rsp *http.Response) (*FirewallAddLimiterQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallAddLimiterQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteLimiterQueueAPIResponse parses an HTTP response from a FirewallDeleteLimiterQueueWithResponse call
+func ParseFirewallDeleteLimiterQueueAPIResponse(rsp *http.Response) (*FirewallDeleteLimiterQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteLimiterQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateLimiterQueueAPIResponse parses an HTTP response from a FirewallUpdateLimiterQueueWithResponse call
+func ParseFirewallUpdateLimiterQueueAPIResponse(rsp *http.Response) (*FirewallUpdateLimiterQueueAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateLimiterQueueAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallGetVirtualIPsAPIResponse parses an HTTP response from a FirewallGetVirtualIPsWithResponse call
+func ParseFirewallGetVirtualIPsAPIResponse(rsp *http.Response) (*FirewallGetVirtualIPsAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallGetVirtualIPsAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VirtualIPs
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallSetVirtualIPAPIResponse parses an HTTP response from a FirewallSetVirtualIPWithResponse call
+func ParseFirewallSetVirtualIPAPIResponse(rsp *http.Response) (*FirewallSetVirtualIPAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallSetVirtualIPAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VirtualIPResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallDeleteVirtualIPAPIResponse parses an HTTP response from a FirewallDeleteVirtualIPWithResponse call
+func ParseFirewallDeleteVirtualIPAPIResponse(rsp *http.Response) (*FirewallDeleteVirtualIPAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallDeleteVirtualIPAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFirewallUpdateVirtualIPAPIResponse parses an HTTP response from a FirewallUpdateVirtualIPWithResponse call
+func ParseFirewallUpdateVirtualIPAPIResponse(rsp *http.Response) (*FirewallUpdateVirtualIPAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FirewallUpdateVirtualIPAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VirtualIPResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

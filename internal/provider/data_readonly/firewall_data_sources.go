@@ -101,6 +101,22 @@ func NewFirewallLimiters() datasource.DataSource {
 	)
 }
 
+func NewFirewallPFlow() datasource.DataSource {
+	return newDataSource("firewall_pflow", "Reads global packet-flow settings and exporters.", nil,
+		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
+			return client.FirewallGetPFlowWithResponse(ctx)
+		},
+	)
+}
+
+func NewFirewallVirtualIPs() datasource.DataSource {
+	return newDataSource("firewall_virtual_ips", "Reads configured firewall virtual IPs.", nil,
+		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
+			return client.FirewallGetVirtualIPsWithResponse(ctx)
+		},
+	)
+}
+
 func NewInterfaces() datasource.DataSource {
 	return newDataSource("interfaces", "Reads basic information about configured network interfaces.", nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {

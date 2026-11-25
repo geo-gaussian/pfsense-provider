@@ -164,6 +164,7 @@ func (r *settingsResource) Update(ctx context.Context, req resource.UpdateReques
 }
 
 func (r *settingsResource) Delete(context.Context, resource.DeleteRequest, *resource.DeleteResponse) {
+	return
 }
 
 func (r *settingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
