@@ -11,6 +11,8 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/ephemeral_wireguard"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/firewall_resources"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_firewall_alias"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_haproxy_resolver"
+	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_mdns"
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_wireguard"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -136,6 +138,8 @@ func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource 
 		identified(resource_wireguard.NewSettings, "id"),
 		identified(resource_wireguard.NewTunnel, "name"),
 		identified(resource_wireguard.NewPeer, "publickey"),
+		identified(resource_haproxy_resolver.New, "id"),
+		identified(resource_mdns.New, "id"),
 	}
 }
 
@@ -195,6 +199,8 @@ func serviceDataSources() []func() datasource.DataSource {
 		data_readonly.NewMDNSStats,
 		data_readonly.NewHAProxyResolvers,
 		data_readonly.NewHAProxyResolverStats,
+		data_readonly.NewDNSLookup,
+		data_readonly.NewMDNSBrowse,
 		data_readonly.NewIGMPProxies,
 		data_readonly.NewMDNS,
 		data_readonly.NewDHCPv4Relay,

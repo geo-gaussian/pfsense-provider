@@ -1,8 +1,38 @@
 package data_readonly
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
+)
 
 var dnsDataSourceCases = []readDataSourceCase{
+	{
+		name: "DNS lookup", dataSource: NewDNSLookup, path: "/diag/dns", query: "host=example.test",
+		configured: map[string]tftypes.Value{"host": tftypes.NewValue(tftypes.String, "example.test")},
+		status:     http.StatusOK, body: `{}`, wantJSON: `{}`, sensitive: true,
+	},
+	{
+		name: "DNS lookup missing host", dataSource: NewDNSLookup, path: "/diag/dns",
+		configured: map[string]tftypes.Value{"host": tftypes.NewValue(tftypes.String, nil)},
+		status:     http.StatusOK, body: `{}`, sensitive: true, wantError: true,
+	},
+	{
+		name: "mDNS browse service", dataSource: NewMDNSBrowse, path: "/services/mdns/browse",
+		query:      "service=_http._tcp",
+		configured: map[string]tftypes.Value{"service": tftypes.NewValue(tftypes.String, "_http._tcp")},
+		status:     http.StatusOK, body: `{"records":[]}`, wantJSON: `{"records":[]}`, sensitive: true,
+	},
+	{
+		name: "mDNS browse all", dataSource: NewMDNSBrowse, path: "/services/mdns/browse",
+		configured: map[string]tftypes.Value{"service": tftypes.NewValue(tftypes.String, nil)},
+		status:     http.StatusOK, body: `{"records":[]}`, wantJSON: `{"records":[]}`, sensitive: true,
+	},
+	{
+		name: "mDNS browse unknown", dataSource: NewMDNSBrowse, path: "/services/mdns/browse",
+		configured: map[string]tftypes.Value{"service": tftypes.NewValue(tftypes.String, tftypes.UnknownValue)},
+		status:     http.StatusOK, body: `{}`, sensitive: true, wantError: true,
+	},
 	{
 		name: "DNS resolver", dataSource: NewDNSResolver, path: "/services/dnsresolver",
 		status: http.StatusOK, body: `{"config":{"enable":true}}`, wantJSON: `{"config":{"enable":true}}`,

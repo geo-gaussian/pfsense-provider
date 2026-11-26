@@ -15,6 +15,8 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
 - `pfsense_wireguard_settings`: manage the global WireGuard settings singleton.
 - `pfsense_wireguard_tunnel` and `pfsense_wireguard_peer`: manage WireGuard
   tunnels and peers, including import.
+- `pfsense_mdns` and `pfsense_haproxy_resolver`: manage mDNS settings and
+  HAProxy DNS resolvers, including import.
 - `pfsense_wireguard_key_pair`: generate a transient WireGuard key pair using
   Terraform's ephemeral resource support (Terraform 1.10 or later).
 - List-resource discovery for the managed resource types (Terraform 1.14 or
@@ -26,7 +28,7 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
   configuration and status, and system health and discovery.
 
 Login and alias listing have been exercised on one appliance. Firewall writes
-and reloads, WireGuard operations and key generation, resource discovery, and
+and reloads, DNS service writes, WireGuard operations and key generation, resource discovery, and
 read-only data sources other than alias listing have only been tested against
 mock servers. Appliance compatibility remains unverified. Do not use write
 resources on a production firewall until they have been validated in an

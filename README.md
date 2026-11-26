@@ -6,14 +6,15 @@
 
 This experimental provider manages firewall aliases, NAT and filter rules,
 schedules, traffic shapers, limiters, packet-flow exporters, virtual IPs, and
-WireGuard settings, tunnels, and peers. It also reads selected firewall,
+WireGuard settings, tunnels, and peers, HAProxy DNS resolvers, and mDNS
+settings. It also reads selected firewall,
 network, service, VPN, and system configuration or status from a local pfSense
 firewall through the Nexus controller. WireGuard key generation is available
 as an ephemeral resource. It uses Netgate's OpenAPI specification and
 HashiCorp's Terraform Plugin Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
-Firewall and WireGuard mutations, and read-only data sources other than alias
+Firewall, WireGuard and DNS service mutations, and read-only data sources other than alias
 listing, have only been tested against mock servers. WireGuard key generation
 and resource discovery are also mock-tested only. Do not use these resources on
 a production firewall. Verify API behaviour, compatibility, and recovery in

@@ -48,7 +48,7 @@ has not been established.
 | **Firewall** | Managed aliases, filter rules, schedules, NAT rules, ALTQ queues, limiters, PFlow exporters, and virtual IPs; selected read-only data sources. | Writes and filter reloads are mock-tested only; outbound NAT and global PFlow options are read-only. |
 | **Networking** | Read-only interface, gateway, and route data sources. | No managed network resources are implemented. |
 | **VPN** | WireGuard settings, tunnel, and peer resources; ephemeral key generation; WireGuard, IPsec, and OpenVPN reads. | WireGuard writes and key generation are mock-tested only; other VPNs have no managed resources. |
-| **Services and system** | Selected configuration, status, lease, and monitoring data sources. | Reads are mock-tested only. |
+| **Services and system** | Managed mDNS settings and HAProxy DNS resolvers; selected configuration, status, lease, and monitoring data sources. | Writes and reads are mock-tested only; other DNS services have no managed resources. |
 
 List resources support mock-tested discovery and configuration generation for
 the managed resource types. Read-only data sources do not provide resource

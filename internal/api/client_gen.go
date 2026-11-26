@@ -953,6 +953,24 @@ type DhcpRelayConfig struct {
 	UpstreamServers       *[]string    `json:"upstream_servers,omitempty"`
 }
 
+// DiagDnsLookupResult defines model for DiagDnsLookupResult.
+type DiagDnsLookupResult struct {
+	Results *[]DiagDnsRecord       `json:"results,omitempty"`
+	Timings *[]DiagDnsServerTiming `json:"timings,omitempty"`
+}
+
+// DiagDnsRecord defines model for DiagDnsRecord.
+type DiagDnsRecord struct {
+	Data *string `json:"data,omitempty"`
+	Type *string `json:"type,omitempty"`
+}
+
+// DiagDnsServerTiming defines model for DiagDnsServerTiming.
+type DiagDnsServerTiming struct {
+	Server *string `json:"server,omitempty"`
+	Time   *string `json:"time,omitempty"`
+}
+
 // DirtySubsystem defines model for DirtySubsystem.
 type DirtySubsystem struct {
 	Descr *string `json:"descr,omitempty"`
@@ -1626,6 +1644,15 @@ type GroupStatus struct {
 	Tier3 *[]Tier `json:"tier3,omitempty"`
 	Tier4 *[]Tier `json:"tier4,omitempty"`
 	Tier5 *[]Tier `json:"tier5,omitempty"`
+}
+
+// HaproxyApplyResult defines model for HaproxyApplyResult.
+type HaproxyApplyResult struct {
+	// Errors Validation errors if any
+	Errors *string `json:"errors,omitempty"`
+
+	// Result Result of the apply/check operation
+	Result *string `json:"result,omitempty"`
 }
 
 // HaproxyResolver defines model for HaproxyResolver.
@@ -2425,6 +2452,11 @@ type MDNSRecord struct {
 
 	// Value IP address, CNAME, or TXT value
 	Value *string `json:"value,omitempty"`
+}
+
+// MDNSRecords defines model for MDNSRecords.
+type MDNSRecords struct {
+	Records *[]MDNSRecord `json:"records,omitempty"`
 }
 
 // MDNSState defines model for MDNSState.
@@ -3522,6 +3554,17 @@ type FirewallGetAliasesParams struct {
 	Maxvalues *int `form:"maxvalues,omitempty" json:"maxvalues,omitempty"`
 }
 
+// DiagLookupHostDNSParams defines parameters for DiagLookupHostDNS.
+type DiagLookupHostDNSParams struct {
+	Host *string `form:"host,omitempty" json:"host,omitempty"`
+}
+
+// BrowseMDNSParams defines parameters for BrowseMDNS.
+type BrowseMDNSParams struct {
+	// Service optional name of service type, e.g. _http._tcp
+	Service *string `form:"service,omitempty" json:"service,omitempty"`
+}
+
 // FirewallAddAliasJSONRequestBody defines body for FirewallAddAlias for application/json ContentType.
 type FirewallAddAliasJSONRequestBody = FWAliasReq
 
@@ -3666,6 +3709,15 @@ type LoginJSONRequestBody = LoginCredentials
 // RefreshAccessTokenJSONRequestBody defines body for RefreshAccessToken for application/json ContentType.
 type RefreshAccessTokenJSONRequestBody = RefreshTokenParam
 
+// CreateHaproxyResolverJSONRequestBody defines body for CreateHaproxyResolver for application/json ContentType.
+type CreateHaproxyResolverJSONRequestBody = HaproxyResolver
+
+// UpdateHaproxyResolverJSONRequestBody defines body for UpdateHaproxyResolver for application/json ContentType.
+type UpdateHaproxyResolverJSONRequestBody = HaproxyResolver
+
+// SetMDNSConfigJSONRequestBody defines body for SetMDNSConfig for application/json ContentType.
+type SetMDNSConfigJSONRequestBody = MDNSConfig
+
 // SetWireGuardPeerJSONRequestBody defines body for SetWireGuardPeer for application/json ContentType.
 type SetWireGuardPeerJSONRequestBody = WGPeer
 
@@ -3797,6 +3849,11 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /aliases/{id} (the `FirewallUpdateAlias` operationId).
 	FirewallUpdateAlias(ctx context.Context, id string, body FirewallUpdateAliasJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DiagLookupHostDNS Lookup DNS entry for the given host
+	//
+	// Corresponds with GET /diag/dns (the `DiagLookupHostDNS` operationId).
+	DiagLookupHostDNS(ctx context.Context, params *DiagLookupHostDNSParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FirewallGetNATNpt Get NPt (IPv6 Network Prefix Translation) Rules
 	//
@@ -4639,10 +4696,48 @@ type ClientInterface interface {
 	// Corresponds with POST /login/refresh (the `RefreshAccessToken` operationId).
 	RefreshAccessToken(ctx context.Context, body RefreshAccessTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ApplyHaproxyConfig Validate and apply HAProxy configuration
+	//
+	// Corresponds with POST /ports/haproxy/apply (the `ApplyHaproxyConfig` operationId).
+	ApplyHaproxyConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetHaproxyResolvers Get HAProxy DNS resolvers
 	//
 	// Corresponds with GET /ports/haproxy/resolvers (the `GetHaproxyResolvers` operationId).
 	GetHaproxyResolvers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateHaproxyResolverWithBody Create a new HAProxy DNS resolver
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+	CreateHaproxyResolverWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateHaproxyResolver Create a new HAProxy DNS resolver
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+	CreateHaproxyResolver(ctx context.Context, body CreateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteHaproxyResolver Delete a HAProxy DNS resolver
+	//
+	// Corresponds with DELETE /ports/haproxy/resolvers/{id} (the `DeleteHaproxyResolver` operationId).
+	DeleteHaproxyResolver(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateHaproxyResolverWithBody Update an existing HAProxy DNS resolver
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+	UpdateHaproxyResolverWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateHaproxyResolver Update an existing HAProxy DNS resolver
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+	UpdateHaproxyResolver(ctx context.Context, id string, body UpdateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetHaproxyResolverStats Get HAProxy DNS resolver statistics for the (single) globalresolvers section
 	//
@@ -4713,6 +4808,25 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
 	GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMDNSConfigWithBody Configure mDNS and restart it with the new settings (if enable)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+	SetMDNSConfigWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMDNSConfig Configure mDNS and restart it with the new settings (if enable)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+	SetMDNSConfig(ctx context.Context, body SetMDNSConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BrowseMDNS Browse mDNS services on the network
+	//
+	// Corresponds with GET /services/mdns/browse (the `BrowseMDNS` operationId).
+	BrowseMDNS(ctx context.Context, params *BrowseMDNSParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetMDNSState Get stats from mDNS service
 	//
@@ -5063,6 +5177,21 @@ func (c *Client) FirewallUpdateAliasWithBody(ctx context.Context, id string, con
 // Corresponds with POST /aliases/{id} (the `FirewallUpdateAlias` operationId).
 func (c *Client) FirewallUpdateAlias(ctx context.Context, id string, body FirewallUpdateAliasJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFirewallUpdateAliasRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DiagLookupHostDNS Lookup DNS entry for the given host
+//
+// Corresponds with GET /diag/dns (the `DiagLookupHostDNS` operationId).
+func (c *Client) DiagLookupHostDNS(ctx context.Context, params *DiagLookupHostDNSParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDiagLookupHostDNSRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -7204,11 +7333,109 @@ func (c *Client) RefreshAccessToken(ctx context.Context, body RefreshAccessToken
 	return c.Client.Do(req)
 }
 
+// ApplyHaproxyConfig Validate and apply HAProxy configuration
+//
+// Corresponds with POST /ports/haproxy/apply (the `ApplyHaproxyConfig` operationId).
+func (c *Client) ApplyHaproxyConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewApplyHaproxyConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetHaproxyResolvers Get HAProxy DNS resolvers
 //
 // Corresponds with GET /ports/haproxy/resolvers (the `GetHaproxyResolvers` operationId).
 func (c *Client) GetHaproxyResolvers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetHaproxyResolversRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateHaproxyResolverWithBody Create a new HAProxy DNS resolver
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+func (c *Client) CreateHaproxyResolverWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateHaproxyResolverRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateHaproxyResolver Create a new HAProxy DNS resolver
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+func (c *Client) CreateHaproxyResolver(ctx context.Context, body CreateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateHaproxyResolverRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteHaproxyResolver Delete a HAProxy DNS resolver
+//
+// Corresponds with DELETE /ports/haproxy/resolvers/{id} (the `DeleteHaproxyResolver` operationId).
+func (c *Client) DeleteHaproxyResolver(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteHaproxyResolverRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateHaproxyResolverWithBody Update an existing HAProxy DNS resolver
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+func (c *Client) UpdateHaproxyResolverWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateHaproxyResolverRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateHaproxyResolver Update an existing HAProxy DNS resolver
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+func (c *Client) UpdateHaproxyResolver(ctx context.Context, id string, body UpdateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateHaproxyResolverRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -7419,6 +7646,55 @@ func (c *Client) GetIGMPProxies(ctx context.Context, reqEditors ...RequestEditor
 // Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
 func (c *Client) GetMDNSConfig(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetMDNSConfigRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMDNSConfigWithBody Configure mDNS and restart it with the new settings (if enable)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+func (c *Client) SetMDNSConfigWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMDNSConfigRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMDNSConfig Configure mDNS and restart it with the new settings (if enable)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+func (c *Client) SetMDNSConfig(ctx context.Context, body SetMDNSConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMDNSConfigRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BrowseMDNS Browse mDNS services on the network
+//
+// Corresponds with GET /services/mdns/browse (the `BrowseMDNS` operationId).
+func (c *Client) BrowseMDNS(ctx context.Context, params *BrowseMDNSParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBrowseMDNSRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -8319,6 +8595,60 @@ func NewFirewallUpdateAliasRequestWithBody(server string, id string, contentType
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDiagLookupHostDNSRequest constructs an http.Request for the DiagLookupHostDNS method
+func NewDiagLookupHostDNSRequest(server string, params *DiagLookupHostDNSParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/diag/dns")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Host != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "host", *params.Host, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -11519,6 +11849,33 @@ func NewRefreshAccessTokenRequestWithBody(server string, contentType string, bod
 	return req, nil
 }
 
+// NewApplyHaproxyConfigRequest constructs an http.Request for the ApplyHaproxyConfig method
+func NewApplyHaproxyConfigRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ports/haproxy/apply")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetHaproxyResolversRequest constructs an http.Request for the GetHaproxyResolvers method
 func NewGetHaproxyResolversRequest(server string) (*http.Request, error) {
 	var err error
@@ -11542,6 +11899,127 @@ func NewGetHaproxyResolversRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewCreateHaproxyResolverRequest calls the generic CreateHaproxyResolver builder with application/json body
+func NewCreateHaproxyResolverRequest(server string, body CreateHaproxyResolverJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateHaproxyResolverRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateHaproxyResolverRequestWithBody constructs an http.Request for the CreateHaproxyResolver method, with any body, and a specified content type
+func NewCreateHaproxyResolverRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ports/haproxy/resolvers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteHaproxyResolverRequest constructs an http.Request for the DeleteHaproxyResolver method
+func NewDeleteHaproxyResolverRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ports/haproxy/resolvers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateHaproxyResolverRequest calls the generic UpdateHaproxyResolver builder with application/json body
+func NewUpdateHaproxyResolverRequest(server string, id string, body UpdateHaproxyResolverJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateHaproxyResolverRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewUpdateHaproxyResolverRequestWithBody constructs an http.Request for the UpdateHaproxyResolver method, with any body, and a specified content type
+func NewUpdateHaproxyResolverRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/ports/haproxy/resolvers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -11914,6 +12392,100 @@ func NewGetMDNSConfigRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetMDNSConfigRequest calls the generic SetMDNSConfig builder with application/json body
+func NewSetMDNSConfigRequest(server string, body SetMDNSConfigJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetMDNSConfigRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSetMDNSConfigRequestWithBody constructs an http.Request for the SetMDNSConfig method, with any body, and a specified content type
+func NewSetMDNSConfigRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/mdns")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBrowseMDNSRequest constructs an http.Request for the BrowseMDNS method
+func NewBrowseMDNSRequest(server string, params *BrowseMDNSParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/mdns/browse")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Service != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "service", *params.Service, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -13170,6 +13742,13 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /aliases/{id} (the `FirewallUpdateAlias` operationId).
 	FirewallUpdateAliasWithResponse(ctx context.Context, id string, body FirewallUpdateAliasJSONRequestBody, reqEditors ...RequestEditorFn) (*FirewallUpdateAliasAPIResponse, error)
 
+	// DiagLookupHostDNSWithResponse Lookup DNS entry for the given host
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /diag/dns (the `DiagLookupHostDNS` operationId).
+	DiagLookupHostDNSWithResponse(ctx context.Context, params *DiagLookupHostDNSParams, reqEditors ...RequestEditorFn) (*DiagLookupHostDNSAPIResponse, error)
+
 	// FirewallGetNATNptWithResponse Get NPt (IPv6 Network Prefix Translation) Rules
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -14085,12 +14664,54 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /login/refresh (the `RefreshAccessToken` operationId).
 	RefreshAccessTokenWithResponse(ctx context.Context, body RefreshAccessTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*RefreshAccessTokenAPIResponse, error)
 
+	// ApplyHaproxyConfigWithResponse Validate and apply HAProxy configuration
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ports/haproxy/apply (the `ApplyHaproxyConfig` operationId).
+	ApplyHaproxyConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ApplyHaproxyConfigAPIResponse, error)
+
 	// GetHaproxyResolversWithResponse Get HAProxy DNS resolvers
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /ports/haproxy/resolvers (the `GetHaproxyResolvers` operationId).
 	GetHaproxyResolversWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHaproxyResolversAPIResponse, error)
+
+	// CreateHaproxyResolverWithBodyWithResponse Create a new HAProxy DNS resolver
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+	CreateHaproxyResolverWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateHaproxyResolverAPIResponse, error)
+
+	// CreateHaproxyResolverWithResponse Create a new HAProxy DNS resolver
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+	CreateHaproxyResolverWithResponse(ctx context.Context, body CreateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateHaproxyResolverAPIResponse, error)
+
+	// DeleteHaproxyResolverWithResponse Delete a HAProxy DNS resolver
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /ports/haproxy/resolvers/{id} (the `DeleteHaproxyResolver` operationId).
+	DeleteHaproxyResolverWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteHaproxyResolverAPIResponse, error)
+
+	// UpdateHaproxyResolverWithBodyWithResponse Update an existing HAProxy DNS resolver
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+	UpdateHaproxyResolverWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateHaproxyResolverAPIResponse, error)
+
+	// UpdateHaproxyResolverWithResponse Update an existing HAProxy DNS resolver
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+	UpdateHaproxyResolverWithResponse(ctx context.Context, id string, body UpdateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateHaproxyResolverAPIResponse, error)
 
 	// GetHaproxyResolverStatsWithResponse Get HAProxy DNS resolver statistics for the (single) globalresolvers section
 	//
@@ -14189,6 +14810,27 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /services/mdns (the `GetMDNSConfig` operationId).
 	GetMDNSConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMDNSConfigAPIResponse, error)
+
+	// SetMDNSConfigWithBodyWithResponse Configure mDNS and restart it with the new settings (if enable)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+	SetMDNSConfigWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMDNSConfigAPIResponse, error)
+
+	// SetMDNSConfigWithResponse Configure mDNS and restart it with the new settings (if enable)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+	SetMDNSConfigWithResponse(ctx context.Context, body SetMDNSConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMDNSConfigAPIResponse, error)
+
+	// BrowseMDNSWithResponse Browse mDNS services on the network
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /services/mdns/browse (the `BrowseMDNS` operationId).
+	BrowseMDNSWithResponse(ctx context.Context, params *BrowseMDNSParams, reqEditors ...RequestEditorFn) (*BrowseMDNSAPIResponse, error)
 
 	// GetMDNSStateWithResponse Get stats from mDNS service
 	//
@@ -14738,6 +15380,54 @@ func (r FirewallUpdateAliasAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r FirewallUpdateAliasAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DiagLookupHostDNSAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DiagDnsLookupResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DiagLookupHostDNSAPIResponse) GetJSON200() *DiagDnsLookupResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DiagLookupHostDNSAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DiagLookupHostDNSAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DiagLookupHostDNSAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DiagLookupHostDNSAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DiagLookupHostDNSAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -18728,6 +19418,54 @@ func (r RefreshAccessTokenAPIResponse) ContentType() string {
 	return ""
 }
 
+type ApplyHaproxyConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HaproxyApplyResult
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ApplyHaproxyConfigAPIResponse) GetJSON200() *HaproxyApplyResult {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r ApplyHaproxyConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r ApplyHaproxyConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ApplyHaproxyConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ApplyHaproxyConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ApplyHaproxyConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetHaproxyResolversAPIResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18770,6 +19508,150 @@ func (r GetHaproxyResolversAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetHaproxyResolversAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateHaproxyResolverAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HaproxyResolver
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateHaproxyResolverAPIResponse) GetJSON200() *HaproxyResolver {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r CreateHaproxyResolverAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateHaproxyResolverAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateHaproxyResolverAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateHaproxyResolverAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateHaproxyResolverAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteHaproxyResolverAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Result
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteHaproxyResolverAPIResponse) GetJSON200() *Result {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r DeleteHaproxyResolverAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteHaproxyResolverAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteHaproxyResolverAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteHaproxyResolverAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteHaproxyResolverAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateHaproxyResolverAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HaproxyResolver
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateHaproxyResolverAPIResponse) GetJSON200() *HaproxyResolver {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r UpdateHaproxyResolverAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateHaproxyResolverAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateHaproxyResolverAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateHaproxyResolverAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateHaproxyResolverAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -19442,6 +20324,102 @@ func (r GetMDNSConfigAPIResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetMDNSConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetMDNSConfigAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MDNSConfig
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetMDNSConfigAPIResponse) GetJSON200() *MDNSConfig {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r SetMDNSConfigAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r SetMDNSConfigAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetMDNSConfigAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetMDNSConfigAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetMDNSConfigAPIResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BrowseMDNSAPIResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MDNSRecords
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *Error
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BrowseMDNSAPIResponse) GetJSON200() *MDNSRecords {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r BrowseMDNSAPIResponse) GetJSON400() *Error {
+	return r.JSON400
+}
+
+// GetBody returns the raw response body bytes
+func (r BrowseMDNSAPIResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BrowseMDNSAPIResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BrowseMDNSAPIResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BrowseMDNSAPIResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -21411,6 +22389,19 @@ func (c *ClientWithResponses) FirewallUpdateAliasWithResponse(ctx context.Contex
 	return ParseFirewallUpdateAliasAPIResponse(rsp)
 }
 
+// DiagLookupHostDNSWithResponse Lookup DNS entry for the given host
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /diag/dns (the `DiagLookupHostDNS` operationId).
+func (c *ClientWithResponses) DiagLookupHostDNSWithResponse(ctx context.Context, params *DiagLookupHostDNSParams, reqEditors ...RequestEditorFn) (*DiagLookupHostDNSAPIResponse, error) {
+	rsp, err := c.DiagLookupHostDNS(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDiagLookupHostDNSAPIResponse(rsp)
+}
+
 // FirewallGetNATNptWithResponse Get NPt (IPv6 Network Prefix Translation) Rules
 //
 // Returns a wrapper object for the known response body format(s).
@@ -23100,6 +24091,19 @@ func (c *ClientWithResponses) RefreshAccessTokenWithResponse(ctx context.Context
 	return ParseRefreshAccessTokenAPIResponse(rsp)
 }
 
+// ApplyHaproxyConfigWithResponse Validate and apply HAProxy configuration
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ports/haproxy/apply (the `ApplyHaproxyConfig` operationId).
+func (c *ClientWithResponses) ApplyHaproxyConfigWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ApplyHaproxyConfigAPIResponse, error) {
+	rsp, err := c.ApplyHaproxyConfig(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseApplyHaproxyConfigAPIResponse(rsp)
+}
+
 // GetHaproxyResolversWithResponse Get HAProxy DNS resolvers
 //
 // Returns a wrapper object for the known response body format(s).
@@ -23111,6 +24115,71 @@ func (c *ClientWithResponses) GetHaproxyResolversWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseGetHaproxyResolversAPIResponse(rsp)
+}
+
+// CreateHaproxyResolverWithBodyWithResponse Create a new HAProxy DNS resolver
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+func (c *ClientWithResponses) CreateHaproxyResolverWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateHaproxyResolverAPIResponse, error) {
+	rsp, err := c.CreateHaproxyResolverWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateHaproxyResolverAPIResponse(rsp)
+}
+
+// CreateHaproxyResolverWithResponse Create a new HAProxy DNS resolver
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ports/haproxy/resolvers (the `CreateHaproxyResolver` operationId).
+func (c *ClientWithResponses) CreateHaproxyResolverWithResponse(ctx context.Context, body CreateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateHaproxyResolverAPIResponse, error) {
+	rsp, err := c.CreateHaproxyResolver(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateHaproxyResolverAPIResponse(rsp)
+}
+
+// DeleteHaproxyResolverWithResponse Delete a HAProxy DNS resolver
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /ports/haproxy/resolvers/{id} (the `DeleteHaproxyResolver` operationId).
+func (c *ClientWithResponses) DeleteHaproxyResolverWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteHaproxyResolverAPIResponse, error) {
+	rsp, err := c.DeleteHaproxyResolver(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteHaproxyResolverAPIResponse(rsp)
+}
+
+// UpdateHaproxyResolverWithBodyWithResponse Update an existing HAProxy DNS resolver
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+func (c *ClientWithResponses) UpdateHaproxyResolverWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateHaproxyResolverAPIResponse, error) {
+	rsp, err := c.UpdateHaproxyResolverWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateHaproxyResolverAPIResponse(rsp)
+}
+
+// UpdateHaproxyResolverWithResponse Update an existing HAProxy DNS resolver
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /ports/haproxy/resolvers/{id} (the `UpdateHaproxyResolver` operationId).
+func (c *ClientWithResponses) UpdateHaproxyResolverWithResponse(ctx context.Context, id string, body UpdateHaproxyResolverJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateHaproxyResolverAPIResponse, error) {
+	rsp, err := c.UpdateHaproxyResolver(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateHaproxyResolverAPIResponse(rsp)
 }
 
 // GetHaproxyResolverStatsWithResponse Get HAProxy DNS resolver statistics for the (single) globalresolvers section
@@ -23293,6 +24362,45 @@ func (c *ClientWithResponses) GetMDNSConfigWithResponse(ctx context.Context, req
 		return nil, err
 	}
 	return ParseGetMDNSConfigAPIResponse(rsp)
+}
+
+// SetMDNSConfigWithBodyWithResponse Configure mDNS and restart it with the new settings (if enable)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+func (c *ClientWithResponses) SetMDNSConfigWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMDNSConfigAPIResponse, error) {
+	rsp, err := c.SetMDNSConfigWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMDNSConfigAPIResponse(rsp)
+}
+
+// SetMDNSConfigWithResponse Configure mDNS and restart it with the new settings (if enable)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /services/mdns (the `SetMDNSConfig` operationId).
+func (c *ClientWithResponses) SetMDNSConfigWithResponse(ctx context.Context, body SetMDNSConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMDNSConfigAPIResponse, error) {
+	rsp, err := c.SetMDNSConfig(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMDNSConfigAPIResponse(rsp)
+}
+
+// BrowseMDNSWithResponse Browse mDNS services on the network
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /services/mdns/browse (the `BrowseMDNS` operationId).
+func (c *ClientWithResponses) BrowseMDNSWithResponse(ctx context.Context, params *BrowseMDNSParams, reqEditors ...RequestEditorFn) (*BrowseMDNSAPIResponse, error) {
+	rsp, err := c.BrowseMDNS(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBrowseMDNSAPIResponse(rsp)
 }
 
 // GetMDNSStateWithResponse Get stats from mDNS service
@@ -24020,6 +25128,39 @@ func ParseFirewallUpdateAliasAPIResponse(rsp *http.Response) (*FirewallUpdateAli
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest PfsenseResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDiagLookupHostDNSAPIResponse parses an HTTP response from a DiagLookupHostDNSWithResponse call
+func ParseDiagLookupHostDNSAPIResponse(rsp *http.Response) (*DiagLookupHostDNSAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DiagLookupHostDNSAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DiagDnsLookupResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -26776,6 +27917,39 @@ func ParseRefreshAccessTokenAPIResponse(rsp *http.Response) (*RefreshAccessToken
 	return response, nil
 }
 
+// ParseApplyHaproxyConfigAPIResponse parses an HTTP response from a ApplyHaproxyConfigWithResponse call
+func ParseApplyHaproxyConfigAPIResponse(rsp *http.Response) (*ApplyHaproxyConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ApplyHaproxyConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HaproxyApplyResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetHaproxyResolversAPIResponse parses an HTTP response from a GetHaproxyResolversWithResponse call
 func ParseGetHaproxyResolversAPIResponse(rsp *http.Response) (*GetHaproxyResolversAPIResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -26792,6 +27966,105 @@ func ParseGetHaproxyResolversAPIResponse(rsp *http.Response) (*GetHaproxyResolve
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest HaproxyResolverList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateHaproxyResolverAPIResponse parses an HTTP response from a CreateHaproxyResolverWithResponse call
+func ParseCreateHaproxyResolverAPIResponse(rsp *http.Response) (*CreateHaproxyResolverAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateHaproxyResolverAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HaproxyResolver
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteHaproxyResolverAPIResponse parses an HTTP response from a DeleteHaproxyResolverWithResponse call
+func ParseDeleteHaproxyResolverAPIResponse(rsp *http.Response) (*DeleteHaproxyResolverAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteHaproxyResolverAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Result
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateHaproxyResolverAPIResponse parses an HTTP response from a UpdateHaproxyResolverWithResponse call
+func ParseUpdateHaproxyResolverAPIResponse(rsp *http.Response) (*UpdateHaproxyResolverAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateHaproxyResolverAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HaproxyResolver
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -27254,6 +28527,72 @@ func ParseGetMDNSConfigAPIResponse(rsp *http.Response) (*GetMDNSConfigAPIRespons
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest MDNSConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetMDNSConfigAPIResponse parses an HTTP response from a SetMDNSConfigWithResponse call
+func ParseSetMDNSConfigAPIResponse(rsp *http.Response) (*SetMDNSConfigAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetMDNSConfigAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MDNSConfig
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBrowseMDNSAPIResponse parses an HTTP response from a BrowseMDNSWithResponse call
+func ParseBrowseMDNSAPIResponse(rsp *http.Response) (*BrowseMDNSAPIResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BrowseMDNSAPIResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MDNSRecords
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

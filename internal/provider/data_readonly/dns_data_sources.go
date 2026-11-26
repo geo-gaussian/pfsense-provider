@@ -5,12 +5,38 @@ import (
 
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
 func NewDNSResolver() datasource.DataSource {
 	return newSensitiveDataSource("dns_resolver", "Reads DNS Resolver settings, including custom options.", nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetDNSResolverConfigWithResponse(ctx)
+		})
+}
+
+func NewDNSLookup() datasource.DataSource {
+	return newSensitiveDataSource("dns_lookup", "Looks up DNS records for a host.",
+		map[string]schema.Attribute{
+			"host": schema.StringAttribute{Required: true, Description: "Host name to look up."},
+		},
+		func(ctx context.Context, client *api.ClientWithResponses, args map[string]string) (apiResponse, error) {
+			host := args["host"]
+			return client.DiagLookupHostDNSWithResponse(ctx, &api.DiagLookupHostDNSParams{Host: &host})
+		})
+}
+
+func NewMDNSBrowse() datasource.DataSource {
+	return newSensitiveDataSource("mdns_browse", "Browses multicast DNS services.",
+		map[string]schema.Attribute{
+			"service": schema.StringAttribute{Optional: true, Description: "Optional service type to browse."},
+		},
+		func(ctx context.Context, client *api.ClientWithResponses, args map[string]string) (apiResponse, error) {
+			var params api.BrowseMDNSParams
+			if service, ok := args["service"]; ok {
+				params.Service = &service
+			}
+			return client.BrowseMDNSWithResponse(ctx, &params)
 		})
 }
 

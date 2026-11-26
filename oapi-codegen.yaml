@@ -105,8 +105,15 @@ output-options:
     - GetMDNSState
     - GetHaproxyResolvers
     - GetHaproxyResolverStats
+    - CreateHaproxyResolver
+    - UpdateHaproxyResolver
+    - DeleteHaproxyResolver
+    - ApplyHaproxyConfig
+    - DiagLookupHostDNS
+    - BrowseMDNS
     - GetIGMPProxies
     - GetMDNSConfig
+    - SetMDNSConfig
     - GetDhcpV4RelayConfig
     - GetDhcpV6RelayConfig
     - GetRouterAdvSettings
