@@ -25,7 +25,8 @@ resource "pfsense_firewall_schedule" "weekdays" {
 
 - `id` (Optional, Computed) API schedule identifier; changing it replaces the
   resource.
-- `name` and `descr` (Optional) Schedule name and description.
+- `name` (Required) Schedule name.
+- `descr` (Optional) Schedule description.
 - `schedlabel` (Optional) Schedule label.
 - `timerange` (Optional) List of ranges with `position`, `month`, `day`, `hour`,
   and `rangedescr` fields.

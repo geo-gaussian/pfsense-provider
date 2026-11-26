@@ -8,6 +8,8 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
 `pfsense`. It currently offers:
 
 - `pfsense_firewall_alias`: create, read, update, delete, and import an alias.
+- Managed firewall filter rules, schedules, NAT rules, ALTQ queues, limiters,
+  PFlow exporters, and virtual IPs, with import support.
 - `pfsense_firewall_aliases`: read user-defined alias metadata without changing
   aliases or reloading the firewall.
 - `pfsense_wireguard_settings`: manage the global WireGuard settings singleton.
@@ -15,17 +17,20 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
   tunnels and peers, including import.
 - `pfsense_wireguard_key_pair`: generate a transient WireGuard key pair using
   Terraform's ephemeral resource support (Terraform 1.10 or later).
+- List-resource discovery for the managed resource types (Terraform 1.14 or
+  later), including configuration and import-block generation.
 - Read-only JSON data sources for firewall NAT rules, firewall interfaces and
   rules, schedules, traffic shapers, ALTQ queues and limiters, interface
   assignments and discovery, bridge/tunnel/VLAN interface types, static routes,
-  gateways, alias metadata, selected service configuration and status, VPN
+  gateways, selected service configuration and status, VPN
   configuration and status, and system health and discovery.
 
-Login and alias listing have been exercised on one appliance. Alias writes and
-reloads, WireGuard operations and key generation, and read-only data sources
-other than alias listing have only been tested against mock servers. Appliance
-compatibility remains unverified. Do not use write resources on a production
-firewall until they have been validated in an isolated environment.
+Login and alias listing have been exercised on one appliance. Firewall writes
+and reloads, WireGuard operations and key generation, resource discovery, and
+read-only data sources other than alias listing have only been tested against
+mock servers. Appliance compatibility remains unverified. Do not use write
+resources on a production firewall until they have been validated in an
+isolated environment.
 
 ## 🧩 Components
 
@@ -33,11 +38,13 @@ firewall until they have been validated in an isolated environment.
 flowchart LR
   TF[Terraform CLI] --> Framework[Terraform Plugin Framework]
   Framework --> Provider[Provider configuration]
-  Framework --> Resource[Firewall alias and WireGuard resources]
+  Framework --> Resource[Managed firewall and WireGuard resources]
+  Framework --> Discovery[List-resource discovery]
   Framework --> Ephemeral[WireGuard key-pair ephemeral resource]
   Framework --> Data[Read-only data sources]
   Provider --> API[Generated API client]
   Resource --> API
+  Discovery --> Resource
   Ephemeral --> API
   Data --> API
   API --> Client[Nexus session and HTTP client]
@@ -48,11 +55,13 @@ flowchart LR
 | Component | Responsibility |
 | --- | --- |
 | [main.go](main.go) | Starts the provider server and exposes its version. |
-| [internal/provider/provider.go](internal/provider/provider.go) | Defines configuration, registers resources and data sources, and supplies their API client. |
+| [internal/provider/provider.go](internal/provider/provider.go) | Defines configuration, registers resources, discovery, and data sources, and supplies their API client. |
 | [Alias resource](internal/provider/resource_firewall_alias/firewall_alias_resource.go) | Maps Terraform state and plans to API requests, handles import and missing aliases, and initiates firewall reloads. |
+| [Firewall resources](internal/provider/firewall_resources) | Implements shared lifecycle, state handling, import, and reloads for other managed firewall resources. |
 | [Aliases data source](internal/provider/data_firewall_aliases/firewall_aliases_data_source.go) | Reads alias metadata and reports missing or invalid responses. |
 | [WireGuard resources](internal/provider/resource_wireguard/wireguard_resources.go) | Implements custom lifecycle and import behaviour for WireGuard settings, tunnels, and peers. |
 | [WireGuard ephemeral resource](internal/provider/ephemeral_wireguard/key_pair.go) | Generates a transient key pair through the Nexus API. |
+| [List resources](internal/provider/list_resources.go) | Discovers managed resources and exposes their identities and configuration to Terraform. |
 | [Read-only data sources](internal/provider/data_readonly) | Reads selected firewall, network, service, VPN, and system configuration or status; returns the API payload as JSON, with sensitive outputs marked or projected safely. |
 | [internal/api/client_gen.go](internal/api/client_gen.go) | Generated API types, request builders, and response parsers. |
 | [internal/client/client.go](internal/client/client.go) | Validates the controller URL, manages authentication, and serialises HTTP requests. |
@@ -109,8 +118,9 @@ The settings resource manages a singleton and has no API delete operation;
 destroying it relinquishes Terraform management without resetting firewall
 settings. Tunnel and peer resources support create, read, update, delete, and
 import. Secret values are marked sensitive and retained from prior state when
-the API masks them during reads. Key generation is exposed as an ephemeral
-resource so generated values are not persisted by that resource.
+the API omits them or returns an empty value during reads. Key generation is
+exposed as an ephemeral resource so generated values are not persisted by
+that resource.
 
 The included OpenAPI specification has no WireGuard-specific apply or reload
 operation, so WireGuard mutations use the documented operations without an
@@ -119,7 +129,8 @@ have not been validated against a live appliance.
 
 ## 🔍 Read-only data sources
 
-Read-only data sources expose selected API payloads as computed JSON strings
+The alias data source exposes a typed list of alias metadata. Most other
+read-only data sources expose selected API payloads as computed JSON strings
 for callers to inspect with Terraform's `jsondecode()`. They include firewall,
 network, service, VPN, and system configuration or status, but exclude
 diagnostic actions and downloads. Outputs that may contain arbitrary or
@@ -141,12 +152,26 @@ operation. Review generated changes alongside custom integration when updating
 the specification.
 
 Tests use mock HTTP servers; when Terraform is available, tests also exercise
-the provider protocol. The installed pre-commit hook checks staged code sizes,
-then runs lint and tests on the working tree. CI runs build, lint, and tests in
-parallel; the default-branch ruleset requires the lint job. Live acceptance
-tests are not yet implemented and should use an isolated, disposable firewall
-with test-only credentials. See [DEVELOPMENT.md](DEVELOPMENT.md) for the size
-limits and checker scope.
+the provider protocol. The installed pre-commit hook checks staged line and
+size limits, then runs lint and tests on the working tree. CI builds first,
+then runs lint and tests in parallel; the default-branch ruleset requires the
+lint job. Live acceptance tests are not yet implemented and should use an
+isolated, disposable firewall with test-only credentials. See
+[DEVELOPMENT.md](DEVELOPMENT.md) for the size limits and checker scope.
+
+```mermaid
+flowchart LR
+  Build[Build] --> Lint[Lint]
+  Build --> Test[Tests and coverage]
+  Lint --> Pages[Pages deployment job]
+  Test --> Pages
+  Pages --> Current{Main commit still current?}
+  Current -->|Yes| Deploy[Deploy coverage badges]
+  Current -->|No| Skip[Skip deployment]
+```
+
+The Pages job runs only for pushes to `main` after both lint and tests succeed.
+Pull requests, tag pushes, and reusable release validation do not deploy Pages.
 
 ## 📦 Release flow
 

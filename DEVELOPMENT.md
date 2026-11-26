@@ -103,6 +103,16 @@ applying the aggregate budget.
 In GitHub Actions, size findings appear as warning or error annotations matching
 their threshold. Locally, findings are printed as plain text.
 
+```mermaid
+flowchart LR
+  Staged[Staged line and size checks] -->|Fewer than 3 warnings| Lint[Working-tree lint]
+  Lint -->|Fewer than 3 warnings| Test[Working-tree tests]
+  Staged -->|Error or 3 or more warnings| Stop[Commit blocked]
+  Lint -->|Error or 3 or more warnings| Stop
+  Test -->|Error| Stop
+  Test -->|Pass| Commit[Commit proceeds]
+```
+
 `pnpm run lint:size` checks tracked and non-ignored untracked files in the
 working tree. The installed pre-commit hook also runs
 `pnpm run lint:staged` against the Git index, so an unstaged edit cannot
@@ -153,8 +163,10 @@ that job to pass before merging.
 ## 🔐 WireGuard resources and ephemeral keys
 
 The WireGuard settings, tunnel, and peer resources are custom Terraform
-Framework implementations. Their write-only private and preshared keys must be
-marked sensitive and retained from prior state when GET responses mask them.
+Framework implementations. Tunnel private and peer preshared keys are
+sensitive, optional and computed, not Terraform write-only attributes. They can
+remain in state and are retained from prior state when GET responses omit them
+or return empty values. Protect state and saved plans.
 WireGuard key generation is an action exposed as an ephemeral resource, not a
 repeatable data source. Use `NexusClient.DoRequest` for every API operation;
 the OpenAPI contract currently defines no WireGuard-specific apply endpoint.
@@ -176,7 +188,8 @@ For example, the alias resource imports by `name`.
 
 ## 🔒 Preventing Secret Wipeouts on `Read()`
 
-When Netgate's API omits write-only secrets (like WireGuard `privatekey`) from `GET` responses, preserve prior state:
+When Netgate's API omits secrets (such as WireGuard `privatekey`) from `GET`
+responses or returns an empty value, preserve prior state:
 
 ```go
 if apiResp.PrivateKey != "" {

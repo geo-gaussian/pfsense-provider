@@ -14,9 +14,10 @@ HashiCorp's Terraform Plugin Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
 Firewall and WireGuard mutations, and read-only data sources other than alias
-listing, have only been tested against mock servers and the included OpenAPI
-specification. Do not use these resources on a production firewall. Verify API
-behaviour, compatibility, and recovery in an isolated environment first.
+listing, have only been tested against mock servers. WireGuard key generation
+and resource discovery are also mock-tested only. Do not use these resources on
+a production firewall. Verify API behaviour, compatibility, and recovery in
+an isolated environment first.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
@@ -36,10 +37,9 @@ completion.
 The provider routes firewall and WireGuard operations through
 `/api/device/pfsense/localhost/api`. This assumes the controller's local firewall
 is registered as `localhost`; alias listing worked on one appliance, but other
-installations have not been verified. Firewall resource mutations initiate a
-filter reload but do not confirm its completion. WireGuard mutations use the
-documented API operations without an additional apply call because the
-included specification defines no WireGuard-specific apply endpoint. Requests
+installations have not been verified. WireGuard mutations use the documented
+API operations without an additional apply call because the included
+specification defines no WireGuard-specific apply endpoint. Requests
 are serialised per configured client, not across separate provider
 configurations or Terraform processes. If a write or reload fails, check the
 firewall configuration and initiate the appropriate reload manually before
@@ -52,6 +52,7 @@ importing the existing resource.
 - Go 1.26 or newer to build
 - Terraform 1.8 or newer
 - Terraform 1.10 or newer to use the WireGuard ephemeral key-pair resource
+- Terraform 1.14 or newer for list-resource discovery and configuration generation
 - Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
   repository lint checks
 - jq for the Pages deployment guard and its offline tests
@@ -124,13 +125,14 @@ only. Terraform state can contain sensitive configuration; protect it.
 ## 🔍 Read-only data sources
 
 Read-only data sources expose selected firewall, network, service, VPN, and
-system configuration or status as JSON; use `jsondecode()` to select fields.
-Some outputs are sensitive, and the WireGuard status source omits key material.
-For example, read aliases, configured interfaces, and firewall NAT rules:
+system configuration or status. The alias source returns a typed list; most
+other sources return JSON, which can be inspected with `jsondecode()`. Some
+outputs are sensitive, and the WireGuard status source omits key material.
 
 The catalogue also includes DHCP lease and service status reads, system summary
 and health information, gateway and interface status, and monitoring metadata.
 Sensitive outputs are marked in their individual data source documentation.
+For example, read aliases, configured interfaces, and firewall NAT rules:
 
 ```hcl
 terraform {
@@ -275,9 +277,9 @@ scripts under `.specify/scripts/` are exempt from the no-inline-program rule.
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
 through the actual provider protocol. They do not replace live acceptance tests.
-The installed Git hook checks staged sizes, then runs lint and tests on the
-working tree. CI runs lint and tests in parallel and produces coverage reports;
-the default-branch ruleset requires the lint job.
+The installed Git hook checks staged lines and sizes, then runs lint and tests
+on the working tree. CI builds first, then runs lint and tests in parallel and
+produces coverage reports; the default-branch ruleset requires the lint job.
 
 ## 📊 Coverage
 

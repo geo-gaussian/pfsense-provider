@@ -48,5 +48,5 @@ do not confirm completion.
 Import by API rule ID:
 
 ```shell
-terraform import pfsense_firewall_nat_port_forward.example 12345
+terraform import pfsense_firewall_nat_port_forward.https 12345
 ```

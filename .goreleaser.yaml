@@ -53,8 +53,8 @@ release:
     - glob: terraform-registry-manifest.json
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
   header: |
-    ⚠️ Experimental provider: firewall alias writes and reloads have not been
-    verified on a real appliance. Do not use on a production firewall.
+    ⚠️ Experimental provider: firewall and WireGuard mutations have only been
+    tested against mock servers. Do not use on a production firewall.
 
 changelog:
   disable: true

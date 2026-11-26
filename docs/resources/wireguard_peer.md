@@ -28,8 +28,9 @@ resource "pfsense_wireguard_peer" "site" {
 - `endpoint` (Optional) Peer endpoint.
 - `port` (Optional) Peer UDP port.
 - `persistentkeepalive` (Optional) Persistent keepalive interval.
-- `presharedkey` (Optional, Sensitive) Peer preshared key. If the API masks it
-  during reads, the provider retains its prior state value.
+- `presharedkey` (Optional, Sensitive) Peer preshared key. If the API omits it
+  or returns an empty value during reads, the provider retains its prior state
+  value. Protect Terraform state and saved plans.
 - `allowedips` (Optional) List of allowed IP ranges:
   - `address` (Required) CIDR address and mask.
   - `descr` (Optional) Address description.
