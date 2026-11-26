@@ -455,4 +455,4 @@ var readDataSourceCases = append([]readDataSourceCase{
 		body:       `{}`,
 		wantJSON:   `{}`,
 	},
-}, readStatusAndFailureCases...)
+}, append(readStatusAndFailureCases, dnsDataSourceCases...)...)

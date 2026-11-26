@@ -186,6 +186,15 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 func serviceDataSources() []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		data_readonly.NewDNSForwarder,
+		data_readonly.NewDNSResolver,
+		data_readonly.NewCoreDNS,
+		data_readonly.NewCoreDNSEasySetup,
+		data_readonly.NewDynamicDNS,
+		data_readonly.NewDynamicDNSCheckIP,
+		data_readonly.NewDynamicDNSRFC,
+		data_readonly.NewMDNSStats,
+		data_readonly.NewHAProxyResolvers,
+		data_readonly.NewHAProxyResolverStats,
 		data_readonly.NewIGMPProxies,
 		data_readonly.NewMDNS,
 		data_readonly.NewDHCPv4Relay,

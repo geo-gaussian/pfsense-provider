@@ -96,6 +96,15 @@ output-options:
     - GetVLANs
     - GetVXLANs
     - GetDNSForwarderConfig
+    - GetDNSResolverConfig
+    - GetCorednsConfiguration
+    - CorednsGetEasySetup
+    - GetDynDNSConfig
+    - GetCheckIPServices
+    - GetRFCConfig
+    - GetMDNSState
+    - GetHaproxyResolvers
+    - GetHaproxyResolverStats
     - GetIGMPProxies
     - GetMDNSConfig
     - GetDhcpV4RelayConfig
