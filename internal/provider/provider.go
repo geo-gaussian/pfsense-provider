@@ -14,6 +14,7 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/provider/resource_wireguard"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -22,6 +23,7 @@ import (
 
 var _ provider.Provider = &pfsenseProvider{}
 var _ provider.ProviderWithEphemeralResources = &pfsenseProvider{}
+var _ provider.ProviderWithListResources = &pfsenseProvider{}
 
 type pfsenseProvider struct {
 	version string
@@ -84,24 +86,36 @@ func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureR
 	resp.ResourceData = apiClient
 	resp.DataSourceData = apiClient
 	resp.EphemeralResourceData = apiClient
+	resp.ListResourceData = apiClient
 }
 
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		resource_firewall_alias.New,
-		firewall_resources.NewNATNpt,
-		firewall_resources.NewNATOneToOne,
-		firewall_resources.NewNATPortForward,
-		firewall_resources.NewRule,
-		firewall_resources.NewSchedule,
-		firewall_resources.NewALTQ,
-		firewall_resources.NewLimiter,
-		firewall_resources.NewPFlowExporter,
-		firewall_resources.NewVirtualIP,
-		resource_wireguard.NewSettings,
-		resource_wireguard.NewTunnel,
-		resource_wireguard.NewPeer,
+		identified(resource_firewall_alias.New, "name"),
+		identified(firewall_resources.NewNATNpt, "id"),
+		identified(firewall_resources.NewNATOneToOne, "id"),
+		identified(firewall_resources.NewNATPortForward, "id"),
+		identified(firewall_resources.NewRule, "interface", "id"),
+		identified(firewall_resources.NewSchedule, "id"),
+		identified(firewall_resources.NewALTQ, "name"),
+		identified(firewall_resources.NewLimiter, "name"),
+		identified(firewall_resources.NewPFlowExporter, "id"),
+		identified(firewall_resources.NewVirtualIP, "id"),
+		identified(resource_wireguard.NewSettings, "id"),
+		identified(resource_wireguard.NewTunnel, "name"),
+		identified(resource_wireguard.NewPeer, "publickey"),
 	}
+}
+
+func (p *pfsenseProvider) ListResources(ctx context.Context) []func() list.ListResource {
+	factories := p.Resources(ctx)
+	result := make([]func() list.ListResource, 0, len(factories))
+	for _, factory := range factories {
+		result = append(result, func() list.ListResource {
+			return &configurationList{managed: factory().(*identifiedResource)}
+		})
+	}
+	return result
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
