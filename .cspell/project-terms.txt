@@ -34,6 +34,8 @@ gopkg
 favor
 terraformrc
 tfrc
+tfquery
+tfstate
 alrt
 alrtclr
 alrtoln
