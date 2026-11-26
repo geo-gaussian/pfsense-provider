@@ -12,15 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/numberplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
@@ -103,73 +94,6 @@ func (r *resourceModel) Schema(ctx context.Context, _ resource.SchemaRequest, re
 	}
 }
 
-func withRequiresReplace(attribute schema.Attribute) schema.Attribute {
-	switch value := attribute.(type) {
-	case schema.StringAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, stringplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.BoolAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, boolplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.Int64Attribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, int64planmodifier.RequiresReplace())
-		}
-		return value
-	case schema.Float64Attribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, float64planmodifier.RequiresReplace())
-		}
-		return value
-	case schema.NumberAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, numberplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.ListAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, listplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.ListNestedAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, listplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.SetAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, setplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.SetNestedAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, setplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.MapAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, mapplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.MapNestedAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, mapplanmodifier.RequiresReplace())
-		}
-		return value
-	case schema.SingleNestedAttribute:
-		if value.Optional || value.Required {
-			value.PlanModifiers = append(value.PlanModifiers, objectplanmodifier.RequiresReplace())
-		}
-		return value
-	default:
-		return attribute
-	}
-}
-
 func (r *resourceModel) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -209,25 +133,7 @@ func (r *resourceModel) Create(ctx context.Context, req resource.CreateRequest, 
 		}
 	}
 
-	item, err := r.readItem(ctx, plan, true)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to verify created firewall configuration", err.Error())
-		return
-	}
-	if diags := r.setState(ctx, &resp.State, item, plan); diags.HasError() {
-		resp.Diagnostics.Append(diags...)
-		return
-	}
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Firewall configuration created but reload failed", err.Error())
-		return
-	}
-	item, err = r.readItem(ctx, item, false)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to read created firewall configuration", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(r.setState(ctx, &resp.State, item, plan)...)
+	r.finishWrite(ctx, &resp.State, &resp.Diagnostics, plan, plan, true, "created")
 }
 
 func (r *resourceModel) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -286,25 +192,7 @@ func (r *resourceModel) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Unable to update firewall configuration", err.Error())
 		return
 	}
-	item, err := r.readItem(ctx, prior, false)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to verify updated firewall configuration", err.Error())
-		return
-	}
-	if diags := r.setState(ctx, &resp.State, item, plan); diags.HasError() {
-		resp.Diagnostics.Append(diags...)
-		return
-	}
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Firewall configuration updated but reload failed", err.Error())
-		return
-	}
-	item, err = r.readItem(ctx, item, false)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to read updated firewall configuration", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(r.setState(ctx, &resp.State, item, plan)...)
+	r.finishWrite(ctx, &resp.State, &resp.Diagnostics, prior, plan, false, "updated")
 }
 
 func (r *resourceModel) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -388,6 +276,12 @@ func (r *resourceModel) readItem(ctx context.Context, selector map[string]any, m
 	if err != nil {
 		return nil, err
 	}
+	return r.selectItem(items, selector, match)
+}
+
+func (r *resourceModel) selectItem(
+	items []map[string]any, selector map[string]any, match bool,
+) (map[string]any, error) {
 	targetKey, keyErr := resourceKey(selector, r.def.keyAttribute)
 	if keyErr == nil {
 		for _, item := range items {

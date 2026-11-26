@@ -91,19 +91,24 @@ func (r *keyPairResource) Open(ctx context.Context, _ ephemeral.OpenRequest, res
 		return
 	}
 
+	data := modelFromKeys(result.JSON200)
+	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+}
+
+func modelFromKeys(keys *api.WireGuardKeys) keyPairModel {
 	data := keyPairModel{
-		PrivateKey: types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.Privkey)),
-		PublicKey:  types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.Pubkey)),
+		PrivateKey: types.StringValue(base64.StdEncoding.EncodeToString(*keys.Privkey)),
+		PublicKey:  types.StringValue(base64.StdEncoding.EncodeToString(*keys.Pubkey)),
 	}
-	if result.JSON200.PrivkeyClamped != nil {
-		data.PrivateKeyClamped = types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.PrivkeyClamped))
+	if keys.PrivkeyClamped != nil {
+		data.PrivateKeyClamped = types.StringValue(base64.StdEncoding.EncodeToString(*keys.PrivkeyClamped))
 	} else {
 		data.PrivateKeyClamped = types.StringNull()
 	}
-	if result.JSON200.WasClamped != nil {
-		data.WasClamped = types.BoolValue(*result.JSON200.WasClamped)
+	if keys.WasClamped != nil {
+		data.WasClamped = types.BoolValue(*keys.WasClamped)
 	} else {
 		data.WasClamped = types.BoolNull()
 	}
-	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+	return data
 }

@@ -18,13 +18,15 @@ type mockResponse struct {
 	body   string
 }
 
-var lifecycleFailureCases = []struct {
+type lifecycleFailureCase struct {
 	name        string
 	operation   string
 	responses   map[string]mockResponse
 	cancel      bool
 	wantSummary string
-}{
+}
+
+var lifecycleFailureCases = []lifecycleFailureCase{
 	{"create transport failure", "create", nil, true, "Unable to create alias"},
 	{
 		"create rejected",
@@ -172,30 +174,7 @@ var lifecycleFailureCases = []struct {
 func TestLifecycleFailures(t *testing.T) {
 	for _, tt := range lifecycleFailureCases {
 		t.Run(tt.name, func(t *testing.T) {
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-				key := req.Method + " " + req.URL.Path
-				result, ok := tt.responses[key]
-				if !ok {
-					switch key {
-					case "PUT /aliases", "POST /aliases/example", "DELETE /aliases/example":
-						result = mockResponse{200, `{"msg":"ok"}`}
-					case "POST /system/filterreload/reload":
-						result = mockResponse{200, `{"result":"started"}`}
-					case "GET /aliases/example":
-						if tt.operation == "delete" {
-							result = mockResponse{404, `{}`}
-						} else {
-							result = mockResponse{200, `{"name":"example"}`}
-						}
-					default:
-						t.Errorf("unexpected request %s", key)
-						result = mockResponse{500, `{}`}
-					}
-				}
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(result.status)
-				_, _ = fmt.Fprint(w, result.body)
-			}))
+			server := httptest.NewServer(lifecycleFailureHandler(t, tt))
 			defer server.Close()
 			client, err := api.NewClientWithResponses(server.URL)
 			if err != nil {
@@ -272,6 +251,34 @@ func TestLifecycleFailures(t *testing.T) {
 				t.Fatalf("errors = %v, want %q", summaries, tt.wantSummary)
 			}
 		})
+	}
+}
+
+func lifecycleFailureHandler(t *testing.T, tt lifecycleFailureCase) http.HandlerFunc {
+	t.Helper()
+	return func(w http.ResponseWriter, req *http.Request) {
+		key := req.Method + " " + req.URL.Path
+		result, ok := tt.responses[key]
+		if !ok {
+			switch key {
+			case "PUT /aliases", "POST /aliases/example", "DELETE /aliases/example":
+				result = mockResponse{200, `{"msg":"ok"}`}
+			case "POST /system/filterreload/reload":
+				result = mockResponse{200, `{"result":"started"}`}
+			case "GET /aliases/example":
+				if tt.operation == "delete" {
+					result = mockResponse{404, `{}`}
+				} else {
+					result = mockResponse{200, `{"name":"example"}`}
+				}
+			default:
+				t.Errorf("unexpected request %s", key)
+				result = mockResponse{500, `{}`}
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(result.status)
+		_, _ = fmt.Fprint(w, result.body)
 	}
 }
 

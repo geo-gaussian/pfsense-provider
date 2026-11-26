@@ -49,18 +49,6 @@ func (r *resourceBase) Configure(_ context.Context, req resource.ConfigureReques
 	}
 }
 
-func NewSettings() resource.Resource {
-	return &settingsResource{}
-}
-
-func NewTunnel() resource.Resource {
-	return &tunnelResource{}
-}
-
-func NewPeer() resource.Resource {
-	return &peerResource{}
-}
-
 type settingsResource struct{ resourceBase }
 
 type settingsModel struct {

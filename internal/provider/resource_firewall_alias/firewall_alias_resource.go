@@ -146,26 +146,7 @@ func (m *FirewallAliasModel) fromAPIWithFactories(
 	if value.Type != nil {
 		m.Type = types.StringValue(string(*value.Type))
 	}
-	targetType := TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}}
-	m.Targets = types.ListNull(targetType)
-	if value.Targets != nil {
-		targets := make([]attr.Value, 0, len(*value.Targets))
-		for _, v := range *value.Targets {
-			target, diags := newTarget(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
-				"name": types.StringValue(v.Name), "descr": stringValue(v.Descr), "updatefreq": stringValue(v.Updatefreq),
-			})
-			if diags.HasError() {
-				return fmt.Errorf("invalid target returned by API: %s", diags.Errors()[0].Detail())
-			}
-			targets = append(targets, target)
-		}
-		list, listDiags := newList(targetType, targets)
-		if listDiags.HasError() {
-			return fmt.Errorf("invalid target list returned by API: %s", listDiags.Errors()[0].Detail())
-		}
-		m.Targets = list
-	}
-	return nil
+	return m.setTargets(ctx, value.Targets, newTarget, newList)
 }
 
 func (r *aliasResource) get(ctx context.Context, name string) (*api.FWAlias, bool, error) {
@@ -243,23 +224,7 @@ func (r *aliasResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 	recovery := data.recoveryState(ctx)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &recovery)...)
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Alias created but firewall reload failed", err.Error())
-		return
-	}
-	value, missing, err := r.get(ctx, body.Name)
-	if err != nil || missing {
-		resp.Diagnostics.AddError(
-			"Unable to verify created alias",
-			fmt.Sprintf("The API did not return the created alias: %v", err),
-		)
-		return
-	}
-	if err := data.fromAPI(ctx, value); err != nil {
-		resp.Diagnostics.AddError("Unable to read created alias", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	r.finishWrite(ctx, body.Name, &data, &resp.State, &resp.Diagnostics, "created")
 }
 
 func (r *aliasResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -295,14 +260,7 @@ func (r *aliasResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid alias configuration", err.Error())
 		return
 	}
-	update := api.FWUpdateAliasReq{
-		Name: body.Name, Address: body.Address, Descr: body.Descr, Detail: body.Detail,
-		Tags: body.Tags, Targets: body.Targets, Updatefreq: body.Updatefreq,
-	}
-	if body.Type != nil {
-		kind := api.FWUpdateAliasReqType(*body.Type)
-		update.Type = &kind
-	}
+	update := updateRequest(body)
 	result, err := r.client.FirewallUpdateAliasWithResponse(ctx, body.Name, update)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to update alias", err.Error())
@@ -316,23 +274,7 @@ func (r *aliasResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 	resp.State = req.State
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Alias updated but firewall reload failed", err.Error())
-		return
-	}
-	value, missing, err := r.get(ctx, body.Name)
-	if err != nil || missing {
-		resp.Diagnostics.AddError(
-			"Unable to verify updated alias",
-			fmt.Sprintf("The API did not return the updated alias: %v", err),
-		)
-		return
-	}
-	if err := data.fromAPI(ctx, value); err != nil {
-		resp.Diagnostics.AddError("Unable to read updated alias", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	r.finishWrite(ctx, body.Name, &data, &resp.State, &resp.Diagnostics, "updated")
 }
 
 func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -350,21 +292,8 @@ func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 		resp.Diagnostics.AddError("Unable to delete alias", err.Error())
 		return
 	}
-	if result.StatusCode() == http.StatusBadRequest {
-		_, missing, err := r.get(ctx, data.Name.ValueString())
-		if err != nil || !missing {
-			resp.Diagnostics.AddError(
-				"Unable to delete alias",
-				fmt.Sprintf("API returned HTTP 400 and absence could not be verified: %v", err),
-			)
-			return
-		}
-	} else if result.StatusCode() != http.StatusOK && result.StatusCode() != http.StatusNotFound {
-		resp.Diagnostics.AddError("Unable to delete alias", fmt.Sprintf("API returned HTTP %d.", result.StatusCode()))
-		return
-	}
-	if result.StatusCode() == http.StatusOK && (result.JSON200 == nil || result.JSON200.Msg == "") {
-		resp.Diagnostics.AddError("Unable to delete alias", "The API returned an invalid result.")
+	if err := r.validateDelete(ctx, data.Name.ValueString(), result); err != nil {
+		resp.Diagnostics.AddError("Unable to delete alias", err.Error())
 		return
 	}
 	if err := r.reload(ctx); err != nil {

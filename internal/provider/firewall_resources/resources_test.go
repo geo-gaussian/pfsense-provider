@@ -73,16 +73,7 @@ func TestScheduleResourceLifecycle(t *testing.T) {
 		t.Fatal(configureResp.Diagnostics)
 	}
 
-	timerangeType := resource_firewall_schedule.TimerangeType{
-		ObjectType: types.ObjectType{AttrTypes: resource_firewall_schedule.TimerangeValue{}.AttributeTypes(ctx)},
-	}
-	model := resource_firewall_schedule.FirewallScheduleModel{
-		Id:         types.StringValue("schedule-1"),
-		Name:       types.StringValue("weekday"),
-		Descr:      types.StringValue("office hours"),
-		Schedlabel: types.StringNull(),
-		Timerange:  types.ListNull(timerangeType),
-	}
+	model := scheduleTestModel(ctx)
 	plan := tfsdk.Plan{Schema: s}
 	if diags := plan.Set(ctx, &model); diags.HasError() {
 		t.Fatal(diags)
@@ -119,6 +110,19 @@ func TestScheduleResourceLifecycle(t *testing.T) {
 	}
 	if stored != nil || reloads != 3 {
 		t.Fatalf("stored = %#v, reloads = %d", stored, reloads)
+	}
+}
+
+func scheduleTestModel(ctx context.Context) resource_firewall_schedule.FirewallScheduleModel {
+	timerangeType := resource_firewall_schedule.TimerangeType{
+		ObjectType: types.ObjectType{AttrTypes: resource_firewall_schedule.TimerangeValue{}.AttributeTypes(ctx)},
+	}
+	return resource_firewall_schedule.FirewallScheduleModel{
+		Id:         types.StringValue("schedule-1"),
+		Name:       types.StringValue("weekday"),
+		Descr:      types.StringValue("office hours"),
+		Schedlabel: types.StringNull(),
+		Timerange:  types.ListNull(timerangeType),
 	}
 }
 

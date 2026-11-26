@@ -69,6 +69,16 @@ export async function inspectTypeScript(
 	report(findings, name, "file", lines, test ? 500 : 350, test ? 600 : 500);
 	const options = { filepath: name } as ParserOptions;
 	const tree: unknown = await parsers.typescript.parse(text, options);
+	inspectFunctions(tree, name, test, findings);
+	return findings;
+}
+
+function inspectFunctions(
+	tree: unknown,
+	name: string,
+	test: boolean,
+	findings: Finding[],
+): void {
 	const seen = new Set<object>();
 	function visit(value: unknown, parent?: Record<string, unknown>): void {
 		if (typeof value !== "object" || value === null || seen.has(value)) return;
@@ -78,34 +88,54 @@ export async function inspectTypeScript(
 			return;
 		}
 		if (!isRecord(value)) return;
-		if (
-			[
-				"FunctionDeclaration",
-				"FunctionExpression",
-				"ArrowFunctionExpression",
-			].includes(String(value.type)) &&
-			value.body
-		) {
-			const owner =
-				(parent?.type === "MethodDefinition" ||
-					(parent?.type === "Property" && parent.method === true)) &&
-				parent.value === value
-					? parent
-					: value;
-			const [first, last] = location(owner);
-			report(
-				findings,
-				`${name}:${first}`,
-				"function",
-				last - first + 1,
-				test ? 100 : 40,
-				test ? 150 : 80,
-			);
-		}
+		reportFunction(value, parent, name, test, findings);
 		for (const child of Object.values(value)) visit(child, value);
 	}
 	visit(tree);
-	return findings;
+}
+
+function reportFunction(
+	value: Record<string, unknown>,
+	parent: Record<string, unknown> | undefined,
+	name: string,
+	test: boolean,
+	findings: Finding[],
+): void {
+	if (
+		![
+			"FunctionDeclaration",
+			"FunctionExpression",
+			"ArrowFunctionExpression",
+		].includes(String(value.type)) ||
+		!value.body
+	)
+		return;
+	const owner =
+		(parent?.type === "MethodDefinition" ||
+			(parent?.type === "Property" && parent.method === true)) &&
+		parent.value === value
+			? parent
+			: value;
+	const [first, last] = location(owner);
+	report(
+		findings,
+		`${name}:${first}`,
+		"function",
+		last - first + 1,
+		test ? 100 : 40,
+		test ? 150 : 80,
+	);
+}
+
+function sourceFile(name: string, directory: string, staged: boolean): string {
+	if (!staged) return fs.readFileSync(path.join(directory, name), "utf8");
+	const result = spawnSync("git", ["show", `:${name}`], {
+		cwd: directory,
+		encoding: "utf8",
+	});
+	if (result.error) throw result.error;
+	if (result.status !== 0) throw new Error(result.stderr);
+	return result.stdout;
 }
 
 export async function checkTypeScriptFiles(
@@ -136,19 +166,9 @@ export async function checkTypeScriptFiles(
 		) {
 			continue;
 		}
-		let source: string;
-		if (staged) {
-			const result = spawnSync("git", ["show", `:${name}`], {
-				cwd: directory,
-				encoding: "utf8",
-			});
-			if (result.error) throw result.error;
-			if (result.status !== 0) throw new Error(result.stderr);
-			source = result.stdout;
-		} else {
-			source = fs.readFileSync(path.join(directory, name), "utf8");
-		}
-		findings.push(...(await inspectTypeScript(name, source)));
+		findings.push(
+			...(await inspectTypeScript(name, sourceFile(name, directory, staged))),
+		);
 	}
 	return findings;
 }

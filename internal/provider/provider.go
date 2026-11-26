@@ -81,8 +81,7 @@ func (p *pfsenseProvider) configure(
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() ||
-		config.Insecure.IsUnknown() {
+	if config.isUnknown() {
 		resp.Diagnostics.AddError(
 			"Unknown provider configuration",
 			"The controller URL, credentials, and TLS settings must be known before configuring the provider.",
@@ -107,10 +106,19 @@ func (p *pfsenseProvider) configure(
 		resp.Diagnostics.AddError("Unable to configure API client", err.Error())
 		return
 	}
+	setProviderData(resp, apiClient)
+}
+
+func setProviderData(resp *provider.ConfigureResponse, apiClient *api.ClientWithResponses) {
 	resp.ResourceData = apiClient
 	resp.DataSourceData = apiClient
 	resp.EphemeralResourceData = apiClient
 	resp.ListResourceData = apiClient
+}
+
+func (config providerModel) isUnknown() bool {
+	return config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() ||
+		config.Insecure.IsUnknown()
 }
 
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
@@ -143,7 +151,7 @@ func (p *pfsenseProvider) ListResources(ctx context.Context) []func() list.ListR
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
+	sources := []func() datasource.DataSource{
 		data_firewall_aliases.New,
 		data_readonly.NewFirewallNATNpt,
 		data_readonly.NewFirewallNATOneToOne,
@@ -171,6 +179,12 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewVXLANInterfaces,
 		data_readonly.NewGateways,
 		data_readonly.NewStaticRoutes,
+	}
+	return append(sources, serviceDataSources()...)
+}
+
+func serviceDataSources() []func() datasource.DataSource {
+	return []func() datasource.DataSource{
 		data_readonly.NewDNSForwarder,
 		data_readonly.NewIGMPProxies,
 		data_readonly.NewMDNS,

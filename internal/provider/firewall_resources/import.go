@@ -18,25 +18,10 @@ func (r *resourceModel) ImportState(
 	if len(attributes) == 0 {
 		attributes = []string{r.def.keyAttribute}
 	}
-	parts := []string{req.ID}
-	if len(attributes) > 1 {
-		parts = strings.Split(req.ID, "/")
-		if len(parts) != len(attributes) {
-			resp.Diagnostics.AddError(
-				"Invalid import identifier",
-				fmt.Sprintf("Expected %d slash-separated values for %q.", len(attributes), r.def.name),
-			)
-			return
-		}
-	}
-	for index, name := range attributes {
-		if strings.TrimSpace(parts[index]) == "" {
-			resp.Diagnostics.AddError(
-				"Invalid import identifier",
-				fmt.Sprintf("The import value for %q cannot be empty.", name),
-			)
-			return
-		}
+	parts, err := importParts(req.ID, attributes, r.def.name)
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid import identifier", err.Error())
+		return
 	}
 	schemaValue := r.def.schema(ctx)
 	if resp.State.Schema == nil {
@@ -47,23 +32,41 @@ func (r *resourceModel) ImportState(
 	for name, attributeType := range objectType.AttributeTypes {
 		stateValues[name] = tftypes.NewValue(attributeType, nil)
 	}
+	if err := setImportValues(objectType, stateValues, attributes, parts); err != nil {
+		resp.Diagnostics.AddError("Invalid import identifier", err.Error())
+		return
+	}
+	resp.State.Raw = tftypes.NewValue(objectType, stateValues)
+}
+
+func setImportValues(
+	objectType tftypes.Object, stateValues map[string]tftypes.Value, attributes, parts []string,
+) error {
 	for index, name := range attributes {
 		attributeType, ok := objectType.AttributeTypes[name]
 		if !ok {
-			resp.Diagnostics.AddError(
-				"Invalid import identifier",
-				fmt.Sprintf("The firewall resource schema does not contain %q.", name),
-			)
-			return
+			return fmt.Errorf("The firewall resource schema does not contain %q.", name)
 		}
 		if !attributeType.Is(tftypes.String) {
-			resp.Diagnostics.AddError(
-				"Invalid import identifier",
-				fmt.Sprintf("The import attribute %q must be a string.", name),
-			)
-			return
+			return fmt.Errorf("The import attribute %q must be a string.", name)
 		}
 		stateValues[name] = tftypes.NewValue(attributeType, parts[index])
 	}
-	resp.State.Raw = tftypes.NewValue(objectType, stateValues)
+	return nil
+}
+
+func importParts(id string, attributes []string, name string) ([]string, error) {
+	parts := []string{id}
+	if len(attributes) > 1 {
+		parts = strings.Split(id, "/")
+		if len(parts) != len(attributes) {
+			return nil, fmt.Errorf("Expected %d slash-separated values for %q.", len(attributes), name)
+		}
+	}
+	for index, name := range attributes {
+		if strings.TrimSpace(parts[index]) == "" {
+			return nil, fmt.Errorf("The import value for %q cannot be empty.", name)
+		}
+	}
+	return parts, nil
 }

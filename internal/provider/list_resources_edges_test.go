@@ -68,6 +68,26 @@ func TestListRejectsIncompleteResponses(t *testing.T) {
 	}
 }
 
+func TestWireGuardDiscoveryRejectsInvalidRequestAndResponse(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer server.Close()
+	client, err := api.NewClientWithResponses(server.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := configurationList{client: client}
+	if _, err := l.wireguardIdentifiers(context.Background(), "invalid"); err == nil ||
+		!strings.Contains(err.Error(), "unsupported list resource") {
+		t.Fatalf("invalid type error = %v", err)
+	}
+	if _, err := l.identifiers(context.Background(), "wireguard_tunnel"); err == nil ||
+		!strings.Contains(err.Error(), "HTTP 503") {
+		t.Fatalf("API failure error = %v", err)
+	}
+}
+
 func TestRuleDiscoveryAcrossInterfaces(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

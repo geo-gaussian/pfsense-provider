@@ -107,19 +107,7 @@ func NewRule() resource.Resource {
 		schema: func(ctx context.Context) schema.Schema {
 			return requireString(resource_firewall_rule.FirewallRuleResourceSchema(ctx), "interface")
 		},
-		create: func(
-			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
-		) (response, error) {
-			body, err := encodeBody[api.FWFilterRule](values)
-			if err != nil {
-				return nil, err
-			}
-			iface, err := stringValue(values, "interface")
-			if err != nil {
-				return nil, err
-			}
-			return client.AppendFirewallRuleWithResponse(ctx, iface, body)
-		},
+		create: createRule,
 		read: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any) (response, error) {
 			iface, err := stringValue(values, "interface")
 			if err != nil {
@@ -127,19 +115,7 @@ func NewRule() resource.Resource {
 			}
 			return client.GetFirewallRulesWithResponse(ctx, iface)
 		},
-		update: func(
-			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
-		) (response, error) {
-			body, err := encodeBody[api.FWFilterRule](values)
-			if err != nil {
-				return nil, err
-			}
-			iface, err := stringValue(values, "interface")
-			if err != nil {
-				return nil, err
-			}
-			return client.UpdateFirewallRuleWithResponse(ctx, iface, id, body)
-		},
+		update: updateRule,
 		delete: func(
 			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
 		) (response, error) {
@@ -150,6 +126,34 @@ func NewRule() resource.Resource {
 			return client.DeleteFirewallRuleWithResponse(ctx, iface, id)
 		},
 	})
+}
+
+func createRule(
+	ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+) (response, error) {
+	body, err := encodeBody[api.FWFilterRule](values)
+	if err != nil {
+		return nil, err
+	}
+	iface, err := stringValue(values, "interface")
+	if err != nil {
+		return nil, err
+	}
+	return client.AppendFirewallRuleWithResponse(ctx, iface, body)
+}
+
+func updateRule(
+	ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+) (response, error) {
+	body, err := encodeBody[api.FWFilterRule](values)
+	if err != nil {
+		return nil, err
+	}
+	iface, err := stringValue(values, "interface")
+	if err != nil {
+		return nil, err
+	}
+	return client.UpdateFirewallRuleWithResponse(ctx, iface, id, body)
 }
 
 func NewSchedule() resource.Resource {

@@ -89,7 +89,74 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 	terraform, dir := prepareTerraformQueryFixture(t)
 	var unexpected atomic.Bool
 	var aliasDetails atomic.Int32
-	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewTLSServer(queryFixtureHandler(t, &unexpected, &aliasDetails))
+	defer server.Close()
+
+	run := func(args ...string) string {
+		t.Helper()
+		cmd := exec.Command(terraform, args...)
+		cmd.Dir = dir
+		cmd.Env = append(os.Environ(),
+			"TF_CLI_CONFIG_FILE="+filepath.Join(dir, "terraform.tfrc"),
+			"TF_IN_AUTOMATION=1",
+			"TF_INPUT=0",
+			"TF_VAR_nexus_url="+server.URL,
+			"TF_VAR_nexus_username=test-user",
+			"TF_VAR_nexus_password="+strings.Repeat("x", 12),
+		)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatalf("terraform %s: %v\n%s", strings.Join(args, " "), err, output)
+		}
+		return string(output)
+	}
+	run("init", "-input=false")
+	run("query")
+	if aliasDetails.Load() != 0 {
+		t.Fatal("identity-only query unexpectedly fetched alias details")
+	}
+	queryOutput := run("query", "-generate-config-out=generated.tf")
+	if aliasDetails.Load() != 1 {
+		t.Fatalf("configuration generation fetched alias details %d times", aliasDetails.Load())
+	}
+	if !strings.Contains(queryOutput, "Read-only firewall rules omitted") {
+		t.Fatal("query did not report the omitted read-only rule")
+	}
+	data, err := os.ReadFile(filepath.Join(dir, "generated.tf"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{
+		"firewall_alias", "firewall_nat_npt", "firewall_nat_one_to_one", "firewall_nat_port_forward",
+		"firewall_rule", "firewall_schedule", "firewall_altq", "firewall_limiter", "firewall_pflow_exporter",
+		"firewall_virtual_ip", "wireguard_settings", "wireguard_tunnel", "wireguard_peer",
+	} {
+		if !strings.Contains(string(data), `resource "pfsense_`+name+`"`) {
+			t.Errorf("generated configuration omitted resource type %s", name)
+		}
+	}
+	if strings.Count(string(data), "import {") != 13 {
+		t.Fatal("generated configuration did not include thirteen import blocks")
+	}
+	if strings.Contains(string(data), strings.Repeat("x", 12)) ||
+		strings.Count(string(data), "null # sensitive") != 2 {
+		t.Fatal("generated configuration did not redact the mock WireGuard secrets")
+	}
+	planOutput := run("plan", "-input=false", "-no-color")
+	if !strings.Contains(planOutput, "Plan: 13 to import, 0 to add, 0 to change, 0 to destroy.") {
+		t.Fatal("generated configuration did not produce an import-only plan")
+	}
+	if unexpected.Load() {
+		t.Fatal("Terraform sent an unexpected request")
+	}
+	if _, err := os.Stat(filepath.Join(dir, "terraform.tfstate")); !os.IsNotExist(err) {
+		t.Fatalf("query unexpectedly created Terraform state: %v", err)
+	}
+}
+
+func queryFixtureHandler(t *testing.T, unexpected *atomic.Bool, aliasDetails *atomic.Int32) http.HandlerFunc {
+	t.Helper()
+	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		var value any
 		switch {
@@ -158,67 +225,5 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 		if err := json.NewEncoder(w).Encode(value); err != nil {
 			t.Error(err)
 		}
-	}))
-	defer server.Close()
-
-	run := func(args ...string) string {
-		t.Helper()
-		cmd := exec.Command(terraform, args...)
-		cmd.Dir = dir
-		cmd.Env = append(os.Environ(),
-			"TF_CLI_CONFIG_FILE="+filepath.Join(dir, "terraform.tfrc"),
-			"TF_IN_AUTOMATION=1",
-			"TF_INPUT=0",
-			"TF_VAR_nexus_url="+server.URL,
-			"TF_VAR_nexus_username=test-user",
-			"TF_VAR_nexus_password="+strings.Repeat("x", 12),
-		)
-		output, err := cmd.CombinedOutput()
-		if err != nil {
-			t.Fatalf("terraform %s: %v\n%s", strings.Join(args, " "), err, output)
-		}
-		return string(output)
-	}
-	run("init", "-input=false")
-	run("query")
-	if aliasDetails.Load() != 0 {
-		t.Fatal("identity-only query unexpectedly fetched alias details")
-	}
-	queryOutput := run("query", "-generate-config-out=generated.tf")
-	if aliasDetails.Load() != 1 {
-		t.Fatalf("configuration generation fetched alias details %d times", aliasDetails.Load())
-	}
-	if !strings.Contains(queryOutput, "Read-only firewall rules omitted") {
-		t.Fatal("query did not report the omitted read-only rule")
-	}
-	data, err := os.ReadFile(filepath.Join(dir, "generated.tf"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, name := range []string{
-		"firewall_alias", "firewall_nat_npt", "firewall_nat_one_to_one", "firewall_nat_port_forward",
-		"firewall_rule", "firewall_schedule", "firewall_altq", "firewall_limiter", "firewall_pflow_exporter",
-		"firewall_virtual_ip", "wireguard_settings", "wireguard_tunnel", "wireguard_peer",
-	} {
-		if !strings.Contains(string(data), `resource "pfsense_`+name+`"`) {
-			t.Errorf("generated configuration omitted resource type %s", name)
-		}
-	}
-	if strings.Count(string(data), "import {") != 13 {
-		t.Fatal("generated configuration did not include thirteen import blocks")
-	}
-	if strings.Contains(string(data), strings.Repeat("x", 12)) ||
-		strings.Count(string(data), "null # sensitive") != 2 {
-		t.Fatal("generated configuration did not redact the mock WireGuard secrets")
-	}
-	planOutput := run("plan", "-input=false", "-no-color")
-	if !strings.Contains(planOutput, "Plan: 13 to import, 0 to add, 0 to change, 0 to destroy.") {
-		t.Fatal("generated configuration did not produce an import-only plan")
-	}
-	if unexpected.Load() {
-		t.Fatal("Terraform sent an unexpected request")
-	}
-	if _, err := os.Stat(filepath.Join(dir, "terraform.tfstate")); !os.IsNotExist(err) {
-		t.Fatalf("query unexpectedly created Terraform state: %v", err)
 	}
 }

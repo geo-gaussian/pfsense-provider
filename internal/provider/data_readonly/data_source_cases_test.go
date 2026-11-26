@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-var readDataSourceCases = []struct {
+type readDataSourceCase struct {
 	name        string
 	dataSource  func() datasource.DataSource
 	path        string
@@ -18,7 +18,9 @@ var readDataSourceCases = []struct {
 	wantJSON    string
 	sensitive   bool
 	wantError   bool
-}{
+}
+
+var readDataSourceCases = append([]readDataSourceCase{
 	{
 		name:       "NPT rules",
 		dataSource: NewFirewallNATNpt,
@@ -453,105 +455,4 @@ var readDataSourceCases = []struct {
 		body:       `{}`,
 		wantJSON:   `{}`,
 	},
-	{
-		name:       "gateway status",
-		dataSource: NewGatewaysStatus,
-		path:       "/system/gateways/status",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-		sensitive:  true,
-	},
-	{
-		name:       "interface status",
-		dataSource: NewInterfacesStatus,
-		path:       "/system/interfaces/status",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-		sensitive:  true,
-	},
-	{
-		name:       "monitoring datasets",
-		dataSource: NewMonitoringDatasets,
-		path:       "/system/monitoring/datasets",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-	},
-	{
-		name:       "queue statistics",
-		dataSource: NewQueueStats,
-		path:       "/system/queue/stats",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-	},
-	{
-		name:       "routing dirty state",
-		dataSource: NewRoutesDirtyState,
-		path:       "/system/routes",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-	},
-	{
-		name:       "system status",
-		dataSource: NewSystemStatus,
-		path:       "/system/status",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-		sensitive:  true,
-	},
-	{
-		name:       "interface statistics",
-		dataSource: NewInterfaceStats,
-		path:       "/system/status/ifstats",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-		sensitive:  true,
-	},
-	{
-		name:       "interface widgets",
-		dataSource: NewInterfaceWidgets,
-		path:       "/system/widgets/interfaces",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-		sensitive:  true,
-	},
-	{
-		name:       "interface statistics widget",
-		dataSource: NewInterfaceStatisticsWidget,
-		path:       "/system/widgets/interfacestats",
-		status:     http.StatusOK,
-		body:       `{}`,
-		wantJSON:   `{}`,
-	},
-	{
-		name:       "HTTP error",
-		dataSource: NewFirewallNATPortForward,
-		path:       "/firewall/nat/port-forward",
-		status:     http.StatusBadRequest,
-		body:       `{"errmsg":"failure"}`,
-		wantError:  true,
-	},
-	{
-		name:       "invalid JSON response",
-		dataSource: NewFirewallNATPortForward,
-		path:       "/firewall/nat/port-forward",
-		status:     http.StatusOK,
-		body:       `{`,
-		wantError:  true,
-	},
-	{
-		name:       "null JSON response",
-		dataSource: NewFirewallNATPortForward,
-		path:       "/firewall/nat/port-forward",
-		status:     http.StatusOK,
-		body:       `null`,
-		wantError:  true,
-	},
-}
+}, readStatusAndFailureCases...)

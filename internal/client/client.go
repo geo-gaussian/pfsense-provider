@@ -37,13 +37,8 @@ func newWithFactories(
 	newJar func(*cookiejar.Options) (*cookiejar.Jar, error),
 	newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error),
 ) (*NexusClient, error) {
-	u, err := url.Parse(baseURL)
-	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" ||
-		(u.Path != "" && u.Path != "/") {
-		return nil, fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
-	}
-	if username == "" || password == "" {
-		return nil, fmt.Errorf("username and password must not be empty")
+	if err := validateConfiguration(baseURL, username, password); err != nil {
+		return nil, err
 	}
 	jar, err := newJar(nil)
 	if err != nil {
@@ -71,6 +66,18 @@ func newWithFactories(
 		return nil, fmt.Errorf("configure API client: %w", err)
 	}
 	return c, nil
+}
+
+func validateConfiguration(baseURL, username, password string) error {
+	u, err := url.Parse(baseURL)
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" ||
+		(u.Path != "" && u.Path != "/") {
+		return fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
+	}
+	if username == "" || password == "" {
+		return fmt.Errorf("username and password must not be empty")
+	}
+	return nil
 }
 
 // DoRequest is the single transport entry point for generated API clients.

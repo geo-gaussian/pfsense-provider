@@ -215,15 +215,16 @@ func TestTunnelAndPeerUpdatesRetainMaskedSecrets(t *testing.T) {
 	}
 }
 
-func TestWireGuardDeleteVerificationBranches(t *testing.T) {
-	ctx := context.Background()
-	scenarios := []struct {
-		name        string
-		deleteCode  int
-		readCode    int
-		stillExists bool
-		wantError   bool
-	}{
+type deleteScenario struct {
+	name        string
+	deleteCode  int
+	readCode    int
+	stillExists bool
+	wantError   bool
+}
+
+func deleteScenarios() []deleteScenario {
+	return []deleteScenario{
 		{name: "400 confirmed absent", deleteCode: http.StatusBadRequest, readCode: http.StatusNotFound},
 		{
 			name:        "400 still present",
@@ -255,8 +256,12 @@ func TestWireGuardDeleteVerificationBranches(t *testing.T) {
 		},
 		{name: "server rejected delete", deleteCode: http.StatusInternalServerError, wantError: true},
 	}
+}
+
+func TestWireGuardDeleteVerificationBranches(t *testing.T) {
+	ctx := context.Background()
 	for _, resourceName := range []string{"tunnel", "peer"} {
-		for _, scenario := range scenarios {
+		for _, scenario := range deleteScenarios() {
 			t.Run(resourceName+" "+scenario.name, func(t *testing.T) {
 				var target resource.Resource
 				var model any

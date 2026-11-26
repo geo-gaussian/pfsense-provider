@@ -55,13 +55,8 @@ func terraformEnvironment(cliConfigPath, serverURL, providerDir, description str
 	return env
 }
 
-func TestTerraformFirewallAliasesDataSource(t *testing.T) {
-	terraform, err := exec.LookPath("terraform")
-	if err != nil {
-		t.Skip("Terraform CLI is not installed")
-	}
-	dir := t.TempDir()
-	providerDir := filepath.Join(dir, "provider${fixture}%{fixture}")
+func buildTerraformProvider(t *testing.T, providerDir string) {
+	t.Helper()
 	if err := os.Mkdir(providerDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -69,6 +64,22 @@ func TestTerraformFirewallAliasesDataSource(t *testing.T) {
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build provider: %v\n%s", err, output)
 	}
+}
+
+func terraformExecutable(t *testing.T) string {
+	t.Helper()
+	terraform, err := exec.LookPath("terraform")
+	if err != nil {
+		t.Skip("Terraform CLI is not installed")
+	}
+	return terraform
+}
+
+func TestTerraformFirewallAliasesDataSource(t *testing.T) {
+	terraform := terraformExecutable(t)
+	dir := t.TempDir()
+	providerDir := filepath.Join(dir, "provider${fixture}%{fixture}")
+	buildTerraformProvider(t, providerDir)
 
 	var mu sync.Mutex
 	var loginCount, readCount int
@@ -129,19 +140,10 @@ func TestTerraformFirewallAliasesDataSource(t *testing.T) {
 }
 
 func TestTerraformAliasLifecycle(t *testing.T) {
-	terraform, err := exec.LookPath("terraform")
-	if err != nil {
-		t.Skip("Terraform CLI is not installed")
-	}
+	terraform := terraformExecutable(t)
 	dir := t.TempDir()
 	providerDir := filepath.Join(dir, "provider")
-	if err := os.Mkdir(providerDir, 0o755); err != nil {
-		t.Fatal(err)
-	}
-	build := exec.Command("go", "build", "-o", filepath.Join(providerDir, "terraform-provider-pfsense-nexus"), ".")
-	if output, err := build.CombinedOutput(); err != nil {
-		t.Fatalf("build provider: %v\n%s", err, output)
-	}
+	buildTerraformProvider(t, providerDir)
 
 	var mu sync.Mutex
 	var stored *api.FWAliasReq

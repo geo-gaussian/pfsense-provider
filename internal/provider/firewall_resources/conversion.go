@@ -85,37 +85,30 @@ func valueToGo(value terraformValue) (any, bool, error) {
 			err := value.As(result)
 			return result, true, err
 		}
-		if object, ok := kind.(tftypes.Object); ok {
-			_ = object
-			fields := make(map[string]tftypes.Value)
-			if err := value.As(&fields); err != nil {
-				return nil, false, err
-			}
-			return nestedValues(fields)
-		}
-		if _, ok := kind.(tftypes.Map); ok {
-			fields := make(map[string]tftypes.Value)
-			if err := value.As(&fields); err != nil {
-				return nil, false, err
-			}
-			return nestedValues(fields)
-		}
-		if _, ok := kind.(tftypes.List); ok {
-			values := make([]tftypes.Value, 0)
-			if err := value.As(&values); err != nil {
-				return nil, false, err
-			}
-			return nestedList(values)
-		}
-		if _, ok := kind.(tftypes.Set); ok {
-			values := make([]tftypes.Value, 0)
-			if err := value.As(&values); err != nil {
-				return nil, false, err
-			}
-			return nestedList(values)
+		switch kind.(type) {
+		case tftypes.Object, tftypes.Map:
+			return convertFields(value)
+		case tftypes.List, tftypes.Set:
+			return convertList(value)
 		}
 	}
 	return nil, false, fmt.Errorf("unsupported Terraform type %s", value.Type())
+}
+
+func convertFields(value terraformValue) (any, bool, error) {
+	fields := make(map[string]tftypes.Value)
+	if err := value.As(&fields); err != nil {
+		return nil, false, err
+	}
+	return nestedValues(fields)
+}
+
+func convertList(value terraformValue) (any, bool, error) {
+	values := make([]tftypes.Value, 0)
+	if err := value.As(&values); err != nil {
+		return nil, false, err
+	}
+	return nestedList(values)
 }
 
 func nestedValues(values map[string]tftypes.Value) (any, bool, error) {
