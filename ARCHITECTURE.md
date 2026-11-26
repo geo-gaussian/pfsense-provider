@@ -175,8 +175,9 @@ Tests use mock HTTP servers; when Terraform is available, tests also exercise
 the provider protocol. The installed pre-commit hook checks staged line and
 size limits, then runs lint and tests on the working tree. CI builds first,
 then runs lint and tests in parallel; the default-branch ruleset requires the
-lint job. Live acceptance tests are not yet implemented and should use an
-isolated, disposable firewall with test-only credentials. See
+lint job. An opt-in live alias acceptance test exists but has not been
+verified against an appliance or enabled in CI. It requires an isolated,
+disposable firewall with test-only credentials. See
 [DEVELOPMENT.md](DEVELOPMENT.md) for the size limits and checker scope.
 
 ```mermaid

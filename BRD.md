@@ -105,5 +105,6 @@ flowchart LR
 2. **M2 — Core Resources and Import:** Managed firewall and WireGuard resources,
    import, and discovery are experimental; the proposed extensions remain
    future work.
-3. **M3 — CI/CD & Testing:** Offline mock tests and CI are implemented.
-   Live acceptance tests against an isolated pfSense instance are future work.
+3. **M3 — CI/CD & Testing:** Offline mock tests and CI are implemented. An
+   opt-in live alias test exists, but live appliance validation and automated
+   acceptance testing remain future work.

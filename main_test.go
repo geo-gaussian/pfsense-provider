@@ -144,7 +144,6 @@ func TestTerraformAliasLifecycle(t *testing.T) {
 	dir := t.TempDir()
 	providerDir := filepath.Join(dir, "provider")
 	buildTerraformProvider(t, providerDir)
-
 	var mu sync.Mutex
 	var stored *api.FWAliasReq
 	var reloads int
@@ -162,6 +161,8 @@ func TestTerraformAliasLifecycle(t *testing.T) {
 			return
 		}
 		switch {
+		case req.URL.Path == "/api/device/pfsense/localhost/api/aliases" && req.Method == http.MethodGet:
+			writeMockAliasList(t, w, stored)
 		case req.URL.Path == "/api/device/pfsense/localhost/api/aliases" && req.Method == http.MethodPut,
 			req.URL.Path == "/api/device/pfsense/localhost/api/aliases/example" && req.Method == http.MethodPost:
 			var body api.FWAliasReq
@@ -236,4 +237,16 @@ func TestTerraformAliasLifecycle(t *testing.T) {
 	run("state", "show", "-no-color", "pfsense_firewall_alias.test")
 	run("apply", "-auto-approve", "-input=false", "-no-color")
 	run("destroy", "-auto-approve", "-input=false", "-no-color")
+	runMockAcceptanceHarness(t, server.URL)
+}
+
+func writeMockAliasList(t *testing.T, w http.ResponseWriter, stored *api.FWAliasReq) {
+	t.Helper()
+	aliases := []api.FWAlias{}
+	if stored != nil {
+		aliases = append(aliases, api.FWAlias{Name: stored.Name})
+	}
+	if err := json.NewEncoder(w).Encode(api.FWAliases{Aliases: &aliases}); err != nil {
+		t.Error(err)
+	}
 }

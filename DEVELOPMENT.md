@@ -241,10 +241,37 @@ though the generic Spec Kit tasks template describes tests as optional. Each
 story's independent test and acceptance scenarios should identify the expected
 behaviour and relevant failure cases.
 
-## 🖥️ Planning live acceptance tests
+## 🖥️ Live acceptance tests
 
-Live acceptance tests and an appliance provisioning workflow are not yet
-implemented. Use an isolated, disposable pfSense environment and test-only
-credentials when adding them. Do not expose credentials or the appliance to
-untrusted pull request code. Validate image availability, networking, and
-runner support before choosing a virtualisation approach.
+The opt-in alias test exercises create, refresh, update, import and destroy
+through Terraform against a Nexus appliance. It checks Terraform state and
+verifies that the alias is absent after destruction. The same harness runs
+against a mock server in the offline suite. The live test and its cleanup have
+not yet been verified against an appliance.
+
+Use only an isolated, disposable appliance with test-only credentials. The test
+changes firewall configuration and initiates filter reloads; it does not verify
+reload completion. Never run it against a production firewall. Set
+`PFSENSE_ACC_URL`, `PFSENSE_ACC_USERNAME` and `PFSENSE_ACC_PASSWORD` in the
+environment without recording their values in shell history or logs. TLS
+certificate verification is enabled by default; set `PFSENSE_ACC_INSECURE` to
+`true` only for an isolated test appliance with a self-signed certificate.
+Then run:
+
+```sh
+TF_ACC=1 PFSENSE_ACC_DISPOSABLE=1 go test -count=1 -run '^TestAccFirewallAliasLifecycle$' -v .
+```
+
+The test uses a random alias name, refuses to modify an existing alias, and
+attempts cleanup even after a failure, including when Terraform state is lost.
+An interrupted process, an unavailable API, or a failed import or reload can
+still leave changes behind. Inspect the reported alias and appliance
+configuration if cleanup fails; dispose of the appliance afterwards.
+
+Live CI and appliance provisioning are not implemented. The intended hybrid
+workflow keeps mock tests on pull requests and runs live tests only on trusted
+pushes to `main`. AWS provisioning requires a Marketplace subscription,
+verified Nexus activation, private connectivity and cost safeguards before
+automatic runs can be enabled. Do not expose credentials or the appliance to
+untrusted pull request code. Live provider-process coverage is not collected by
+the current harness.
