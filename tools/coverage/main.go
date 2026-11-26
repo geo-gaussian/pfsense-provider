@@ -1,18 +1,12 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"go/ast"
-	"go/parser"
-	"go/token"
 	"math/big"
 	"os"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -26,110 +20,6 @@ type evidence struct {
 	Source string
 	Test   string
 	Live   string
-}
-
-// Generated methods alone do not constitute provider support.
-var implemented = map[string]evidence{
-	"Login":                        {"POST", "/login", "internal/client/client.go", "internal/client/client_test.go", "manually observed"},
-	"RefreshAccessToken":           {"POST", "/login/refresh", "internal/client/client.go", "internal/client/client_test.go", ""},
-	"FirewallGetAliases":           {"GET", "/aliases", "internal/provider/data_firewall_aliases/firewall_aliases_data_source.go", "internal/provider/data_firewall_aliases/firewall_aliases_data_source_test.go", "manually observed"},
-	"FirewallAddAlias":             {"PUT", "/aliases", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallGetAlias":             {"GET", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallUpdateAlias":          {"POST", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallDeleteAlias":          {"DELETE", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"DoFilterReload":               {"POST", "/system/filterreload/reload", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallGetNATNpt":            {"GET", "/firewall/nat/npt", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNAT1To1Rules":      {"GET", "/firewall/nat/onetoone", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNATOut":            {"GET", "/firewall/nat/outbound", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNAT":               {"GET", "/firewall/nat/port-forward", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallCreateNATNpt":         {"PUT", "/firewall/nat/npt", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNATNptRules":    {"DELETE", "/firewall/nat/npt/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallCreateNAT1To1Rule":    {"PUT", "/firewall/nat/onetoone", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNAT1To1Rules":   {"DELETE", "/firewall/nat/onetoone/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallCreateNAT":            {"PUT", "/firewall/nat/port-forward", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateNAT":            {"POST", "/firewall/nat/port-forward/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNAT":            {"DELETE", "/firewall/nat/port-forward/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"GetFWInterfaces":              {"GET", "/firewall/rules/interface", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetFirewallRules":             {"GET", "/firewall/rules/interface/{interface}", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"AppendFirewallRule":           {"POST", "/firewall/rules/interface/{interface}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"UpdateFirewallRule":           {"PATCH", "/firewall/rules/interface/{interface}/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"DeleteFirewallRule":           {"DELETE", "/firewall/rules/interface/{interface}/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetSchedules":         {"GET", "/firewall/schedules", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddSchedule":          {"POST", "/firewall/schedules", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateSchedule":       {"PUT", "/firewall/schedules/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteSchedule":       {"DELETE", "/firewall/schedules/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetTrafficShaper":     {"GET", "/firewall/traffic-shaper", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetALTQ":              {"GET", "/firewall/traffic-shaper/altq", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddALTQ":              {"PUT", "/firewall/traffic-shaper/altq", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateALTQ":           {"POST", "/firewall/traffic-shaper/altq/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteALTQ":           {"DELETE", "/firewall/traffic-shaper/altq/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetLimiter":           {"GET", "/firewall/traffic-shaper/limiter", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddLimiter":           {"PUT", "/firewall/traffic-shaper/limiter", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateLimiter":        {"POST", "/firewall/traffic-shaper/limiter/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteLimiter":        {"DELETE", "/firewall/traffic-shaper/limiter/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetPFlow":             {"GET", "/firewall/pflow", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddPFlowExporter":     {"POST", "/firewall/pflow/exporters", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdatePFlowExporter":  {"PUT", "/firewall/pflow/exporters/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeletePFlowExporter":  {"DELETE", "/firewall/pflow/exporters/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetVirtualIPs":        {"GET", "/firewall/virtualip", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallSetVirtualIP":         {"POST", "/firewall/virtualip", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateVirtualIP":      {"PUT", "/firewall/virtualip/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteVirtualIP":      {"DELETE", "/firewall/virtualip/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"GetInterfaces":                {"GET", "/interfaces", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceAssignments":      {"GET", "/interfaces/assigned", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetHostInterfaces":            {"GET", "/interfaces/by-device", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceDescriptors":      {"GET", "/interfaces/descriptors", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetBridgeInterfaces":          {"GET", "/interfaces/bridge", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGIFs":                      {"GET", "/interfaces/gif", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGREs":                      {"GET", "/interfaces/gre", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceGroups":           {"GET", "/interfaces/groups", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetLAGGs":                     {"GET", "/interfaces/lagg", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetQinQs":                     {"GET", "/interfaces/qinq", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetVLANs":                     {"GET", "/interfaces/vlan", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetVXLANs":                    {"GET", "/interfaces/vxlan", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGateways":                  {"GET", "/system/gateways", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetStaticRoutes":              {"GET", "/system/routes/static", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDNSForwarderConfig":        {"GET", "/services/dnsmasq", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIGMPProxies":               {"GET", "/services/igmpproxy", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetMDNSConfig":                {"GET", "/services/mdns", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDhcpV4RelayConfig":         {"GET", "/services/dhcp-relay/v4", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDhcpV6RelayConfig":         {"GET", "/services/dhcp-relay/v6", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetRouterAdvSettings":         {"GET", "/services/radv", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDHCPLeases":                {"GET", "/services/dhcp/leases", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDnsResolverStatus":         {"GET", "/services/dnsresolver/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetNDPTable":                  {"GET", "/services/ndp", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetServicesStatus":            {"GET", "/services/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetUPnP":                      {"GET", "/services/upnp", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetUPnPStatus":                {"GET", "/services/upnp/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetServiceWatchdogServices":   {"GET", "/services/watchdog", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetSystemSummary":             {"GET", "/system", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetCertOptions":               {"GET", "/system/certoptions", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDirtySubsystems":           {"GET", "/system/config/dirty", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetFirmware":                  {"GET", "/system/firmware", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewayPriorities":         {"GET", "/system/gateways/group_priorities", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewayGroups":             {"GET", "/system/gateways/groups", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewaysStatus":            {"GET", "/system/gateways/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfacesStatus":          {"GET", "/system/interfaces/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetMonitoringDatasets":        {"GET", "/system/monitoring/datasets", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetQueueStats":                {"GET", "/system/queue/stats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetRoutesDirtyState":          {"GET", "/system/routes", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetStatus":                    {"GET", "/system/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIfStats":                   {"GET", "/system/status/ifstats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfacesWidgets":         {"GET", "/system/widgets/interfaces", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceStatisticsWidget": {"GET", "/system/widgets/interfacestats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIPSecWidget":               {"GET", "/system/widgets/ipsec", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetOpenVPNStatus":             {"GET", "/vpn/openvpn/status", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetWireGuard":                 {"GET", "/vpn/wg", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetNewWireGuardKeys":          {"GET", "/vpn/wg/genkeys", "internal/provider/ephemeral_wireguard/key_pair.go", "internal/provider/ephemeral_wireguard/key_pair_test.go", ""},
-	"SetWireGuardPeer":             {"PUT", "/vpn/wg/peer", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"UpdateWireGuardPeer":          {"POST", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"DeleteWireGuardPeer":          {"DELETE", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"SetWireGuardSettings":         {"POST", "/vpn/wg/settings", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetWireGuardStatus":           {"GET", "/vpn/wg/status", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"SetWireGuardTunnel":           {"PUT", "/vpn/wg/tunnel", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"UpdateWireGuardTunnel":        {"POST", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"DeleteWireGuardTunnel":        {"DELETE", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetWireGuardTunnelConf":       {"GET", "/vpn/wg/tunnel/{name}/conf", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
 }
 
 type operation struct {
@@ -184,40 +74,9 @@ func inventory(data []byte, mappings map[string]evidence) ([]operation, error) {
 	if len(spec.Paths) == 0 {
 		return nil, fmt.Errorf("specification has no paths")
 	}
-	methods := map[string]bool{"get": true, "put": true, "post": true, "delete": true, "options": true, "head": true, "patch": true, "trace": true}
-	var result []operation
-	seen := map[string]bool{}
-	matched := map[string]bool{}
-	for path, items := range spec.Paths {
-		if _, ok := items["$ref"]; ok {
-			return nil, fmt.Errorf("path reference is not supported: %s", path)
-		}
-		for method, node := range items {
-			if !methods[method] {
-				continue
-			}
-			var details struct {
-				ID string `yaml:"operationId"`
-			}
-			if err := node.Decode(&details); err != nil {
-				return nil, fmt.Errorf("%s %s: %w", method, path, err)
-			}
-			if details.ID != "" && seen[details.ID] {
-				return nil, fmt.Errorf("duplicate operation ID %q", details.ID)
-			}
-			if details.ID != "" {
-				seen[details.ID] = true
-			}
-			op := operation{Method: strings.ToUpper(method), Path: path, ID: details.ID}
-			if entry, ok := mappings[op.ID]; ok {
-				if op.Method != entry.Method || op.Path != entry.Path {
-					return nil, fmt.Errorf("mapping for %s does not match %s %s", op.ID, op.Method, op.Path)
-				}
-				op.Supported, op.Evidence = true, entry
-				matched[op.ID] = true
-			}
-			result = append(result, op)
-		}
+	result, matched, err := collectOperations(spec.Paths, mappings)
+	if err != nil {
+		return nil, err
 	}
 	for id := range mappings {
 		if !matched[id] {
@@ -236,6 +95,64 @@ func inventory(data []byte, mappings map[string]evidence) ([]operation, error) {
 	return result, nil
 }
 
+func collectOperations(
+	paths map[string]map[string]yaml.Node, mappings map[string]evidence,
+) ([]operation, map[string]bool, error) {
+	var result []operation
+	seen := map[string]bool{}
+	matched := map[string]bool{}
+	for path, items := range paths {
+		if _, ok := items["$ref"]; ok {
+			return nil, nil, fmt.Errorf("path reference is not supported: %s", path)
+		}
+		for method, node := range items {
+			if !isHTTPMethod(method) {
+				continue
+			}
+			op, err := collectOperation(method, path, node, mappings, seen, matched)
+			if err != nil {
+				return nil, nil, err
+			}
+			result = append(result, op)
+		}
+	}
+	return result, matched, nil
+}
+
+func isHTTPMethod(method string) bool {
+	switch method {
+	case "get", "put", "post", "delete", "options", "head", "patch", "trace":
+		return true
+	}
+	return false
+}
+
+func collectOperation(
+	method, path string, node yaml.Node, mappings map[string]evidence, seen, matched map[string]bool,
+) (operation, error) {
+	var details struct {
+		ID string `yaml:"operationId"`
+	}
+	if err := node.Decode(&details); err != nil {
+		return operation{}, fmt.Errorf("%s %s: %w", method, path, err)
+	}
+	if details.ID != "" && seen[details.ID] {
+		return operation{}, fmt.Errorf("duplicate operation ID %q", details.ID)
+	}
+	if details.ID != "" {
+		seen[details.ID] = true
+	}
+	op := operation{Method: strings.ToUpper(method), Path: path, ID: details.ID}
+	if entry, ok := mappings[op.ID]; ok {
+		if op.Method != entry.Method || op.Path != entry.Path {
+			return operation{}, fmt.Errorf("mapping for %s does not match %s %s", op.ID, op.Method, op.Path)
+		}
+		op.Supported, op.Evidence = true, entry
+		matched[op.ID] = true
+	}
+	return op, nil
+}
+
 func validateEvidence(mappings map[string]evidence) error {
 	for id, entry := range mappings {
 		source, err := os.ReadFile(entry.Source)
@@ -250,67 +167,6 @@ func validateEvidence(mappings map[string]evidence) error {
 		}
 	}
 	return nil
-}
-
-func filterProfile(data []byte) ([]byte, int64, int64, error) {
-	scanner := bufio.NewScanner(bytes.NewReader(data))
-	if !scanner.Scan() || !strings.HasPrefix(scanner.Text(), "mode: ") {
-		return nil, 0, 0, fmt.Errorf("invalid coverage profile header")
-	}
-	var out bytes.Buffer
-	fmt.Fprintln(&out, scanner.Text())
-	generated := map[string]bool{}
-	var covered, total int64
-	for scanner.Scan() {
-		line := scanner.Text()
-		fields := strings.Fields(line)
-		if len(fields) != 3 {
-			return nil, 0, 0, fmt.Errorf("invalid profile line %q", line)
-		}
-		pos := strings.LastIndex(fields[0], ":")
-		if pos < 0 || !strings.HasPrefix(fields[0], module) {
-			return nil, 0, 0, fmt.Errorf("unexpected profile path %q", fields[0])
-		}
-		path := strings.TrimPrefix(fields[0][:pos], module)
-		if strings.HasPrefix(path, "tools/coverage/") {
-			continue
-		}
-		isGenerated, ok := generated[path]
-		if !ok {
-			file, err := parser.ParseFile(token.NewFileSet(), filepath.FromSlash(path), nil, parser.ParseComments)
-			if err != nil {
-				return nil, 0, 0, fmt.Errorf("parse coverage source %s: %w", path, err)
-			}
-			isGenerated = ast.IsGenerated(file)
-			generated[path] = isGenerated
-		}
-		if isGenerated {
-			continue
-		}
-		num, err := strconv.ParseInt(fields[1], 10, 64)
-		if err != nil || num < 0 {
-			return nil, 0, 0, fmt.Errorf("invalid statement count in %q", line)
-		}
-		count, err := strconv.ParseInt(fields[2], 10, 64)
-		if err != nil || count < 0 {
-			return nil, 0, 0, fmt.Errorf("invalid execution count in %q", line)
-		}
-		if num == 0 {
-			continue
-		}
-		total += num
-		if count > 0 {
-			covered += num
-		}
-		fmt.Fprintln(&out, line)
-	}
-	if err := scanner.Err(); err != nil {
-		return nil, 0, 0, err
-	}
-	if total == 0 {
-		return nil, 0, 0, fmt.Errorf("coverage profile contains no eligible statements")
-	}
-	return out.Bytes(), covered, total, nil
 }
 
 func writeBadge(path string, value badge) error {
@@ -336,44 +192,72 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	raw, err := os.ReadFile(os.Args[1])
-	if err != nil {
-		return err
-	}
-	profile, covered, total, err := filterProfile(raw)
+	profile, covered, total, err := readProfile(os.Args[1])
 	if err != nil {
 		return err
 	}
 	dir := os.Args[2]
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := writeUnitProfile(dir, profile); err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(dir, "unit.out"), profile, 0o644); err != nil {
+	unit, api, err := writeCoverageBadges(dir, covered, total, len(ops))
+	if err != nil {
 		return err
 	}
+	if err := writeAPIReport(dir, ops, api); err != nil {
+		return err
+	}
+	printCoverage(covered, total, unit, api, len(ops))
+	return nil
+}
+
+func printCoverage(covered, total int64, unit, api badge, operations int) {
+	fmt.Printf(
+		"Unit statements: %d/%d (%s); Nexus operations: %d/%d (%s); acceptance: unavailable\n",
+		covered,
+		total,
+		unit.Message,
+		len(implemented),
+		operations,
+		api.Message,
+	)
+}
+
+func writeCoverageBadges(dir string, covered, total int64, operations int) (badge, badge, error) {
 	unit, err := coverageBadge("unit", covered, total)
 	if err != nil {
-		return err
+		return badge{}, badge{}, err
 	}
-	api, err := coverageBadge("Nexus API", int64(len(implemented)), int64(len(ops)))
+	api, err := coverageBadge("Nexus API", int64(len(implemented)), int64(operations))
 	if err != nil {
-		return err
+		return badge{}, badge{}, err
 	}
 	acceptance, err := coverageBadge("acceptance", 0, 0)
 	if err != nil {
-		return err
+		return badge{}, badge{}, err
 	}
 	badgeDir := filepath.Join(dir, "badges")
 	if err := os.MkdirAll(badgeDir, 0o755); err != nil {
-		return err
+		return badge{}, badge{}, err
 	}
 	for name, value := range map[string]badge{"unit.json": unit, "api.json": api, "acceptance.json": acceptance} {
 		if err := writeBadge(filepath.Join(badgeDir, name), value); err != nil {
-			return err
+			return badge{}, badge{}, err
 		}
 	}
+	return unit, api, nil
+}
+
+func writeAPIReport(dir string, ops []operation, api badge) error {
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 📊 Nexus API operation coverage\n\nImplemented: %d/%d (%s). Mock-tested means an offline test exists; manually observed is not live acceptance coverage.\n\n| Method | Path | Operation ID | Implemented | Mock test | Live evidence |\n| --- | --- | --- | --- | --- | --- |\n", len(implemented), len(ops), api.Message)
+	fmt.Fprintf(
+		&report,
+		"# 📊 Nexus API operation coverage\n\nImplemented: %d/%d (%s). "+
+			"Mock-tested means an offline test exists; manually observed is not live acceptance coverage.\n\n"+
+			"| Method | Path | Operation ID | Implemented | Mock test | Live evidence |\n"+
+			"| --- | --- | --- | --- | --- | --- |\n",
+		len(implemented), len(ops), api.Message,
+	)
 	for _, op := range ops {
 		source, test, live := "-", "-", "-"
 		if op.Supported {
@@ -384,11 +268,7 @@ func run() error {
 		}
 		fmt.Fprintf(&report, "| %s | `%s` | %s | %s | %s | %s |\n", op.Method, op.Path, op.ID, source, test, live)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "api-report.md"), []byte(report.String()), 0o644); err != nil {
-		return err
-	}
-	fmt.Printf("Unit statements: %d/%d (%s); Nexus operations: %d/%d (%s); acceptance: unavailable\n", covered, total, unit.Message, len(implemented), len(ops), api.Message)
-	return nil
+	return os.WriteFile(filepath.Join(dir, "api-report.md"), []byte(report.String()), 0o644)
 }
 
 func main() {

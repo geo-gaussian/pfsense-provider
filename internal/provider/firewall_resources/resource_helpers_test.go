@@ -76,7 +76,11 @@ func TestValueToGo(t *testing.T) {
 			}),
 			want: []any{"value"}, include: true,
 		},
-		{name: "unsupported", value: tftypes.NewValue(tupleType, []tftypes.Value{tftypes.NewValue(tftypes.String, "value")}), wantErr: true},
+		{
+			name:    "unsupported",
+			value:   tftypes.NewValue(tupleType, []tftypes.Value{tftypes.NewValue(tftypes.String, "value")}),
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range cases {
@@ -172,19 +176,27 @@ func TestMatchAndStateHelpers(t *testing.T) {
 		NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{},
 		}},
-	}, []any{map[string]any{}}, []any{map[string]any{"name": "prior"}}); !reflect.DeepEqual(got, []any{map[string]any{"name": "prior"}}) {
+	}, []any{map[string]any{}}, []any{map[string]any{"name": "prior"}}); !reflect.DeepEqual(
+		got, []any{map[string]any{"name": "prior"}},
+	) {
 		t.Fatalf("completeAttribute() list result = %#v", got)
 	}
 	if got := completeAttribute(schema.StringAttribute{}, "actual", nil); got != "actual" {
 		t.Fatalf("completeAttribute() = %#v", got)
 	}
-	if got := completeAttribute(schema.ListNestedAttribute{}, []any{"not an object"}, nil); !reflect.DeepEqual(got, []any{"not an object"}) {
+	if got := completeAttribute(schema.ListNestedAttribute{}, []any{"not an object"}, nil); !reflect.DeepEqual(
+		got,
+		[]any{"not an object"},
+	) {
 		t.Fatalf("completeAttribute() malformed list = %#v", got)
 	}
 	listAttribute := schema.ListNestedAttribute{NestedObject: schema.NestedAttributeObject{
 		Attributes: map[string]schema.Attribute{"name": schema.StringAttribute{}},
 	}}
-	if got := completeAttribute(listAttribute, []any{"invalid", map[string]any{}}, []any{"not a map"}); !reflect.DeepEqual(got, []any{"invalid", map[string]any{"name": nil}}) {
+	if got := completeAttribute(listAttribute, []any{"invalid", map[string]any{}}, []any{"not a map"}); !reflect.DeepEqual(
+		got,
+		[]any{"invalid", map[string]any{"name": nil}},
+	) {
 		t.Fatalf("completeAttribute() without a matching prior map = %#v", got)
 	}
 	if got := completeAttribute(listAttribute, "not a list", nil); got != "not a list" {
@@ -370,9 +382,15 @@ func TestResponseAndIdentityHelpers(t *testing.T) {
 		{name: "nil", wantErr: true},
 		{name: "http error", result: stubResponse{status: http.StatusBadRequest, body: []byte(`{}`)}, wantErr: true},
 		{name: "invalid json", result: stubResponse{status: http.StatusOK, body: []byte("{")}, wantErr: true},
-		{name: "error message", result: stubResponse{status: http.StatusOK, body: []byte(`{"errmsg":"denied"}`)}, wantErr: true},
+		{
+			name: "error message", result: stubResponse{status: http.StatusOK, body: []byte(`{"errmsg":"denied"}`)},
+			wantErr: true,
+		},
 		{name: "empty message", result: stubResponse{status: http.StatusOK, body: []byte(`{"msg":""}`)}, wantErr: true},
-		{name: "error status", result: stubResponse{status: http.StatusOK, body: []byte(`{"status":"Failed"}`)}, wantErr: true},
+		{
+			name: "error status", result: stubResponse{status: http.StatusOK, body: []byte(`{"status":"Failed"}`)},
+			wantErr: true,
+		},
 		{name: "success", result: stubResponse{status: http.StatusOK, body: []byte(`{"msg":"ok"}`)}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -406,7 +424,10 @@ func TestResponseAndIdentityHelpers(t *testing.T) {
 
 func TestReadItemSelectionAndErrors(t *testing.T) {
 	ctx := context.Background()
-	goodResponse := stubResponse{status: http.StatusOK, body: []byte(`{"items":[{"item":{"id":"one","name":"rule","source":{"address":"192.0.2.1"}}}]}`)}
+	goodResponse := stubResponse{
+		status: http.StatusOK,
+		body:   []byte(`{"items":[{"item":{"id":"one","name":"rule","source":{"address":"192.0.2.1"}}}]}`),
+	}
 	tests := []struct {
 		name         string
 		result       response
@@ -417,15 +438,32 @@ func TestReadItemSelectionAndErrors(t *testing.T) {
 		wantNotFound bool
 	}{
 		{name: "key lookup", result: goodResponse, selector: map[string]any{"id": "one"}, wantErr: false},
-		{name: "attribute lookup", result: goodResponse, selector: map[string]any{"name": "rule", "source": map[string]any{"address": "192.0.2.1"}}, match: true},
+		{
+			name:     "attribute lookup",
+			result:   goodResponse,
+			selector: map[string]any{"name": "rule", "source": map[string]any{"address": "192.0.2.1"}},
+			match:    true,
+		},
 		{name: "read error", readErr: errors.New("offline"), wantErr: true},
 		{name: "nil response", wantErr: true},
 		{name: "not found response", result: stubResponse{status: http.StatusNotFound}, wantErr: true, wantNotFound: true},
 		{name: "http error", result: stubResponse{status: http.StatusBadRequest}, wantErr: true},
 		{name: "invalid json", result: stubResponse{status: http.StatusOK, body: []byte("{")}, wantErr: true},
 		{name: "invalid collection", result: stubResponse{status: http.StatusOK, body: []byte(`{}`)}, wantErr: true},
-		{name: "missing selector item", result: goodResponse, selector: map[string]any{"id": "missing"}, wantErr: true, wantNotFound: true},
-		{name: "no attribute match", result: goodResponse, selector: map[string]any{"name": "other"}, match: true, wantErr: true},
+		{
+			name:         "missing selector item",
+			result:       goodResponse,
+			selector:     map[string]any{"id": "missing"},
+			wantErr:      true,
+			wantNotFound: true,
+		},
+		{
+			name:     "no attribute match",
+			result:   goodResponse,
+			selector: map[string]any{"name": "other"},
+			match:    true,
+			wantErr:  true,
+		},
 		{
 			name: "ambiguous attribute match",
 			result: stubResponse{status: http.StatusOK, body: []byte(`{"items":[

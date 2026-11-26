@@ -18,9 +18,10 @@ function commandIssues(line: string): string[] {
 	if (/^\s*#/.test(line)) return issues;
 
 	if (
-		/\b(?:python(?:3(?:\.\d+)?)?|node|ruby|perl|bash|sh)\s+(?:--[\w-]+(?:=\S+)?\s+)*-(?:c|e|p|-eval|-print)(?:\s|=|["']|$)/.test(
-			line,
-		) ||
+		new RegExp(
+			String.raw`\b(?:python(?:3(?:\.\d+)?)?|node|ruby|perl|bash|sh)\s+` +
+				String.raw`(?:--[\w-]+(?:=\S+)?\s+)*-(?:c|e|p|-eval|-print)(?:\s|=|["']|$)`,
+		).test(line) ||
 		/\b(?:python(?:3)?|node|ruby|perl|bash|sh)\s+[^#\n]*<<-?\s*['"]?[A-Za-z_]/.test(
 			line,
 		)
@@ -50,23 +51,7 @@ export function findInlinePrograms(filename: string, text: string): string[] {
 		issues.push(`${name}:${line}: ${message}`);
 
 	if (path.posix.basename(name) === "package.json") {
-		const manifest: unknown = JSON.parse(text);
-		if (
-			typeof manifest === "object" &&
-			manifest !== null &&
-			"scripts" in manifest &&
-			typeof manifest.scripts === "object" &&
-			manifest.scripts !== null
-		) {
-			for (const [script, command] of Object.entries(manifest.scripts)) {
-				if (typeof command === "string") {
-					for (const issue of commandIssues(command)) {
-						record(1, `${script}: ${issue}`);
-					}
-				}
-			}
-		}
-		return issues;
+		return findManifestPrograms(name, text);
 	}
 
 	if (name.endsWith(".go") && !name.endsWith("_gen.go")) {
@@ -85,6 +70,34 @@ export function findInlinePrograms(filename: string, text: string): string[] {
 		return issues;
 	}
 
+	return findShellPrograms(name, text);
+}
+
+function findManifestPrograms(name: string, text: string): string[] {
+	const issues: string[] = [];
+	const manifest: unknown = JSON.parse(text);
+	if (
+		typeof manifest === "object" &&
+		manifest !== null &&
+		"scripts" in manifest &&
+		typeof manifest.scripts === "object" &&
+		manifest.scripts !== null
+	) {
+		for (const [script, command] of Object.entries(manifest.scripts)) {
+			if (typeof command === "string") {
+				for (const issue of commandIssues(command)) {
+					issues.push(`${name}:1: ${script}: ${issue}`);
+				}
+			}
+		}
+	}
+	return issues;
+}
+
+function findShellPrograms(name: string, text: string): string[] {
+	const issues: string[] = [];
+	const record = (line: number, message: string) =>
+		issues.push(`${name}:${line}: ${message}`);
 	const workflow =
 		name.startsWith(".github/workflows/") && /\.ya?ml$/.test(name);
 	const shell =
@@ -101,20 +114,7 @@ export function findInlinePrograms(filename: string, text: string): string[] {
 			if (!run) continue;
 			const content = run[2];
 			if (/^[|>][-+]?\s*(?:#.*)?$/.test(content)) {
-				const body: string[] = [];
-				let next = index + 1;
-				while (next < lines.length) {
-					const candidate = lines[next];
-					if (
-						candidate.trim() &&
-						candidate.length - candidate.trimStart().length <= run[1].length
-					)
-						break;
-					if (candidate.trim() && !candidate.trimStart().startsWith("#")) {
-						body.push(candidate.trim());
-					}
-					next++;
-				}
+				const { body, next } = workflowBody(lines, index + 1, run[1].length);
 				if (body.length > 1) record(index + 1, "multiline workflow program");
 				for (const command of body) {
 					for (const issue of commandIssues(command)) record(index + 1, issue);
@@ -128,6 +128,28 @@ export function findInlinePrograms(filename: string, text: string): string[] {
 		}
 	}
 	return issues;
+}
+
+function workflowBody(
+	lines: string[],
+	start: number,
+	indent: number,
+): { body: string[]; next: number } {
+	const body: string[] = [];
+	let next = start;
+	while (next < lines.length) {
+		const candidate = lines[next];
+		if (
+			candidate.trim() &&
+			candidate.length - candidate.trimStart().length <= indent
+		)
+			break;
+		if (candidate.trim() && !candidate.trimStart().startsWith("#")) {
+			body.push(candidate.trim());
+		}
+		next++;
+	}
+	return { body, next };
 }
 
 function main(): void {

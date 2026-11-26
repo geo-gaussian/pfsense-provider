@@ -34,7 +34,11 @@ type dataSource struct {
 var _ datasource.DataSource = &dataSource{}
 var _ datasource.DataSourceWithConfigure = &dataSource{}
 
-func newDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+func newDataSource(
+	typeName, description string,
+	arguments map[string]schema.Attribute,
+	read readFunc,
+) datasource.DataSource {
 	return newDataSourceWithJSONDescription(
 		typeName,
 		description,
@@ -45,12 +49,17 @@ func newDataSource(typeName, description string, arguments map[string]schema.Att
 	)
 }
 
-func newSensitiveDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+func newSensitiveDataSource(
+	typeName, description string,
+	arguments map[string]schema.Attribute,
+	read readFunc,
+) datasource.DataSource {
 	return newDataSourceWithJSONDescription(
 		typeName,
 		description,
 		arguments,
-		"The complete API response as sensitive JSON. Use jsondecode() to access its fields. Protect Terraform state and saved plans.",
+		"The complete API response as sensitive JSON. Use jsondecode() to access its fields. "+
+			"Protect Terraform state and saved plans.",
 		true,
 		read,
 	)
@@ -99,7 +108,10 @@ func (d *dataSource) Configure(_ context.Context, req datasource.ConfigureReques
 	}
 	client, ok := req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The read-only data source received an unexpected API client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The read-only data source received an unexpected API client.",
+		)
 		return
 	}
 	d.client = client
@@ -117,17 +129,10 @@ func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 		return
 	}
 
-	configuredAttributes := configured.Attributes()
-	arguments := make(map[string]string, len(d.arguments))
-	state := make(map[string]attr.Value, len(d.arguments)+1)
-	for name := range d.arguments {
-		value, ok := configuredAttributes[name].(types.String)
-		if !ok || value.IsNull() || value.IsUnknown() {
-			resp.Diagnostics.AddError("Invalid data source argument", fmt.Sprintf("Argument %q must be a known string value.", name))
-			return
-		}
-		arguments[name] = value.ValueString()
-		state[name] = value
+	arguments, state, err := d.readArguments(configured)
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid data source argument", err.Error())
+		return
 	}
 
 	result, err := d.read(ctx, d.client, arguments)
@@ -151,6 +156,21 @@ func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 
 	state["json"] = types.StringValue(string(body))
 	setReadState(ctx, state, resp)
+}
+
+func (d *dataSource) readArguments(configured types.Object) (map[string]string, map[string]attr.Value, error) {
+	configuredAttributes := configured.Attributes()
+	arguments := make(map[string]string, len(d.arguments))
+	state := make(map[string]attr.Value, len(d.arguments)+1)
+	for name := range d.arguments {
+		value, ok := configuredAttributes[name].(types.String)
+		if !ok || value.IsNull() || value.IsUnknown() {
+			return nil, nil, fmt.Errorf("Argument %q must be a known string value.", name)
+		}
+		arguments[name] = value.ValueString()
+		state[name] = value
+	}
+	return arguments, state, nil
 }
 
 func setReadState(ctx context.Context, state map[string]attr.Value, resp *datasource.ReadResponse) {

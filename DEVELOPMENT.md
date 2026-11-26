@@ -23,6 +23,105 @@ not a parser for every language or a guarantee that all embedded programs are
 detected. Review changes manually, including other string forms and subprocess
 argument lists.
 
+## 📏 Keeping code maintainable
+
+Hand-written Go, JavaScript, TypeScript, POSIX shell, and jq source and tests
+must not exceed 120 Unicode characters per physical line. Tabs count as one
+character; CRLF line endings do not count towards the length. The check covers
+`.go`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.mts`, `.cts`, `.sh`,
+and `.jq` files, as well as files under `.githooks/`.
+
+Generated Go and marked JavaScript or TypeScript files, fixture directories,
+and Spec Kit-managed scripts are excluded. The hand-written
+[`evidence.go`](tools/coverage/evidence.go) is the approved exception: its
+operation mappings are retained as a readable, sorted table. Other source files
+have no line-length exceptions.
+
+`pnpm run lint:lines` checks the working tree; `pnpm run lint:lines:staged`
+checks the Git index. The installed pre-commit hook runs both, and CI runs the
+working-tree check. Lines above the limit block commits and merges.
+`.editorconfig` provides editor guidance; the checker enforces the rule.
+Prettier retains its existing 80-column formatting target.
+
+The constitution and [AGENTS.md](AGENTS.md) define these physical-line limits.
+Individual warnings are non-blocking; errors always block commits and merges.
+The aggregate warning budget described below also blocks them at three warnings.
+
+| Scope | Warning above | Error above |
+| --- | ---: | ---: |
+| Production file | 350 | 500 |
+| Production function | 40 | 80 |
+| Test file | 500 | 600 |
+| Test function, including helpers | 100 | 150 |
+
+Comments and blank lines count. Function lengths run from the declaration
+through the end of the definition, including nested closures; nested functions
+are also checked individually. A value equal to a limit does not exceed it.
+
+`pnpm run lint:size` checks Go, TypeScript, JavaScript, and POSIX shell files
+and functions, and jq file sizes. Go `_test.go` files and JavaScript or
+TypeScript `.test` and `.spec` files use the test limits. Shell and jq files
+use production limits. The shell check parses POSIX syntax; it is not a
+complete portability or shebang check.
+
+The checker skips generated Go files and TypeScript or JavaScript files marked
+with the supported generated-code header. It also skips Spec Kit-managed
+scripts and the repository's fixture directories. Lockfiles and API
+specifications are outside its source-file scope. These exclusions apply to
+size checks only: other lint and project rules still apply to fixtures.
+Any exception for hand-written code must identify the specific file or
+function, explain why it is needed, and receive reviewer approval. The checker
+does not provide a general suppression mechanism; an exception also requires a
+reviewed checker change.
+
+The five-line [`current-commit-sha.jq`](scripts/current-commit-sha.jq) filter
+has no functions; jq function sizes are not checked automatically. Review any
+added jq functions manually until jq parsing is supported. Spec Kit-managed
+scripts are excluded because they are maintained upstream.
+
+### 🚦 Lint warning budget
+
+`pnpm run lint` fails when its lint commands collectively emit three or more
+warnings, even if each individual command succeeds. It preserves their output
+and still fails on any command error. In GitHub Actions it also emits an error
+annotation when the budget is exceeded. The lint job is required for merging.
+
+The budget recognises GitHub `::warning` annotations and warning-labelled text
+such as `warning:`, `[warn]`, `file: warning:`, and `npm WARN`, on either output
+stream. It also recognises runtime warning types such as `DeprecationWarning`
+and line-and-column diagnostics. New lint tools must use a recognised format or
+provide an adapter and tests: unlabelled messages cannot reliably be identified
+as warnings. Warnings from workflow setup actions outside the lint command are
+not included.
+
+`pnpm run lint:staged` applies the same budget to staged line and size checks.
+The pre-commit hook runs it and then runs `pnpm run lint` on the working tree;
+the two counts are separate, so the same finding is not counted twice. Direct
+individual checks, including `pnpm run lint:size`, report findings without
+applying the aggregate budget.
+
+In GitHub Actions, size findings appear as warning or error annotations matching
+their threshold. Locally, findings are printed as plain text.
+
+```mermaid
+flowchart LR
+  Staged[Staged line and size checks] -->|Fewer than 3 warnings| Lint[Working-tree lint]
+  Lint -->|Fewer than 3 warnings| Test[Working-tree tests]
+  Staged -->|Error or 3 or more warnings| Stop[Commit blocked]
+  Lint -->|Error or 3 or more warnings| Stop
+  Test -->|Error| Stop
+  Test -->|Pass| Commit[Commit proceeds]
+```
+
+`pnpm run lint:size` checks tracked and non-ignored untracked files in the
+working tree. The installed pre-commit hook also runs
+`pnpm run lint:staged` against the Git index, so an unstaged edit cannot
+conceal an oversized staged file. The hook then runs the full lint and test
+commands on the working tree; unstaged changes can therefore also block a
+commit. Run `pnpm run setup-hooks` after cloning to install the hook. The CI
+lint job runs the working-tree checks, and the default-branch ruleset requires
+that job to pass before merging.
+
 ## 🔌 Adding a New Resource via `tfplugingen-openapi`
 
 1. Locate the target operations and methods in `docs/nexus.openapi.yaml`.
@@ -30,10 +129,10 @@ argument lists.
    the necessary operation IDs in `oapi-codegen.yaml`. Use the existing alias
    mapping as an example; methods and paths vary by endpoint.
 3. Run `make generate`, which uses the repository's pinned generator versions.
-   The current HashiCorp codegen mapping generates the alias resource; selected
-   read-only data sources and WireGuard resources use custom Terraform
-   Framework code. Review generated changes and preserve custom resource
-   lifecycle code.
+   The HashiCorp mapping generates schemas for the mapped firewall resources;
+   their lifecycle code, read-only data sources, and WireGuard resources use
+   custom Terraform Framework code. Review generated changes and preserve
+   custom resource lifecycle code and registration.
 4. Implement the lifecycle and import methods, register the resource in
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.
@@ -64,8 +163,10 @@ argument lists.
 ## 🔐 WireGuard resources and ephemeral keys
 
 The WireGuard settings, tunnel, and peer resources are custom Terraform
-Framework implementations. Their write-only private and preshared keys must be
-marked sensitive and retained from prior state when GET responses mask them.
+Framework implementations. Tunnel private and peer preshared keys are
+sensitive, optional and computed, not Terraform write-only attributes. They can
+remain in state and are retained from prior state when GET responses omit them
+or return empty values. Protect state and saved plans.
 WireGuard key generation is an action exposed as an ephemeral resource, not a
 repeatable data source. Use `NexusClient.DoRequest` for every API operation;
 the OpenAPI contract currently defines no WireGuard-specific apply endpoint.
@@ -87,7 +188,8 @@ For example, the alias resource imports by `name`.
 
 ## 🔒 Preventing Secret Wipeouts on `Read()`
 
-When Netgate's API omits write-only secrets (like WireGuard `privatekey`) from `GET` responses, preserve prior state:
+When Netgate's API omits secrets (such as WireGuard `privatekey`) from `GET`
+responses or returns an empty value, preserve prior state:
 
 ```go
 if apiResp.PrivateKey != "" {

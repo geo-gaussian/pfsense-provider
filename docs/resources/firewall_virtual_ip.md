@@ -26,8 +26,8 @@ resource "pfsense_firewall_virtual_ip" "service" {
   settings.
 - `uniqid` (Optional) API uniqueness identifier.
 - `password` and `password_confirm` (Optional, Sensitive) CARP password values.
-  If the API masks or omits them on read, the provider retains the existing
-  state values.
+  If the API omits them or returns empty values on read, the provider retains
+  the existing state values. Protect Terraform state and saved plans.
 
 Mutations initiate a firewall filter reload but do not confirm completion.
 

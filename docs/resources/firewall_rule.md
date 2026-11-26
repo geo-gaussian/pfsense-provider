@@ -27,7 +27,7 @@ resource "pfsense_firewall_rule" "https" {
 ## ⚙️ Argument Reference
 
 - `id` (Optional, Computed) API rule identifier.
-- `interface` (Optional) Interface containing the rule. Changing the interface
+- `interface` (Required) Interface containing the rule. Changing the interface
   replaces the resource.
 - `type`, `ipprotocol`, `protocol`, `direction`, `gateway`, and `sched`
   (Optional) Rule action and matching settings.

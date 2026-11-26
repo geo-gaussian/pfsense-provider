@@ -37,10 +37,37 @@ func TestConfigure(t *testing.T) {
 		insecure    interface{}
 		wantSummary string
 	}{
-		{name: "valid", url: "https://example.test", username: "test-user", password: strings.Repeat("x", 12), insecure: false},
-		{name: "unknown URL", url: tftypes.UnknownValue, username: "test-user", password: "x", insecure: false, wantSummary: "Unknown provider configuration"},
-		{name: "invalid URL", url: "http://example.test", username: "test-user", password: "x", insecure: false, wantSummary: "Invalid provider configuration"},
-		{name: "empty password", url: "https://example.test", username: "test-user", password: "", insecure: false, wantSummary: "Invalid provider configuration"},
+		{
+			name:     "valid",
+			url:      "https://example.test",
+			username: "test-user",
+			password: strings.Repeat("x", 12),
+			insecure: false,
+		},
+		{
+			name:        "unknown URL",
+			url:         tftypes.UnknownValue,
+			username:    "test-user",
+			password:    "x",
+			insecure:    false,
+			wantSummary: "Unknown provider configuration",
+		},
+		{
+			name:        "invalid URL",
+			url:         "http://example.test",
+			username:    "test-user",
+			password:    "x",
+			insecure:    false,
+			wantSummary: "Invalid provider configuration",
+		},
+		{
+			name:        "empty password",
+			url:         "https://example.test",
+			username:    "test-user",
+			password:    "",
+			insecure:    false,
+			wantSummary: "Invalid provider configuration",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -65,7 +92,12 @@ func TestConfigure(t *testing.T) {
 			ephemeralClient, ephemeralOK := resp.EphemeralResourceData.(*api.ClientWithResponses)
 			if !ok || !ephemeralOK || client == nil || ephemeralClient != client ||
 				resp.ResourceData != resp.DataSourceData || resp.ResourceData != resp.EphemeralResourceData {
-				t.Fatalf("unexpected configured clients: resource=%#v data source=%#v ephemeral=%#v", resp.ResourceData, resp.DataSourceData, resp.EphemeralResourceData)
+				t.Fatalf(
+					"unexpected configured clients: resource=%#v data source=%#v ephemeral=%#v",
+					resp.ResourceData,
+					resp.DataSourceData,
+					resp.EphemeralResourceData,
+				)
 			}
 		})
 	}

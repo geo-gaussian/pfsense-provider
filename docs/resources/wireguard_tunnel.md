@@ -31,9 +31,9 @@ resource "pfsense_wireguard_tunnel" "site" {
 
 - `name` (Required) Tunnel name. Changing it replaces the resource.
 - `privatekey` (Optional, Sensitive) Tunnel private key. It must be provided
-  when creating or updating a tunnel. If the API masks it during reads, the
-  provider retains its prior state value. Sensitive values are still stored in
-  Terraform state; protect state and saved plans.
+  when creating or updating a tunnel. If the API omits it or returns an empty
+  value during reads, the provider retains its prior state value. Sensitive
+  values can remain in Terraform state; protect state and saved plans.
 - `publickey` (Required) Tunnel public key.
 - `descr` (Optional) Tunnel description.
 - `enabled` (Optional) Whether the tunnel is enabled.
@@ -45,8 +45,9 @@ resource "pfsense_wireguard_tunnel" "site" {
 
 ## 📥 Import
 
-Import an existing tunnel by name. If the API masks its private key, supply the
-key in configuration before making changes that require a tunnel write.
+Import an existing tunnel by name. If the API omits its private key or returns
+an empty value, supply the key in configuration before making changes that
+require a tunnel write.
 
 ```shell
 terraform import pfsense_wireguard_tunnel.site wg0

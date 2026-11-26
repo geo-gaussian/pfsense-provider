@@ -5,13 +5,17 @@ filter rules, schedules, traffic shapers, limiters, packet-flow exporters,
 virtual IPs, and WireGuard settings, tunnels, and peers. It reads selected
 firewall, network, service, VPN, and system configuration or status through the
 Nexus controller's local firewall API. WireGuard key generation is available
-as an ephemeral resource. Read-only data sources return JSON for use with
-Terraform's `jsondecode()` function. See [`resources/`](resources/),
+as an ephemeral resource. The alias data source returns a typed list; most
+other read-only data sources return JSON for use with Terraform's
+`jsondecode()` function. See [`resources/`](resources/),
 [`ephemeral-resources/`](ephemeral-resources/), and
 [`data-sources/`](data-sources/) for details.
 
 !> Firewall and WireGuard mutations have only been tested against mock
 servers. Do not use these resources on a production firewall.
+
+Terraform 1.8 or later is required; WireGuard ephemeral key generation requires
+Terraform 1.10 or later, and list-resource discovery requires 1.14 or later.
 
 ## 🔥 Managed Firewall Resources
 

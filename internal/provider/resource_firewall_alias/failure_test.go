@@ -18,66 +18,163 @@ type mockResponse struct {
 	body   string
 }
 
+type lifecycleFailureCase struct {
+	name        string
+	operation   string
+	responses   map[string]mockResponse
+	cancel      bool
+	wantSummary string
+}
+
+var lifecycleFailureCases = []lifecycleFailureCase{
+	{"create transport failure", "create", nil, true, "Unable to create alias"},
+	{
+		"create rejected",
+		"create",
+		map[string]mockResponse{"PUT /aliases": {500, `{}`}},
+		false,
+		"Unable to create alias",
+	},
+	{
+		"create invalid result",
+		"create",
+		map[string]mockResponse{"PUT /aliases": {200, `{}`}},
+		false,
+		"Unable to create alias",
+	},
+	{
+		"create reload failure",
+		"create",
+		map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}},
+		false,
+		"Alias created but firewall reload failed",
+	},
+	{
+		"create missing on verification",
+		"create",
+		map[string]mockResponse{"GET /aliases/example": {404, `{}`}},
+		false,
+		"Unable to verify created alias",
+	},
+	{
+		"create truncated on verification",
+		"create",
+		map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}},
+		false,
+		"Unable to read created alias",
+	},
+	{"read transport failure", "read", nil, true, "Unable to read alias"},
+	{
+		"read rejected",
+		"read",
+		map[string]mockResponse{"GET /aliases/example": {500, `{}`}},
+		false,
+		"Unable to read alias",
+	},
+	{
+		"read truncated",
+		"read",
+		map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}},
+		false,
+		"Unable to read alias",
+	},
+	{"read success", "read", nil, false, ""},
+	{"update transport failure", "update", nil, true, "Unable to update alias"},
+	{
+		"update rejected",
+		"update",
+		map[string]mockResponse{"POST /aliases/example": {500, `{}`}},
+		false,
+		"Unable to update alias",
+	},
+	{
+		"update invalid result",
+		"update",
+		map[string]mockResponse{"POST /aliases/example": {200, `{}`}},
+		false,
+		"Unable to update alias",
+	},
+	{
+		"update reload failure",
+		"update",
+		map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}},
+		false,
+		"Alias updated but firewall reload failed",
+	},
+	{
+		"update missing on verification",
+		"update",
+		map[string]mockResponse{"GET /aliases/example": {404, `{}`}},
+		false,
+		"Unable to verify updated alias",
+	},
+	{
+		"update truncated on verification",
+		"update",
+		map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}},
+		false,
+		"Unable to read updated alias",
+	},
+	{"delete transport failure", "delete", nil, true, "Unable to delete alias"},
+	{
+		"delete rejected",
+		"delete",
+		map[string]mockResponse{"DELETE /aliases/example": {500, `{}`}},
+		false,
+		"Unable to delete alias",
+	},
+	{
+		"delete invalid result",
+		"delete",
+		map[string]mockResponse{"DELETE /aliases/example": {200, `{}`}},
+		false,
+		"Unable to delete alias",
+	},
+	{
+		"delete reload failure",
+		"delete",
+		map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}},
+		false,
+		"Alias deleted but firewall reload failed",
+	},
+	{
+		"delete verification error",
+		"delete",
+		map[string]mockResponse{"GET /aliases/example": {500, `{}`}},
+		false,
+		"Unable to verify deleted alias",
+	},
+	{
+		"delete still present",
+		"delete",
+		map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example"}`}},
+		false,
+		"Unable to verify deleted alias",
+	},
+	{
+		"delete bad request and still present",
+		"delete",
+		map[string]mockResponse{
+			"DELETE /aliases/example": {400, `{}`},
+			"GET /aliases/example":    {200, `{"name":"example"}`},
+		},
+		false,
+		"Unable to delete alias",
+	},
+	{
+		"delete bad request and absent",
+		"delete",
+		map[string]mockResponse{"DELETE /aliases/example": {400, `{}`}},
+		false,
+		"",
+	},
+	{"delete already absent", "delete", map[string]mockResponse{"DELETE /aliases/example": {404, `{}`}}, false, ""},
+}
+
 func TestLifecycleFailures(t *testing.T) {
-	tests := []struct {
-		name        string
-		operation   string
-		responses   map[string]mockResponse
-		cancel      bool
-		wantSummary string
-	}{
-		{"create transport failure", "create", nil, true, "Unable to create alias"},
-		{"create rejected", "create", map[string]mockResponse{"PUT /aliases": {500, `{}`}}, false, "Unable to create alias"},
-		{"create invalid result", "create", map[string]mockResponse{"PUT /aliases": {200, `{}`}}, false, "Unable to create alias"},
-		{"create reload failure", "create", map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}}, false, "Alias created but firewall reload failed"},
-		{"create missing on verification", "create", map[string]mockResponse{"GET /aliases/example": {404, `{}`}}, false, "Unable to verify created alias"},
-		{"create truncated on verification", "create", map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}}, false, "Unable to read created alias"},
-		{"read transport failure", "read", nil, true, "Unable to read alias"},
-		{"read rejected", "read", map[string]mockResponse{"GET /aliases/example": {500, `{}`}}, false, "Unable to read alias"},
-		{"read truncated", "read", map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}}, false, "Unable to read alias"},
-		{"read success", "read", nil, false, ""},
-		{"update transport failure", "update", nil, true, "Unable to update alias"},
-		{"update rejected", "update", map[string]mockResponse{"POST /aliases/example": {500, `{}`}}, false, "Unable to update alias"},
-		{"update invalid result", "update", map[string]mockResponse{"POST /aliases/example": {200, `{}`}}, false, "Unable to update alias"},
-		{"update reload failure", "update", map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}}, false, "Alias updated but firewall reload failed"},
-		{"update missing on verification", "update", map[string]mockResponse{"GET /aliases/example": {404, `{}`}}, false, "Unable to verify updated alias"},
-		{"update truncated on verification", "update", map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example","truncated":true}`}}, false, "Unable to read updated alias"},
-		{"delete transport failure", "delete", nil, true, "Unable to delete alias"},
-		{"delete rejected", "delete", map[string]mockResponse{"DELETE /aliases/example": {500, `{}`}}, false, "Unable to delete alias"},
-		{"delete invalid result", "delete", map[string]mockResponse{"DELETE /aliases/example": {200, `{}`}}, false, "Unable to delete alias"},
-		{"delete reload failure", "delete", map[string]mockResponse{"POST /system/filterreload/reload": {500, `{}`}}, false, "Alias deleted but firewall reload failed"},
-		{"delete verification error", "delete", map[string]mockResponse{"GET /aliases/example": {500, `{}`}}, false, "Unable to verify deleted alias"},
-		{"delete still present", "delete", map[string]mockResponse{"GET /aliases/example": {200, `{"name":"example"}`}}, false, "Unable to verify deleted alias"},
-		{"delete bad request and still present", "delete", map[string]mockResponse{"DELETE /aliases/example": {400, `{}`}, "GET /aliases/example": {200, `{"name":"example"}`}}, false, "Unable to delete alias"},
-		{"delete bad request and absent", "delete", map[string]mockResponse{"DELETE /aliases/example": {400, `{}`}}, false, ""},
-		{"delete already absent", "delete", map[string]mockResponse{"DELETE /aliases/example": {404, `{}`}}, false, ""},
-	}
-	for _, tt := range tests {
+	for _, tt := range lifecycleFailureCases {
 		t.Run(tt.name, func(t *testing.T) {
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-				key := req.Method + " " + req.URL.Path
-				result, ok := tt.responses[key]
-				if !ok {
-					switch key {
-					case "PUT /aliases", "POST /aliases/example", "DELETE /aliases/example":
-						result = mockResponse{200, `{"msg":"ok"}`}
-					case "POST /system/filterreload/reload":
-						result = mockResponse{200, `{"result":"started"}`}
-					case "GET /aliases/example":
-						if tt.operation == "delete" {
-							result = mockResponse{404, `{}`}
-						} else {
-							result = mockResponse{200, `{"name":"example"}`}
-						}
-					default:
-						t.Errorf("unexpected request %s", key)
-						result = mockResponse{500, `{}`}
-					}
-				}
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(result.status)
-				_, _ = fmt.Fprint(w, result.body)
-			}))
+			server := httptest.NewServer(lifecycleFailureHandler(t, tt))
 			defer server.Close()
 			client, err := api.NewClientWithResponses(server.URL)
 			if err != nil {
@@ -92,7 +189,9 @@ func TestLifecycleFailures(t *testing.T) {
 				Name: types.StringValue("example"), Type: types.StringNull(),
 				Address: types.StringNull(), Descr: types.StringNull(), Detail: types.StringNull(),
 				Tags: types.StringNull(), Updatefreq: types.StringNull(),
-				Targets: types.ListNull(TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}}),
+				Targets: types.ListNull(
+					TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}},
+				),
 			}
 			plan := tfsdk.Plan{Schema: s}
 			state := tfsdk.State{Schema: s}
@@ -152,6 +251,34 @@ func TestLifecycleFailures(t *testing.T) {
 				t.Fatalf("errors = %v, want %q", summaries, tt.wantSummary)
 			}
 		})
+	}
+}
+
+func lifecycleFailureHandler(t *testing.T, tt lifecycleFailureCase) http.HandlerFunc {
+	t.Helper()
+	return func(w http.ResponseWriter, req *http.Request) {
+		key := req.Method + " " + req.URL.Path
+		result, ok := tt.responses[key]
+		if !ok {
+			switch key {
+			case "PUT /aliases", "POST /aliases/example", "DELETE /aliases/example":
+				result = mockResponse{200, `{"msg":"ok"}`}
+			case "POST /system/filterreload/reload":
+				result = mockResponse{200, `{"result":"started"}`}
+			case "GET /aliases/example":
+				if tt.operation == "delete" {
+					result = mockResponse{404, `{}`}
+				} else {
+					result = mockResponse{200, `{"name":"example"}`}
+				}
+			default:
+				t.Errorf("unexpected request %s", key)
+				result = mockResponse{500, `{}`}
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(result.status)
+		_, _ = fmt.Fprint(w, result.body)
 	}
 }
 

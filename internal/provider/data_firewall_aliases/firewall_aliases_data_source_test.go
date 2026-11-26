@@ -21,7 +21,12 @@ func TestReadAliases(t *testing.T) {
 		wantNull bool
 		count    int
 	}{
-		{name: "populated", status: 200, body: `{"aliases":[{"name":"example","type":"host","descr":"test","truncated":true}]}`, count: 1},
+		{
+			name:   "populated",
+			status: 200,
+			body:   `{"aliases":[{"name":"example","type":"host","descr":"test","truncated":true}]}`,
+			count:  1,
+		},
 		{name: "empty", status: 200, body: `{"aliases":[]}`},
 		{name: "missing list", status: 200, body: `{}`, wantNull: true},
 		{name: "missing name", status: 200, body: `{"aliases":[{}]}`, wantErr: true},

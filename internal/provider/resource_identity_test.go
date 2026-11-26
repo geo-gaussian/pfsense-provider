@@ -22,7 +22,11 @@ type identityLifecycleResource struct {
 	fail bool
 }
 
-func (r *identityLifecycleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *identityLifecycleResource) Create(
+	ctx context.Context,
+	req resource.CreateRequest,
+	resp *resource.CreateResponse,
+) {
 	if r.fail {
 		resp.Diagnostics.AddError("Create failed", "The remote object was not created.")
 		return
@@ -30,7 +34,11 @@ func (r *identityLifecycleResource) Create(ctx context.Context, req resource.Cre
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), "created")...)
 }
 
-func (r *identityLifecycleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *identityLifecycleResource) Update(
+	ctx context.Context,
+	req resource.UpdateRequest,
+	resp *resource.UpdateResponse,
+) {
 	if r.fail {
 		resp.Diagnostics.AddError("Update failed", "The remote object was not updated.")
 		return
@@ -47,13 +55,18 @@ func TestIdentityLifecycle(t *testing.T) {
 	}}
 	for _, fail := range []bool{false, true} {
 		r := &identifiedResource{
-			Resource: &identityLifecycleResource{fail: fail}, attributes: []string{"name"}, controller: "https://example.test",
+			Resource: &identityLifecycleResource{
+				fail: fail,
+			}, attributes: []string{"name"}, controller: "https://example.test",
 		}
 		state := func() tfsdk.State {
 			return tfsdk.State{Schema: stateSchema, Raw: tftypes.NewValue(stateSchema.Type().TerraformType(ctx), nil)}
 		}
 		identity := func() *tfsdk.ResourceIdentity {
-			return &tfsdk.ResourceIdentity{Schema: identitySchema, Raw: tftypes.NewValue(identitySchema.Type().TerraformType(ctx), nil)}
+			return &tfsdk.ResourceIdentity{
+				Schema: identitySchema,
+				Raw:    tftypes.NewValue(identitySchema.Type().TerraformType(ctx), nil),
+			}
 		}
 		created := resource.CreateResponse{State: state(), Identity: identity()}
 		r.Create(ctx, resource.CreateRequest{}, &created)
@@ -133,17 +146,32 @@ func TestIdentityRejectsInvalidState(t *testing.T) {
 		controller string
 		want       string
 	}{
-		{name: "missing attribute", attribute: "absent", value: "example", controller: "https://example.test", want: "State Read Error"},
+		{
+			name: "missing attribute", attribute: "absent", value: "example",
+			controller: "https://example.test", want: "State Read Error",
+		},
 		{name: "null name", attribute: "name", controller: "https://example.test", want: "Missing resource identity"},
-		{name: "unknown name", attribute: "name", value: tftypes.UnknownValue, controller: "https://example.test", want: "Missing resource identity"},
-		{name: "empty name", attribute: "name", value: "", controller: "https://example.test", want: "Missing resource identity"},
+		{
+			name: "unknown name", attribute: "name", value: tftypes.UnknownValue,
+			controller: "https://example.test", want: "Missing resource identity",
+		},
+		{
+			name: "empty name", attribute: "name", value: "",
+			controller: "https://example.test", want: "Missing resource identity",
+		},
 		{name: "missing controller", attribute: "name", value: "example", want: "controller endpoint"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			state := tfsdk.State{Schema: stateSchema, Raw: tftypes.NewValue(stateSchema.Type().TerraformType(ctx), map[string]tftypes.Value{
-				"name": tftypes.NewValue(tftypes.String, tt.value),
-			})}
-			identity := &tfsdk.ResourceIdentity{Schema: identitySchema, Raw: tftypes.NewValue(identitySchema.Type().TerraformType(ctx), nil)}
+			state := tfsdk.State{
+				Schema: stateSchema,
+				Raw: tftypes.NewValue(stateSchema.Type().TerraformType(ctx), map[string]tftypes.Value{
+					"name": tftypes.NewValue(tftypes.String, tt.value),
+				}),
+			}
+			identity := &tfsdk.ResourceIdentity{
+				Schema: identitySchema,
+				Raw:    tftypes.NewValue(identitySchema.Type().TerraformType(ctx), nil),
+			}
 			r := &identifiedResource{attributes: []string{tt.attribute}, controller: tt.controller}
 			var diags diag.Diagnostics
 			r.setIdentity(ctx, state, identity, &diags)

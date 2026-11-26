@@ -4,18 +4,23 @@
 
 This repository implements an experimental Terraform provider in Go, published
 as `geo-gaussian/pfsense-nexus`. It wraps the Nexus API described in
-`docs/nexus.openapi.yaml`. It has experimental firewall alias and WireGuard
-settings, tunnel, and peer resources, selected read-only data sources, and a
-WireGuard ephemeral key-pair resource. Login and alias listing have been tested
-on one appliance; resource writes, key generation, and additional data sources
-have only been tested with mock servers. Compatibility with other appliance
-versions remains unverified.
+`docs/nexus.openapi.yaml`. It has experimental firewall and WireGuard resources,
+resource discovery, selected read-only data sources, and a WireGuard ephemeral
+key-pair resource. Login and alias listing have been tested on one appliance;
+resource writes, discovery, key generation, and additional data sources have
+only been tested with mock servers. Compatibility with other appliance versions
+remains unverified.
 
 ## 📐 Architectural Rules & Constraints
 
 1. **Never Bypass `NexusClient.DoRequest`:** All HTTP calls to pfSense MUST route through `internal/client.NexusClient.DoRequest()`. Its mutex serialises HTTP requests per configured client, not across separate clients or Terraform processes.
 2. **Preserve Generated Files vs. Custom Logic:**
-   - HashiCorp's OpenAPI resource generator is configured for the alias resource. WireGuard resources, the ephemeral key-pair resource, and selected read-only data sources use custom Terraform Framework code. `oapi-codegen` generates the API client methods. When regenerating, verify generated files and preserve custom resource lifecycle code and registration.
+   - HashiCorp's OpenAPI resource generator produces schemas for the firewall
+     resources mapped in `generator_config.yaml`. Their lifecycle code is
+     custom, as are the WireGuard resources, ephemeral key-pair resource, list
+     resources, and read-only data sources. `oapi-codegen` generates the API
+     client methods. When regenerating, verify generated files and preserve
+     custom lifecycle code and registration.
 3. **Explicit Apply / Reload Lifecycle:**
    - If an endpoint in `docs/nexus.openapi.yaml` stages changes without immediately activating them, trigger its corresponding apply or reload operation after `Create`, `Update`, and `Delete`. The alias resource initiates a filter reload but does not confirm completion.
 4. **Strict Secret Handling:**
@@ -42,6 +47,29 @@ versions remains unverified.
 - Follow the repository's cspell configuration and update documentation when
   behaviour or development workflows change.
 - Keep examples free of credentials and other sensitive information.
+
+## 📏 Maintainability Limits
+
+- Hand-written Go, TypeScript, JavaScript, POSIX shell, and jq source and test
+  lines MUST NOT exceed 120 Unicode characters, counting a tab as one
+  character. Generated code, fixtures, and Spec Kit-managed scripts are
+  excluded. `tools/coverage/evidence.go` is the approved exception so its
+  evidence entries remain readable as a table.
+- Line-length errors MUST block commits and merges. See `DEVELOPMENT.md` for
+  the checked extensions and staged-index behaviour.
+- Count physical lines, including blank lines and comments. Function spans
+  include the declaration, end of the definition, and any nested closures.
+- For hand-written production code, warn above 350 lines per file or 40 lines
+  per function; block above 500 lines per file or 80 lines per function.
+- For test code, including test helpers, warn above 500 lines per file or 100
+  lines per function; block above 600 lines per file or 150 lines per function.
+- Exclude generated code, fixtures, lockfiles, and API specifications.
+  Exceptions for hand-written code MUST identify the exact file or function,
+  explain why an exception is needed, and be approved in project review.
+- Individual size warnings are non-blocking, but three or more warnings across
+  any lint commands MUST block commits and merges. Lint errors MUST block both.
+  Warning-producing lint tools MUST emit a recognised warning format; see
+  `DEVELOPMENT.md` for the budget, checker scope, and jq function limitation.
 
 ## 🔄 Standard Development Workflow
 

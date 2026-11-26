@@ -12,9 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	listschema "github.com/hashicorp/terraform-plugin-framework/list/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 type configurationList struct {
@@ -27,15 +24,27 @@ type listResponse interface {
 	GetBody() []byte
 }
 
-func (l *configurationList) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (l *configurationList) Metadata(
+	ctx context.Context,
+	req resource.MetadataRequest,
+	resp *resource.MetadataResponse,
+) {
 	l.managed.Metadata(ctx, req, resp)
 }
 
-func (l *configurationList) ListResourceConfigSchema(_ context.Context, _ list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
+func (l *configurationList) ListResourceConfigSchema(
+	_ context.Context,
+	_ list.ListResourceSchemaRequest,
+	resp *list.ListResourceSchemaResponse,
+) {
 	resp.Schema = listschema.Schema{}
 }
 
-func (l *configurationList) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (l *configurationList) Configure(
+	ctx context.Context,
+	req resource.ConfigureRequest,
+	resp *resource.ConfigureResponse,
+) {
 	l.managed.Configure(ctx, req, resp)
 	if resp.Diagnostics.HasError() || req.ProviderData == nil {
 		return
@@ -67,7 +76,16 @@ func (l *configurationList) List(ctx context.Context, req list.ListRequest, stre
 		})
 		return
 	}
-	stream.Results = func(push func(list.ListResult) bool) {
+	stream.Results = l.listResults(ctx, req, ids, skipped)
+}
+
+func (l *configurationList) listResults(
+	ctx context.Context,
+	req list.ListRequest,
+	ids []string,
+	skipped int,
+) func(func(list.ListResult) bool) {
+	return func(push func(list.ListResult) bool) {
 		if skipped > 0 {
 			warning := list.ListResult{}
 			warning.Diagnostics.AddWarning("Read-only firewall rules omitted",
@@ -77,46 +95,7 @@ func (l *configurationList) List(ctx context.Context, req list.ListRequest, stre
 			}
 		}
 		for _, id := range ids {
-			result := req.NewListResult(ctx)
-			result.DisplayName = id
-			result.Diagnostics.Append(result.Identity.Set(ctx, resourceIdentity{
-				Controller: types.StringValue(l.managed.controller),
-				ID:         types.StringValue(id),
-			})...)
-			if req.IncludeResource && !result.Diagnostics.HasError() {
-				imported := resource.ImportStateResponse{State: tfsdk.State{
-					Schema: req.ResourceSchema,
-					Raw:    tftypes.NewValue(req.ResourceSchema.Type().TerraformType(ctx), nil),
-				}}
-				l.managed.ImportState(ctx, resource.ImportStateRequest{ID: id}, &imported)
-				result.Diagnostics.Append(imported.Diagnostics...)
-				if !result.Diagnostics.HasError() {
-					read := resource.ReadResponse{State: imported.State}
-					l.managed.Read(ctx, resource.ReadRequest{State: imported.State}, &read)
-					result.Diagnostics.Append(read.Diagnostics...)
-					if !result.Diagnostics.HasError() {
-						if read.State.Raw.IsNull() {
-							result.Diagnostics.AddError("Unable to read discovered resource", "The resource disappeared during discovery.")
-						} else {
-							identity := &tfsdk.ResourceIdentity{
-								Schema: req.ResourceIdentitySchema,
-								Raw:    tftypes.NewValue(req.ResourceIdentitySchema.Type().TerraformType(ctx), nil),
-							}
-							l.managed.setIdentity(ctx, read.State, identity, &result.Diagnostics)
-							var actual resourceIdentity
-							if !result.Diagnostics.HasError() {
-								result.Diagnostics.Append(identity.Get(ctx, &actual)...)
-							}
-							if !result.Diagnostics.HasError() && actual.ID.ValueString() != id {
-								result.Diagnostics.AddError("Inconsistent resource identity", "The resource identity returned by the API does not match the discovered identity.")
-							}
-							if !result.Diagnostics.HasError() {
-								result.Resource.Raw = read.State.Raw
-							}
-						}
-					}
-				}
-			}
+			result := l.listResult(ctx, req, id)
 			if !push(result) || result.Diagnostics.HasError() {
 				return
 			}
@@ -158,19 +137,36 @@ func (l *configurationList) identifiers(ctx context.Context, name string) ([]str
 		response, err = l.client.FirewallGetVirtualIPsWithResponse(ctx)
 		path, key = []string{"virtualips"}, "id"
 	case "wireguard_settings", "wireguard_tunnel", "wireguard_peer":
-		response, err = l.client.GetWireGuardWithResponse(ctx)
-		switch name {
-		case "wireguard_settings":
-			path = []string{"config"}
-		case "wireguard_tunnel":
-			path, key = []string{"tunnels", "item"}, "name"
-		case "wireguard_peer":
-			path, key = []string{"peers", "item"}, "publickey"
-		}
+		return l.wireguardIdentifiers(ctx, name)
 	default:
 		return nil, fmt.Errorf("unsupported list resource %q", name)
 	}
+	return listIdentifiers(response, err, path, itemPath, key)
+}
+
+func listIdentifiers(response listResponse, err error, path []string, itemPath, key string) ([]string, error) {
 	items, err := listItems(response, err, path, itemPath)
+	if err != nil {
+		return nil, err
+	}
+	return itemIdentifiers(items, key, "")
+}
+
+func (l *configurationList) wireguardIdentifiers(ctx context.Context, name string) ([]string, error) {
+	var path []string
+	var key string
+	switch name {
+	case "wireguard_settings":
+		path = []string{"config"}
+	case "wireguard_tunnel":
+		path, key = []string{"tunnels", "item"}, "name"
+	case "wireguard_peer":
+		path, key = []string{"peers", "item"}, "publickey"
+	default:
+		return nil, fmt.Errorf("unsupported list resource %q", name)
+	}
+	response, err := l.client.GetWireGuardWithResponse(ctx)
+	items, err := listItems(response, err, path, "")
 	if err != nil {
 		return nil, err
 	}
@@ -205,32 +201,42 @@ func (l *configurationList) ruleIdentifiers(ctx context.Context) ([]string, int,
 			return nil, 0, fmt.Errorf("API returned duplicate firewall interface %q", iface)
 		}
 		seenInterfaces[iface] = true
-		rules, err := l.client.GetFirewallRulesWithResponse(ctx, iface)
-		items, err := listItems(rules, err, []string{"entries"}, "rule")
+		identifiers, omitted, err := l.interfaceRuleIdentifiers(ctx, iface)
 		if err != nil {
-			return nil, 0, fmt.Errorf("interface %q: %w", iface, err)
+			return nil, 0, err
 		}
-		managed := items[:0]
-		for _, item := range items {
-			if value, present := item["readonly"]; present && value != nil {
-				readonly, ok := value.(bool)
-				if !ok {
-					return nil, 0, fmt.Errorf("interface %q: API returned an invalid read-only flag", iface)
-				}
-				if readonly {
-					skipped++
-					continue
-				}
-			}
-			managed = append(managed, item)
-		}
-		identifiers, err := itemIdentifiers(managed, "id", iface+"/")
-		if err != nil {
-			return nil, 0, fmt.Errorf("interface %q: %w", iface, err)
-		}
+		skipped += omitted
 		ids = append(ids, identifiers...)
 	}
 	return ids, skipped, nil
+}
+
+func (l *configurationList) interfaceRuleIdentifiers(ctx context.Context, iface string) ([]string, int, error) {
+	rules, err := l.client.GetFirewallRulesWithResponse(ctx, iface)
+	items, err := listItems(rules, err, []string{"entries"}, "rule")
+	if err != nil {
+		return nil, 0, fmt.Errorf("interface %q: %w", iface, err)
+	}
+	managed := items[:0]
+	skipped := 0
+	for _, item := range items {
+		if value, present := item["readonly"]; present && value != nil {
+			readonly, ok := value.(bool)
+			if !ok {
+				return nil, 0, fmt.Errorf("interface %q: API returned an invalid read-only flag", iface)
+			}
+			if readonly {
+				skipped++
+				continue
+			}
+		}
+		managed = append(managed, item)
+	}
+	identifiers, err := itemIdentifiers(managed, "id", iface+"/")
+	if err != nil {
+		return nil, 0, fmt.Errorf("interface %q: %w", iface, err)
+	}
+	return identifiers, skipped, nil
 }
 
 func listObject(response listResponse, requestErr error) (map[string]any, error) {

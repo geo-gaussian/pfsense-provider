@@ -31,20 +31,24 @@ func New(baseURL, username, password string, insecure bool) (*NexusClient, error
 	return newWithFactories(baseURL, username, password, insecure, cookiejar.New, api.NewClientWithResponses)
 }
 
-func newWithFactories(baseURL, username, password string, insecure bool, newJar func(*cookiejar.Options) (*cookiejar.Jar, error), newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) (*NexusClient, error) {
-	u, err := url.Parse(baseURL)
-	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Path != "" && u.Path != "/") {
-		return nil, fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
-	}
-	if username == "" || password == "" {
-		return nil, fmt.Errorf("username and password must not be empty")
+func newWithFactories(
+	baseURL, username, password string,
+	insecure bool,
+	newJar func(*cookiejar.Options) (*cookiejar.Jar, error),
+	newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error),
+) (*NexusClient, error) {
+	if err := validateConfiguration(baseURL, username, password); err != nil {
+		return nil, err
 	}
 	jar, err := newJar(nil)
 	if err != nil {
 		return nil, fmt.Errorf("create cookie jar: %w", err)
 	}
 	transport := http.DefaultTransport.(*http.Transport).Clone()
-	transport.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12, InsecureSkipVerify: insecure} // Explicit opt-out for test environments.
+	transport.TLSClientConfig = &tls.Config{
+		MinVersion:         tls.VersionTLS12,
+		InsecureSkipVerify: insecure,
+	} // Explicit opt-out for test environments.
 	c := &NexusClient{
 		http: &http.Client{
 			Transport: transport,
@@ -62,6 +66,18 @@ func newWithFactories(baseURL, username, password string, insecure bool, newJar 
 		return nil, fmt.Errorf("configure API client: %w", err)
 	}
 	return c, nil
+}
+
+func validateConfiguration(baseURL, username, password string) error {
+	u, err := url.Parse(baseURL)
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" ||
+		(u.Path != "" && u.Path != "/") {
+		return fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
+	}
+	if username == "" || password == "" {
+		return fmt.Errorf("username and password must not be empty")
+	}
+	return nil
 }
 
 // DoRequest is the single transport entry point for generated API clients.
@@ -97,7 +113,8 @@ func (c *NexusClient) ensureSession(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("authenticate with Nexus: %w", err)
 		}
-		if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil || *resp.JSON200.Token == "" {
+		if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil ||
+			*resp.JSON200.Token == "" {
 			return fmt.Errorf("Nexus authentication failed (HTTP %d or missing access token)", resp.StatusCode())
 		}
 		c.token = *resp.JSON200.Token
@@ -107,14 +124,19 @@ func (c *NexusClient) ensureSession(ctx context.Context) error {
 	if time.Now().Before(c.renewAt) {
 		return nil
 	}
-	resp, err := c.auth.RefreshAccessTokenWithResponse(ctx, api.RefreshTokenParam{Username: &c.username}, func(_ context.Context, req *http.Request) error {
-		req.Header.Set("Authorization", "Bearer "+c.token)
-		return nil
-	})
+	resp, err := c.auth.RefreshAccessTokenWithResponse(
+		ctx,
+		api.RefreshTokenParam{Username: &c.username},
+		func(_ context.Context, req *http.Request) error {
+			req.Header.Set("Authorization", "Bearer "+c.token)
+			return nil
+		},
+	)
 	if err != nil {
 		return fmt.Errorf("refresh Nexus session: %w", err)
 	}
-	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil || *resp.JSON200.Token == "" {
+	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil ||
+		*resp.JSON200.Token == "" {
 		return fmt.Errorf("Nexus session refresh failed (HTTP %d or missing access token)", resp.StatusCode())
 	}
 	c.token = *resp.JSON200.Token

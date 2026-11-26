@@ -23,7 +23,9 @@ func NewNATNpt() resource.Resource {
 		keyAttribute: "id", responsePath: []string{"rules"},
 		matchAttributes: []string{"interface", "descr", "disabled", "source", "destination"},
 		schema:          resource_firewall_nat_npt.FirewallNatNptResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.NATNptRule](values)
 			if err != nil {
 				return nil, err
@@ -45,7 +47,9 @@ func NewNATOneToOne() resource.Resource {
 		keyAttribute: "id", responsePath: []string{"rules"},
 		matchAttributes: []string{"interface", "descr", "external", "destination", "source", "ipprotocol"},
 		schema:          resource_firewall_nat_one_to_one.FirewallNatOneToOneResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.NAT1To1Rule](values)
 			if err != nil {
 				return nil, err
@@ -67,7 +71,9 @@ func NewNATPortForward() resource.Resource {
 		keyAttribute: "id", responsePath: []string{"rules"}, itemPath: "rule",
 		matchAttributes: []string{"interface", "descr", "protocol", "destination", "source", "target"},
 		schema:          resource_firewall_nat_port_forward.FirewallNatPortForwardResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.NATRule](values)
 			if err != nil {
 				return nil, err
@@ -77,7 +83,9 @@ func NewNATPortForward() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetNATWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+		) (response, error) {
 			body, err := encodeBody[api.NATRule](values)
 			if err != nil {
 				return nil, err
@@ -99,17 +107,7 @@ func NewRule() resource.Resource {
 		schema: func(ctx context.Context) schema.Schema {
 			return requireString(resource_firewall_rule.FirewallRuleResourceSchema(ctx), "interface")
 		},
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
-			body, err := encodeBody[api.FWFilterRule](values)
-			if err != nil {
-				return nil, err
-			}
-			iface, err := stringValue(values, "interface")
-			if err != nil {
-				return nil, err
-			}
-			return client.AppendFirewallRuleWithResponse(ctx, iface, body)
-		},
+		create: createRule,
 		read: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any) (response, error) {
 			iface, err := stringValue(values, "interface")
 			if err != nil {
@@ -117,18 +115,10 @@ func NewRule() resource.Resource {
 			}
 			return client.GetFirewallRulesWithResponse(ctx, iface)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
-			body, err := encodeBody[api.FWFilterRule](values)
-			if err != nil {
-				return nil, err
-			}
-			iface, err := stringValue(values, "interface")
-			if err != nil {
-				return nil, err
-			}
-			return client.UpdateFirewallRuleWithResponse(ctx, iface, id, body)
-		},
-		delete: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
+		update: updateRule,
+		delete: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+		) (response, error) {
 			iface, err := stringValue(values, "interface")
 			if err != nil {
 				return nil, err
@@ -136,6 +126,34 @@ func NewRule() resource.Resource {
 			return client.DeleteFirewallRuleWithResponse(ctx, iface, id)
 		},
 	})
+}
+
+func createRule(
+	ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+) (response, error) {
+	body, err := encodeBody[api.FWFilterRule](values)
+	if err != nil {
+		return nil, err
+	}
+	iface, err := stringValue(values, "interface")
+	if err != nil {
+		return nil, err
+	}
+	return client.AppendFirewallRuleWithResponse(ctx, iface, body)
+}
+
+func updateRule(
+	ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+) (response, error) {
+	body, err := encodeBody[api.FWFilterRule](values)
+	if err != nil {
+		return nil, err
+	}
+	iface, err := stringValue(values, "interface")
+	if err != nil {
+		return nil, err
+	}
+	return client.UpdateFirewallRuleWithResponse(ctx, iface, id, body)
 }
 
 func NewSchedule() resource.Resource {
@@ -146,7 +164,9 @@ func NewSchedule() resource.Resource {
 		schema: func(ctx context.Context) schema.Schema {
 			return requireString(resource_firewall_schedule.FirewallScheduleResourceSchema(ctx), "name")
 		},
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.FWSchedule](values)
 			if err != nil {
 				return nil, err
@@ -156,7 +176,9 @@ func NewSchedule() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetSchedulesWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+		) (response, error) {
 			body, err := encodeBody[api.FWSchedule](values)
 			if err != nil {
 				return nil, err
@@ -175,7 +197,9 @@ func NewALTQ() resource.Resource {
 		keyAttribute: "name", responsePath: []string{"altq"},
 		matchAttributes: []string{"name", "if_ident"},
 		schema:          resource_firewall_altq.FirewallAltqResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.ALTQRootQueue](values)
 			if err != nil {
 				return nil, err
@@ -185,7 +209,9 @@ func NewALTQ() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetALTQWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, name string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, name string,
+		) (response, error) {
 			body, err := encodeBody[api.ALTQRootQueue](values)
 			if err != nil {
 				return nil, err
@@ -204,7 +230,9 @@ func NewLimiter() resource.Resource {
 		keyAttribute: "name", responsePath: []string{"limiter"},
 		matchAttributes: []string{"name"},
 		schema:          resource_firewall_limiter.FirewallLimiterResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.Limiter](values)
 			if err != nil {
 				return nil, err
@@ -214,7 +242,9 @@ func NewLimiter() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetLimiterWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, name string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, name string,
+		) (response, error) {
 			body, err := encodeBody[api.Limiter](values)
 			if err != nil {
 				return nil, err
@@ -233,7 +263,9 @@ func NewPFlowExporter() resource.Resource {
 		keyAttribute: "id", responsePath: []string{"exporters"},
 		matchAttributes: []string{"id", "src", "srcport", "dst", "dstport", "proto", "domain"},
 		schema:          resource_firewall_pflow_exporter.FirewallPflowExporterResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.PFlowExporter](values)
 			if err != nil {
 				return nil, err
@@ -243,7 +275,9 @@ func NewPFlowExporter() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetPFlowWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+		) (response, error) {
 			body, err := encodeBody[api.PFlowExporter](values)
 			if err != nil {
 				return nil, err
@@ -263,7 +297,9 @@ func NewVirtualIP() resource.Resource {
 		matchAttributes:     []string{"id", "uniqid", "mode", "interface", "subnet"},
 		sensitiveAttributes: []string{"password", "password_confirm"},
 		schema:              resource_firewall_virtual_ip.FirewallVirtualIpResourceSchema,
-		create: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string) (response, error) {
+		create: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, _ string,
+		) (response, error) {
 			body, err := encodeBody[api.VirtualIP](values)
 			if err != nil {
 				return nil, err
@@ -273,7 +309,9 @@ func NewVirtualIP() resource.Resource {
 		read: func(ctx context.Context, client *api.ClientWithResponses, _ map[string]any) (response, error) {
 			return client.FirewallGetVirtualIPsWithResponse(ctx)
 		},
-		update: func(ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string) (response, error) {
+		update: func(
+			ctx context.Context, client *api.ClientWithResponses, values map[string]any, id string,
+		) (response, error) {
 			body, err := encodeBody[api.VirtualIP](values)
 			if err != nil {
 				return nil, err

@@ -1,11 +1,11 @@
 <!--
 Sync Impact Report
-Version change: 1.0.0 → 1.1.0
-Modified principles: III. Regression Tests and Coverage (absolute target replaced by non-regression policy).
+Version change: 1.2.0 → 2.0.0
+Modified principles: none.
 Modified sections: Quality Workflow and Gates.
 Added sections: none.
 Removed sections: none.
-Follow-up TODO: confirm the original ratification date.
+Follow-up TODO: none.
 -->
 
 # 🏛️ pfSense Nexus Provider Constitution
@@ -70,6 +70,17 @@ values.
   rules, and repository-specific conventions.
 - Use the repository's pinned generators and tooling; do not make unrelated
   generated-file or dependency changes.
+- Hand-written production files MUST NOT exceed 500 physical lines and their
+  functions MUST NOT exceed 80 physical lines. Exceeding 350 lines per file or
+  40 lines per function MUST produce a warning.
+- Test files MUST NOT exceed 600 physical lines and their functions, including
+  helpers, MUST NOT exceed 150 physical lines. Exceeding 500 lines per file or
+  100 lines per function MUST produce a warning.
+- Count comments and blank lines. Count a function from its declaration through
+  its closing brace, including nested closures. Generated code, fixtures,
+  lockfiles, and API specifications are excluded from these size limits.
+- Any exception for hand-written code MUST identify the specific file or
+  function, explain its rationale, and receive project review.
 
 ## 📋 Quality Workflow and Gates
 
@@ -82,6 +93,10 @@ values.
 - Run `go test -race ./...` when the coverage command has not already run it.
 - Review tests for meaningful assertions, representative error cases, and
   absence of dependence on a live appliance.
+- File and function size errors MUST prevent commits and merges. Individual
+  warnings MUST be reported, and three or more warnings across lint commands
+  MUST prevent commits and merges. Warning-producing lint tools MUST use a
+  recognised warning format or an adapter so their warnings are counted.
 - Any intentional exception MUST be documented in the change and approved
   through project review; exceptions MUST NOT silently lower coverage.
 
@@ -97,4 +112,4 @@ for clarifications that do not change obligations. Reviewers MUST check proposed
 changes against these principles and the current `AGENTS.md` and `DEVELOPMENT.md`
 guidance.
 
-**Version**: 1.1.0 | **Ratified**: TODO | **Last Amended**: 2026-11-25
+**Version**: 2.0.0 | **Ratified**: 2026-11-26 | **Last Amended**: 2026-11-26

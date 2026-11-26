@@ -64,22 +64,7 @@ func TestAliasLifecycle(t *testing.T) {
 	var schemaResp resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResp)
 	s := schemaResp.Schema
-	targetType := TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}}
-	target, diags := NewTargetsValue(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
-		"name": types.StringValue("example.test"), "descr": types.StringNull(), "updatefreq": types.StringNull(),
-	})
-	if diags.HasError() {
-		t.Fatal(diags)
-	}
-	targets, diags := types.ListValue(targetType, []attr.Value{target})
-	if diags.HasError() {
-		t.Fatal(diags)
-	}
-	model := FirewallAliasModel{
-		Name: types.StringValue("example"), Type: types.StringValue("host"),
-		Address: types.StringNull(), Descr: types.StringNull(), Detail: types.StringNull(),
-		Tags: types.StringNull(), Updatefreq: types.StringNull(), Targets: targets,
-	}
+	model := aliasTestModel(t, ctx)
 	plan := tfsdk.Plan{Schema: s}
 	if diags := plan.Set(ctx, &model); diags.HasError() {
 		t.Fatal(diags)
@@ -118,6 +103,26 @@ func TestAliasLifecycle(t *testing.T) {
 	r.Read(ctx, resource.ReadRequest{State: updateResp.State}, &readResp)
 	if readResp.Diagnostics.HasError() || !readResp.State.Raw.IsNull() {
 		t.Fatalf("out-of-band deletion was not removed: %v", readResp.Diagnostics)
+	}
+}
+
+func aliasTestModel(t *testing.T, ctx context.Context) FirewallAliasModel {
+	t.Helper()
+	targetType := TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}}
+	target, diags := NewTargetsValue(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
+		"name": types.StringValue("example.test"), "descr": types.StringNull(), "updatefreq": types.StringNull(),
+	})
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+	targets, diags := types.ListValue(targetType, []attr.Value{target})
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+	return FirewallAliasModel{
+		Name: types.StringValue("example"), Type: types.StringValue("host"),
+		Address: types.StringNull(), Descr: types.StringNull(), Detail: types.StringNull(),
+		Tags: types.StringNull(), Updatefreq: types.StringNull(), Targets: targets,
 	}
 }
 

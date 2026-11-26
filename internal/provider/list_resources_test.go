@@ -16,7 +16,8 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 )
 
-func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
+func prepareTerraformQueryFixture(t *testing.T) (string, string) {
+	t.Helper()
 	terraform, err := exec.LookPath("terraform")
 	if err != nil {
 		t.Skip("Terraform CLI is not installed")
@@ -60,7 +61,15 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "discover.tfquery.hcl"), query, 0600); err != nil {
 		t.Fatal(err)
 	}
-	providerDir := filepath.Join(dir, "mirror", "registry.terraform.io", "geo-gaussian", "pfsense-nexus", "0.0.1", runtime.GOOS+"_"+runtime.GOARCH)
+	providerDir := filepath.Join(
+		dir,
+		"mirror",
+		"registry.terraform.io",
+		"geo-gaussian",
+		"pfsense-nexus",
+		"0.0.1",
+		runtime.GOOS+"_"+runtime.GOARCH,
+	)
 	if err := os.MkdirAll(providerDir, 0700); err != nil {
 		t.Fatal(err)
 	}
@@ -73,61 +82,14 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build provider: %v\n%s", err, output)
 	}
+	return terraform, dir
+}
 
+func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
+	terraform, dir := prepareTerraformQueryFixture(t)
 	var unexpected atomic.Bool
 	var aliasDetails atomic.Int32
-	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		var value any
-		switch {
-		case r.Method == http.MethodPost && r.URL.Path == "/api/login":
-			value = map[string]string{"token": "test-token"}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/aliases":
-			value = map[string]any{"aliases": []api.FWAlias{{Name: "example"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/aliases/example":
-			aliasDetails.Add(1)
-			kind := api.FWAliasType("host")
-			value = api.FWAlias{Name: "example", Type: &kind}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/npt":
-			address := map[string]any{"address": "example.test", "type": "network"}
-			value = map[string]any{"rules": []any{map[string]any{"id": "npt-1", "source": address, "destination": address}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/onetoone":
-			address := map[string]any{"address": "example.test", "type": "network"}
-			value = map[string]any{"rules": []any{map[string]any{"id": "one-1", "source": address, "destination": address, "external": address}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/port-forward":
-			value = map[string]any{"rules": []any{map[string]any{"rule": map[string]any{"id": "port-1"}}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/rules/interface":
-			value = map[string]any{"interfaces": []string{"lan"}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/rules/interface/lan":
-			value = map[string]any{"entries": []any{
-				map[string]any{"rule": map[string]any{"id": "rule-1", "interface": "lan"}},
-				map[string]any{"rule": map[string]any{"id": "system-rule", "readonly": true}},
-			}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/schedules":
-			value = map[string]any{"schedules": []any{map[string]any{"id": "schedule-1", "name": "weekdays"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/altq":
-			value = map[string]any{"altq": []any{map[string]any{"name": "queue-1", "if_ident": "lan", "scheduler": "HFSC", "bandwidth": "100", "bandwidthtype": "Mb"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/limiter":
-			value = map[string]any{"limiter": []any{map[string]any{"name": "limiter-1"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/pflow":
-			value = map[string]any{"exporters": []any{map[string]any{"id": "exporter-1"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/virtualip":
-			value = map[string]any{"virtualips": []any{map[string]any{"id": "vip-1"}}}
-		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/vpn/wg":
-			value = map[string]any{
-				"config":  []any{map[string]any{"enable": true}},
-				"tunnels": map[string]any{"item": []any{map[string]any{"name": "wg0", "publickey": "public-key-example", "privatekey": strings.Repeat("x", 12)}}},
-				"peers":   map[string]any{"item": []any{map[string]any{"publickey": "peer-key-example", "presharedkey": strings.Repeat("x", 12)}}},
-			}
-		default:
-			unexpected.Store(true)
-			http.Error(w, "unexpected request", http.StatusBadRequest)
-			return
-		}
-		if err := json.NewEncoder(w).Encode(value); err != nil {
-			t.Error(err)
-		}
-	}))
+	server := httptest.NewTLSServer(queryFixtureHandler(t, &unexpected, &aliasDetails))
 	defer server.Close()
 
 	run := func(args ...string) string {
@@ -189,5 +151,79 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "terraform.tfstate")); !os.IsNotExist(err) {
 		t.Fatalf("query unexpectedly created Terraform state: %v", err)
+	}
+}
+
+func queryFixtureHandler(t *testing.T, unexpected *atomic.Bool, aliasDetails *atomic.Int32) http.HandlerFunc {
+	t.Helper()
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		var value any
+		switch {
+		case r.Method == http.MethodPost && r.URL.Path == "/api/login":
+			value = map[string]string{"token": "test-token"}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/aliases":
+			value = map[string]any{"aliases": []api.FWAlias{{Name: "example"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/aliases/example":
+			aliasDetails.Add(1)
+			kind := api.FWAliasType("host")
+			value = api.FWAlias{Name: "example", Type: &kind}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/npt":
+			address := map[string]any{"address": "example.test", "type": "network"}
+			value = map[string]any{"rules": []any{map[string]any{"id": "npt-1", "source": address, "destination": address}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/onetoone":
+			address := map[string]any{"address": "example.test", "type": "network"}
+			value = map[string]any{
+				"rules": []any{map[string]any{"id": "one-1", "source": address, "destination": address, "external": address}},
+			}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/port-forward":
+			value = map[string]any{"rules": []any{map[string]any{"rule": map[string]any{"id": "port-1"}}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/rules/interface":
+			value = map[string]any{"interfaces": []string{"lan"}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/rules/interface/lan":
+			value = map[string]any{"entries": []any{
+				map[string]any{"rule": map[string]any{"id": "rule-1", "interface": "lan"}},
+				map[string]any{"rule": map[string]any{"id": "system-rule", "readonly": true}},
+			}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/schedules":
+			value = map[string]any{"schedules": []any{map[string]any{"id": "schedule-1", "name": "weekdays"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/altq":
+			value = map[string]any{
+				"altq": []any{
+					map[string]any{
+						"name":          "queue-1",
+						"if_ident":      "lan",
+						"scheduler":     "HFSC",
+						"bandwidth":     "100",
+						"bandwidthtype": "Mb",
+					},
+				},
+			}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/limiter":
+			value = map[string]any{"limiter": []any{map[string]any{"name": "limiter-1"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/pflow":
+			value = map[string]any{"exporters": []any{map[string]any{"id": "exporter-1"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/virtualip":
+			value = map[string]any{"virtualips": []any{map[string]any{"id": "vip-1"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/vpn/wg":
+			value = map[string]any{
+				"config": []any{map[string]any{"enable": true}},
+				"tunnels": map[string]any{
+					"item": []any{
+						map[string]any{"name": "wg0", "publickey": "public-key-example", "privatekey": strings.Repeat("x", 12)},
+					},
+				},
+				"peers": map[string]any{
+					"item": []any{map[string]any{"publickey": "peer-key-example", "presharedkey": strings.Repeat("x", 12)}},
+				},
+			}
+		default:
+			unexpected.Store(true)
+			http.Error(w, "unexpected request", http.StatusBadRequest)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(value); err != nil {
+			t.Error(err)
+		}
 	}
 }

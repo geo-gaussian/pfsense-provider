@@ -33,7 +33,14 @@ func TestNewReportsFactoryFailures(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client, err := newWithFactories("https://example.test", "test-user", strings.Repeat("x", 12), false, tt.jar, tt.client)
+			client, err := newWithFactories(
+				"https://example.test",
+				"test-user",
+				strings.Repeat("x", 12),
+				false,
+				tt.jar,
+				tt.client,
+			)
 			if client != nil || !errors.Is(err, want) {
 				t.Fatalf("client = %v, error = %v", client, err)
 			}

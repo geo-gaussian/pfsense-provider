@@ -40,7 +40,10 @@ func (r *aliasResource) Schema(ctx context.Context, _ resource.SchemaRequest, re
 	resp.Schema = FirewallAliasResourceSchema(ctx)
 	name := resp.Schema.Attributes["name"].(schema.StringAttribute)
 	name.PlanModifiers = []planmodifier.String{stringplanmodifier.RequiresReplace()}
-	name.Validators = append(name.Validators, stringvalidator.RegexMatches(aliasName, "must contain only letters, digits, and underscores"))
+	name.Validators = append(
+		name.Validators,
+		stringvalidator.RegexMatches(aliasName, "must contain only letters, digits, and underscores"),
+	)
 	resp.Schema.Attributes["name"] = name
 }
 
@@ -51,7 +54,10 @@ func (r *aliasResource) Configure(_ context.Context, req resource.ConfigureReque
 	var ok bool
 	r.client, ok = req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The firewall alias resource received an unexpected client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The firewall alias resource received an unexpected client.",
+		)
 	}
 }
 
@@ -84,7 +90,14 @@ func (m *FirewallAliasModel) request(ctx context.Context) (api.FWAliasReq, error
 		}
 		targets := make([]api.FWTarget, 0, len(values))
 		for _, v := range values {
-			targets = append(targets, api.FWTarget{Name: v.Name.ValueString(), Descr: stringPointer(v.Descr), Updatefreq: stringPointer(v.Updatefreq)})
+			targets = append(
+				targets,
+				api.FWTarget{
+					Name:       v.Name.ValueString(),
+					Descr:      stringPointer(v.Descr),
+					Updatefreq: stringPointer(v.Updatefreq),
+				},
+			)
 		}
 		result.Targets = &targets
 	}
@@ -111,7 +124,12 @@ func (m *FirewallAliasModel) fromAPI(ctx context.Context, value *api.FWAlias) er
 	return m.fromAPIWithFactories(ctx, value, NewTargetsValue, types.ListValue)
 }
 
-func (m *FirewallAliasModel) fromAPIWithFactories(ctx context.Context, value *api.FWAlias, newTarget func(map[string]attr.Type, map[string]attr.Value) (TargetsValue, diag.Diagnostics), newList func(attr.Type, []attr.Value) (basetypes.ListValue, diag.Diagnostics)) error {
+func (m *FirewallAliasModel) fromAPIWithFactories(
+	ctx context.Context,
+	value *api.FWAlias,
+	newTarget func(map[string]attr.Type, map[string]attr.Value) (TargetsValue, diag.Diagnostics),
+	newList func(attr.Type, []attr.Value) (basetypes.ListValue, diag.Diagnostics),
+) error {
 	if value.Truncated != nil && *value.Truncated {
 		return fmt.Errorf("API returned a truncated alias; refusing to store incomplete state")
 	}
@@ -128,26 +146,7 @@ func (m *FirewallAliasModel) fromAPIWithFactories(ctx context.Context, value *ap
 	if value.Type != nil {
 		m.Type = types.StringValue(string(*value.Type))
 	}
-	targetType := TargetsType{ObjectType: types.ObjectType{AttrTypes: TargetsValue{}.AttributeTypes(ctx)}}
-	m.Targets = types.ListNull(targetType)
-	if value.Targets != nil {
-		targets := make([]attr.Value, 0, len(*value.Targets))
-		for _, v := range *value.Targets {
-			target, diags := newTarget(TargetsValue{}.AttributeTypes(ctx), map[string]attr.Value{
-				"name": types.StringValue(v.Name), "descr": stringValue(v.Descr), "updatefreq": stringValue(v.Updatefreq),
-			})
-			if diags.HasError() {
-				return fmt.Errorf("invalid target returned by API: %s", diags.Errors()[0].Detail())
-			}
-			targets = append(targets, target)
-		}
-		list, listDiags := newList(targetType, targets)
-		if listDiags.HasError() {
-			return fmt.Errorf("invalid target list returned by API: %s", listDiags.Errors()[0].Detail())
-		}
-		m.Targets = list
-	}
-	return nil
+	return m.setTargets(ctx, value.Targets, newTarget, newList)
 }
 
 func (r *aliasResource) get(ctx context.Context, name string) (*api.FWAlias, bool, error) {
@@ -217,25 +216,15 @@ func (r *aliasResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil || result.JSON200.Msg == "" {
-		resp.Diagnostics.AddError("Unable to create alias", fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to create alias",
+			fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()),
+		)
 		return
 	}
 	recovery := data.recoveryState(ctx)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &recovery)...)
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Alias created but firewall reload failed", err.Error())
-		return
-	}
-	value, missing, err := r.get(ctx, body.Name)
-	if err != nil || missing {
-		resp.Diagnostics.AddError("Unable to verify created alias", fmt.Sprintf("The API did not return the created alias: %v", err))
-		return
-	}
-	if err := data.fromAPI(ctx, value); err != nil {
-		resp.Diagnostics.AddError("Unable to read created alias", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	r.finishWrite(ctx, body.Name, &data, &resp.State, &resp.Diagnostics, "created")
 }
 
 func (r *aliasResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -271,38 +260,21 @@ func (r *aliasResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid alias configuration", err.Error())
 		return
 	}
-	update := api.FWUpdateAliasReq{
-		Name: body.Name, Address: body.Address, Descr: body.Descr, Detail: body.Detail,
-		Tags: body.Tags, Targets: body.Targets, Updatefreq: body.Updatefreq,
-	}
-	if body.Type != nil {
-		kind := api.FWUpdateAliasReqType(*body.Type)
-		update.Type = &kind
-	}
+	update := updateRequest(body)
 	result, err := r.client.FirewallUpdateAliasWithResponse(ctx, body.Name, update)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to update alias", err.Error())
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil || result.JSON200.Msg == "" {
-		resp.Diagnostics.AddError("Unable to update alias", fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to update alias",
+			fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()),
+		)
 		return
 	}
 	resp.State = req.State
-	if err := r.reload(ctx); err != nil {
-		resp.Diagnostics.AddError("Alias updated but firewall reload failed", err.Error())
-		return
-	}
-	value, missing, err := r.get(ctx, body.Name)
-	if err != nil || missing {
-		resp.Diagnostics.AddError("Unable to verify updated alias", fmt.Sprintf("The API did not return the updated alias: %v", err))
-		return
-	}
-	if err := data.fromAPI(ctx, value); err != nil {
-		resp.Diagnostics.AddError("Unable to read updated alias", err.Error())
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	r.finishWrite(ctx, body.Name, &data, &resp.State, &resp.Diagnostics, "updated")
 }
 
 func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -320,18 +292,8 @@ func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 		resp.Diagnostics.AddError("Unable to delete alias", err.Error())
 		return
 	}
-	if result.StatusCode() == http.StatusBadRequest {
-		_, missing, err := r.get(ctx, data.Name.ValueString())
-		if err != nil || !missing {
-			resp.Diagnostics.AddError("Unable to delete alias", fmt.Sprintf("API returned HTTP 400 and absence could not be verified: %v", err))
-			return
-		}
-	} else if result.StatusCode() != http.StatusOK && result.StatusCode() != http.StatusNotFound {
-		resp.Diagnostics.AddError("Unable to delete alias", fmt.Sprintf("API returned HTTP %d.", result.StatusCode()))
-		return
-	}
-	if result.StatusCode() == http.StatusOK && (result.JSON200 == nil || result.JSON200.Msg == "") {
-		resp.Diagnostics.AddError("Unable to delete alias", "The API returned an invalid result.")
+	if err := r.validateDelete(ctx, data.Name.ValueString(), result); err != nil {
+		resp.Diagnostics.AddError("Unable to delete alias", err.Error())
 		return
 	}
 	if err := r.reload(ctx); err != nil {
@@ -348,6 +310,10 @@ func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	}
 }
 
-func (r *aliasResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *aliasResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }

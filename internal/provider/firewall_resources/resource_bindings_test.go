@@ -11,13 +11,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
-func TestFirewallResourceAPIActionBindings(t *testing.T) {
-	tests := []struct {
-		name     string
-		resource resource.Resource
-		values   map[string]any
-		calls    []string
-	}{
+type firewallActionBinding struct {
+	name     string
+	resource resource.Resource
+	values   map[string]any
+	calls    []string
+}
+
+func firewallActionBindings() []firewallActionBinding {
+	return []firewallActionBinding{
 		{
 			name: "NPT NAT", resource: NewNATNpt(),
 			calls: []string{"PUT /firewall/nat/npt", "GET /firewall/nat/npt", "DELETE /firewall/nat/npt/rule-1"},
@@ -76,8 +78,10 @@ func TestFirewallResourceAPIActionBindings(t *testing.T) {
 			},
 		},
 	}
+}
 
-	for _, tt := range tests {
+func TestFirewallResourceAPIActionBindings(t *testing.T) {
+	for _, tt := range firewallActionBindings() {
 		t.Run(tt.name, func(t *testing.T) {
 			remaining := make(map[string]int, len(tt.calls))
 			for _, call := range tt.calls {

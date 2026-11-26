@@ -82,3 +82,68 @@ test("Pages guard deploys only the current commit and propagates errors", (t) =>
 	assert.notEqual(check().status, 0);
 	assert.equal(fs.readFileSync(output, "utf8"), "");
 });
+
+test("release tag resolution requires an existing tag at the validated commit", (t) => {
+	const dir = fs.mkdtempSync(path.join(tmpdir(), "pfsense-release-"));
+	t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+	const git = (...args: string[]) => {
+		const result = spawnSync("git", args, { cwd: dir, encoding: "utf8" });
+		assert.equal(result.status, 0, result.stderr);
+		return result.stdout.trim();
+	};
+	git("init", "-q");
+	git(
+		"-c",
+		"user.name=Test",
+		"-c",
+		"user.email=test@example.invalid",
+		"commit",
+		"--allow-empty",
+		"-qm",
+		"fixture",
+	);
+	const commit = git("rev-parse", "HEAD");
+	git("tag", "v1.2.3");
+	git(
+		"-c",
+		"user.name=Test",
+		"-c",
+		"user.email=test@example.invalid",
+		"tag",
+		"-a",
+		"v1.2.4",
+		"-m",
+		"fixture",
+	);
+	git("branch", "v-branch");
+	const output = path.join(dir, "output");
+	const check = (tag: string, expected = "") => {
+		fs.writeFileSync(output, "");
+		return spawnSync(
+			"sh",
+			[path.join(root, "scripts/resolve-release-tag.sh")],
+			{
+				cwd: dir,
+				encoding: "utf8",
+				env: {
+					...process.env,
+					GITHUB_OUTPUT: output,
+					RELEASE_TAG: tag,
+					EXPECTED_COMMIT: expected,
+				},
+			},
+		);
+	};
+	for (const tag of ["v1.2.3", "v1.2.4"]) {
+		assert.equal(check(tag, commit).status, 0);
+		assert.equal(fs.readFileSync(output, "utf8"), `commit=${commit}\n`);
+	}
+	for (const tag of ["1.2.3", "v-branch", "v-missing", "v-bad\ninjection"]) {
+		assert.notEqual(check(tag).status, 0);
+		assert.equal(fs.readFileSync(output, "utf8"), "");
+	}
+	const moved = check("v1.2.3", "different-commit");
+	assert.notEqual(moved.status, 0);
+	assert.match(moved.stderr, /no longer points/);
+	assert.equal(fs.readFileSync(output, "utf8"), "");
+});

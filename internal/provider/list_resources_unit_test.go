@@ -29,7 +29,17 @@ func discoveryResponse(name string) any {
 	case "firewall_schedule":
 		return map[string]any{"schedules": []any{map[string]any{"id": "example", "name": "example"}}}
 	case "firewall_altq":
-		return map[string]any{"altq": []any{map[string]any{"name": "example", "if_ident": "lan", "scheduler": "HFSC", "bandwidth": "100", "bandwidthtype": "Mb"}}}
+		return map[string]any{
+			"altq": []any{
+				map[string]any{
+					"name":          "example",
+					"if_ident":      "lan",
+					"scheduler":     "HFSC",
+					"bandwidth":     "100",
+					"bandwidthtype": "Mb",
+				},
+			},
+		}
 	case "firewall_limiter":
 		return map[string]any{"limiter": []any{map[string]any{"name": "example"}}}
 	case "firewall_pflow_exporter":
@@ -164,9 +174,15 @@ func TestDiscoveryResponseValidation(t *testing.T) {
 	}{
 		{name: "null response", body: nil, want: "empty response"},
 		{name: "invalid root", body: []any{}, want: "decode API response"},
-		{name: "invalid nested collection", body: map[string]any{"tunnels": []any{}}, path: []string{"tunnels", "item"}, want: "not an object"},
+		{
+			name: "invalid nested collection", body: map[string]any{"tunnels": []any{}},
+			path: []string{"tunnels", "item"}, want: "not an object",
+		},
 		{name: "non-object item", body: map[string]any{"rules": []any{nil}}, path: []string{"rules"}, want: "invalid item"},
-		{name: "missing rule", body: map[string]any{"rules": []any{map[string]any{}}}, path: []string{"rules"}, item: "rule", want: "invalid \"rule\""},
+		{
+			name: "missing rule", body: map[string]any{"rules": []any{map[string]any{}}},
+			path: []string{"rules"}, item: "rule", want: "invalid \"rule\"",
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			body, err := json.Marshal(tt.body)
@@ -191,11 +207,27 @@ func TestRuleDiscoveryFailures(t *testing.T) {
 	}{
 		{name: "interface request failure", status: http.StatusForbidden, want: "HTTP 403"},
 		{name: "omitted interfaces", interfaces: map[string]any{}, want: "interface list"},
-		{name: "invalid interface", interfaces: map[string]any{"interfaces": []string{"lan/wan"}}, want: "invalid firewall interface"},
-		{name: "duplicate interface", interfaces: map[string]any{"interfaces": []string{"lan", "lan"}}, rules: map[string]any{"entries": []any{}}, want: "duplicate firewall interface"},
-		{name: "missing entries", interfaces: map[string]any{"interfaces": []string{"lan"}}, rules: map[string]any{}, want: "interface \"lan\""},
-		{name: "invalid read-only flag", interfaces: map[string]any{"interfaces": []string{"lan"}}, rules: map[string]any{"entries": []any{map[string]any{"rule": map[string]any{"readonly": "invalid"}}}}, want: "invalid read-only flag"},
-		{name: "missing rule identifier", interfaces: map[string]any{"interfaces": []string{"lan"}}, rules: map[string]any{"entries": []any{map[string]any{"rule": map[string]any{}}}}, want: "identifier"},
+		{
+			name: "invalid interface", interfaces: map[string]any{"interfaces": []string{"lan/wan"}},
+			want: "invalid firewall interface",
+		},
+		{
+			name: "duplicate interface", interfaces: map[string]any{"interfaces": []string{"lan", "lan"}},
+			rules: map[string]any{"entries": []any{}}, want: "duplicate firewall interface",
+		},
+		{
+			name: "missing entries", interfaces: map[string]any{"interfaces": []string{"lan"}},
+			rules: map[string]any{}, want: "interface \"lan\"",
+		},
+		{
+			name: "invalid read-only flag", interfaces: map[string]any{"interfaces": []string{"lan"}},
+			rules: map[string]any{"entries": []any{map[string]any{"rule": map[string]any{"readonly": "invalid"}}}},
+			want:  "invalid read-only flag",
+		},
+		{
+			name: "missing rule identifier", interfaces: map[string]any{"interfaces": []string{"lan"}},
+			rules: map[string]any{"entries": []any{map[string]any{"rule": map[string]any{}}}}, want: "identifier",
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			l, _ := configuredList(t, "firewall_rule", func(w http.ResponseWriter, r *http.Request) {

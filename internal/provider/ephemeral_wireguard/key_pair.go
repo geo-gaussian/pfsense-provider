@@ -36,7 +36,8 @@ func (r *keyPairResource) Metadata(_ context.Context, req ephemeral.MetadataRequ
 
 func (r *keyPairResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, resp *ephemeral.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Generates a WireGuard key pair on the configured firewall. Terraform 1.10 or later is required. Private key outputs are ephemeral and sensitive.",
+		Description: "Generates a WireGuard key pair on the configured firewall. Terraform 1.10 or later is " +
+			"required. Private key outputs are ephemeral and sensitive.",
 		Attributes: map[string]schema.Attribute{
 			"private_key":         schema.StringAttribute{Computed: true, Sensitive: true},
 			"private_key_clamped": schema.StringAttribute{Computed: true, Sensitive: true},
@@ -46,14 +47,21 @@ func (r *keyPairResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, r
 	}
 }
 
-func (r *keyPairResource) Configure(_ context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
+func (r *keyPairResource) Configure(
+	_ context.Context,
+	req ephemeral.ConfigureRequest,
+	resp *ephemeral.ConfigureResponse,
+) {
 	if req.ProviderData == nil {
 		return
 	}
 	var ok bool
 	r.client, ok = req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The WireGuard key-pair ephemeral resource received an unexpected API client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The WireGuard key-pair ephemeral resource received an unexpected API client.",
+		)
 	}
 }
 
@@ -68,28 +76,39 @@ func (r *keyPairResource) Open(ctx context.Context, _ ephemeral.OpenRequest, res
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil {
-		resp.Diagnostics.AddError("Unable to generate WireGuard keys", fmt.Sprintf("API returned HTTP %d or an invalid JSON response.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to generate WireGuard keys",
+			fmt.Sprintf("API returned HTTP %d or an invalid JSON response.", result.StatusCode()),
+		)
 		return
 	}
 	if result.JSON200.Privkey == nil || len(*result.JSON200.Privkey) == 0 ||
 		result.JSON200.Pubkey == nil || len(*result.JSON200.Pubkey) == 0 {
-		resp.Diagnostics.AddError("Unable to generate WireGuard keys", "The API response did not include both private and public keys.")
+		resp.Diagnostics.AddError(
+			"Unable to generate WireGuard keys",
+			"The API response did not include both private and public keys.",
+		)
 		return
 	}
 
+	data := modelFromKeys(result.JSON200)
+	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+}
+
+func modelFromKeys(keys *api.WireGuardKeys) keyPairModel {
 	data := keyPairModel{
-		PrivateKey: types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.Privkey)),
-		PublicKey:  types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.Pubkey)),
+		PrivateKey: types.StringValue(base64.StdEncoding.EncodeToString(*keys.Privkey)),
+		PublicKey:  types.StringValue(base64.StdEncoding.EncodeToString(*keys.Pubkey)),
 	}
-	if result.JSON200.PrivkeyClamped != nil {
-		data.PrivateKeyClamped = types.StringValue(base64.StdEncoding.EncodeToString(*result.JSON200.PrivkeyClamped))
+	if keys.PrivkeyClamped != nil {
+		data.PrivateKeyClamped = types.StringValue(base64.StdEncoding.EncodeToString(*keys.PrivkeyClamped))
 	} else {
 		data.PrivateKeyClamped = types.StringNull()
 	}
-	if result.JSON200.WasClamped != nil {
-		data.WasClamped = types.BoolValue(*result.JSON200.WasClamped)
+	if keys.WasClamped != nil {
+		data.WasClamped = types.BoolValue(*keys.WasClamped)
 	} else {
 		data.WasClamped = types.BoolNull()
 	}
-	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+	return data
 }

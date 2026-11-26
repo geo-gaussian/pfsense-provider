@@ -73,16 +73,7 @@ func TestScheduleResourceLifecycle(t *testing.T) {
 		t.Fatal(configureResp.Diagnostics)
 	}
 
-	timerangeType := resource_firewall_schedule.TimerangeType{
-		ObjectType: types.ObjectType{AttrTypes: resource_firewall_schedule.TimerangeValue{}.AttributeTypes(ctx)},
-	}
-	model := resource_firewall_schedule.FirewallScheduleModel{
-		Id:         types.StringValue("schedule-1"),
-		Name:       types.StringValue("weekday"),
-		Descr:      types.StringValue("office hours"),
-		Schedlabel: types.StringNull(),
-		Timerange:  types.ListNull(timerangeType),
-	}
+	model := scheduleTestModel(ctx)
 	plan := tfsdk.Plan{Schema: s}
 	if diags := plan.Set(ctx, &model); diags.HasError() {
 		t.Fatal(diags)
@@ -122,6 +113,19 @@ func TestScheduleResourceLifecycle(t *testing.T) {
 	}
 }
 
+func scheduleTestModel(ctx context.Context) resource_firewall_schedule.FirewallScheduleModel {
+	timerangeType := resource_firewall_schedule.TimerangeType{
+		ObjectType: types.ObjectType{AttrTypes: resource_firewall_schedule.TimerangeValue{}.AttributeTypes(ctx)},
+	}
+	return resource_firewall_schedule.FirewallScheduleModel{
+		Id:         types.StringValue("schedule-1"),
+		Name:       types.StringValue("weekday"),
+		Descr:      types.StringValue("office hours"),
+		Schedlabel: types.StringNull(),
+		Timerange:  types.ListNull(timerangeType),
+	}
+}
+
 func TestVirtualIPRetainsMaskedPasswords(t *testing.T) {
 	ctx := context.Background()
 	const password = "sensitive-password"
@@ -139,7 +143,10 @@ func TestVirtualIPRetainsMaskedPasswords(t *testing.T) {
 			gotPassword, _ = body["password"].(string)
 			_, _ = fmt.Fprint(w, `{"id":"vip-1"}`)
 		case req.URL.Path == "/firewall/virtualip" && req.Method == http.MethodGet:
-			_, _ = fmt.Fprint(w, `{"virtualips":[{"id":"vip-1","mode":"carp","interface":"wan","subnet":"198.51.100.10/32","descr":"VIP"}]}`)
+			_, _ = fmt.Fprint(
+				w,
+				`{"virtualips":[{"id":"vip-1","mode":"carp","interface":"wan","subnet":"198.51.100.10/32","descr":"VIP"}]}`,
+			)
 		case req.URL.Path == "/system/filterreload/reload" && req.Method == http.MethodPost:
 			_, _ = fmt.Fprint(w, `{"result":"started"}`)
 		default:

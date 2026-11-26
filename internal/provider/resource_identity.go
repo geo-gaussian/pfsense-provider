@@ -31,7 +31,11 @@ func identified(factory func() resource.Resource, attributes ...string) func() r
 	}
 }
 
-func (r *identifiedResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *identifiedResource) Configure(
+	ctx context.Context,
+	req resource.ConfigureRequest,
+	resp *resource.ConfigureResponse,
+) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -42,21 +46,33 @@ func (r *identifiedResource) Configure(ctx context.Context, req resource.Configu
 	}
 	base, ok := client.ClientInterface.(*api.Client)
 	if !ok || base == nil {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The resource could not determine the controller endpoint.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The resource could not determine the controller endpoint.",
+		)
 		return
 	}
 	r.controller = strings.TrimSuffix(base.Server, "/")
 	r.Resource.(resource.ResourceWithConfigure).Configure(ctx, req, resp)
 }
 
-func (r *identifiedResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+func (r *identifiedResource) IdentitySchema(
+	_ context.Context,
+	_ resource.IdentitySchemaRequest,
+	resp *resource.IdentitySchemaResponse,
+) {
 	resp.IdentitySchema = identityschema.Schema{Attributes: map[string]identityschema.Attribute{
 		"controller": identityschema.StringAttribute{RequiredForImport: true},
 		"id":         identityschema.StringAttribute{RequiredForImport: true},
 	}}
 }
 
-func (r *identifiedResource) setIdentity(ctx context.Context, state tfsdk.State, identity *tfsdk.ResourceIdentity, diags *diag.Diagnostics) {
+func (r *identifiedResource) setIdentity(
+	ctx context.Context,
+	state tfsdk.State,
+	identity *tfsdk.ResourceIdentity,
+	diags *diag.Diagnostics,
+) {
 	if identity == nil || diags.HasError() || state.Raw.IsNull() {
 		return
 	}
@@ -98,7 +114,11 @@ func (r *identifiedResource) Update(ctx context.Context, req resource.UpdateRequ
 	r.setIdentity(ctx, resp.State, resp.Identity, &resp.Diagnostics)
 }
 
-func (r *identifiedResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *identifiedResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	if req.ID == "" && req.Identity != nil {
 		var identity resourceIdentity
 		resp.Diagnostics.Append(req.Identity.Get(ctx, &identity)...)
@@ -106,7 +126,10 @@ func (r *identifiedResource) ImportState(ctx context.Context, req resource.Impor
 			return
 		}
 		if identity.Controller.ValueString() != r.controller {
-			resp.Diagnostics.AddError("Invalid resource identity", "The identity controller does not match the configured controller.")
+			resp.Diagnostics.AddError(
+				"Invalid resource identity",
+				"The identity controller does not match the configured controller.",
+			)
 			return
 		}
 		req.ID = identity.ID.ValueString()

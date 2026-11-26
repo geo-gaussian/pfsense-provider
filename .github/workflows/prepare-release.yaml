@@ -1,0 +1,91 @@
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to release
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.tag.outputs.commit }}
+    steps:
+      - name: Check out workflow revision
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve release tag
+        id: tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: sh scripts/resolve-release-tag.sh
+
+  validate:
+    needs: resolve
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/build-and-deploy.yaml
+    with:
+      ref: ${{ needs.resolve.outputs.commit }}
+
+  release:
+    needs: [resolve, validate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out workflow revision
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check out validated commit
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.resolve.outputs.commit }}
+          fetch-depth: 0
+          path: release
+          persist-credentials: false
+
+      - name: Verify release tag still points to the validated commit
+        working-directory: release
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          EXPECTED_COMMIT: ${{ needs.resolve.outputs.commit }}
+        run: sh ../scripts/resolve-release-tag.sh
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: release/go.mod
+          cache: true
+          cache-dependency-path: release/go.sum
+
+      - name: Import signing key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Create signed draft release
+        uses: goreleaser/goreleaser-action@v7.3.0
+        with:
+          version: v2.20.3
+          args: release --clean --draft
+          workdir: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GORELEASER_CURRENT_TAG: ${{ inputs.tag }}

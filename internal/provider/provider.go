@@ -54,39 +54,71 @@ func (p *pfsenseProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 			"url":      schema.StringAttribute{Required: true, Description: "HTTPS origin of the Nexus controller."},
 			"username": schema.StringAttribute{Required: true},
 			"password": schema.StringAttribute{Required: true, Sensitive: true},
-			"insecure": schema.BoolAttribute{Optional: true, Description: "Disable TLS certificate verification. Use only in a test environment."},
+			"insecure": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Disable TLS certificate verification. Use only in a test environment.",
+			},
 		},
 	}
 }
 
-func (p *pfsenseProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+func (p *pfsenseProvider) Configure(
+	ctx context.Context,
+	req provider.ConfigureRequest,
+	resp *provider.ConfigureResponse,
+) {
 	p.configure(ctx, req, resp, api.NewClientWithResponses)
 }
 
-func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse, newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) {
+func (p *pfsenseProvider) configure(
+	ctx context.Context,
+	req provider.ConfigureRequest,
+	resp *provider.ConfigureResponse,
+	newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error),
+) {
 	var config providerModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() || config.Insecure.IsUnknown() {
-		resp.Diagnostics.AddError("Unknown provider configuration", "The controller URL, credentials, and TLS settings must be known before configuring the provider.")
+	if config.isUnknown() {
+		resp.Diagnostics.AddError(
+			"Unknown provider configuration",
+			"The controller URL, credentials, and TLS settings must be known before configuring the provider.",
+		)
 		return
 	}
-	nexus, err := client.New(config.URL.ValueString(), config.Username.ValueString(), config.Password.ValueString(), config.Insecure.ValueBool())
+	nexus, err := client.New(
+		config.URL.ValueString(),
+		config.Username.ValueString(),
+		config.Password.ValueString(),
+		config.Insecure.ValueBool(),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid provider configuration", err.Error())
 		return
 	}
-	apiClient, err := newAPI(strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api", api.WithHTTPClient(nexus))
+	apiClient, err := newAPI(
+		strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api",
+		api.WithHTTPClient(nexus),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to configure API client", err.Error())
 		return
 	}
+	setProviderData(resp, apiClient)
+}
+
+func setProviderData(resp *provider.ConfigureResponse, apiClient *api.ClientWithResponses) {
 	resp.ResourceData = apiClient
 	resp.DataSourceData = apiClient
 	resp.EphemeralResourceData = apiClient
 	resp.ListResourceData = apiClient
+}
+
+func (config providerModel) isUnknown() bool {
+	return config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() ||
+		config.Insecure.IsUnknown()
 }
 
 func (p *pfsenseProvider) Resources(context.Context) []func() resource.Resource {
@@ -119,7 +151,7 @@ func (p *pfsenseProvider) ListResources(ctx context.Context) []func() list.ListR
 }
 
 func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
+	sources := []func() datasource.DataSource{
 		data_firewall_aliases.New,
 		data_readonly.NewFirewallNATNpt,
 		data_readonly.NewFirewallNATOneToOne,
@@ -147,6 +179,12 @@ func (p *pfsenseProvider) DataSources(context.Context) []func() datasource.DataS
 		data_readonly.NewVXLANInterfaces,
 		data_readonly.NewGateways,
 		data_readonly.NewStaticRoutes,
+	}
+	return append(sources, serviceDataSources()...)
+}
+
+func serviceDataSources() []func() datasource.DataSource {
+	return []func() datasource.DataSource{
 		data_readonly.NewDNSForwarder,
 		data_readonly.NewIGMPProxies,
 		data_readonly.NewMDNS,
