@@ -337,9 +337,9 @@ alone do not count as support.
 
 Future acceptance tests can run as a separate workflow job against an isolated,
 disposable pfSense instance with test-only credentials. If they become a release
-requirement, add that job to the release job's dependencies and ensure it runs
-on version tags; a skipped dependency would otherwise prevent the release. Do
-not expose test credentials or an appliance to untrusted pull request code.
+requirement, add them to the reusable validation workflow and ensure they run
+for manual releases. Do not expose test credentials or an appliance to untrusted
+pull request code.
 
 The repository prefers tabs displayed at two columns for project-owned code
 and JSON. YAML, Terraform, and Markdown use two-space indentation; Go follows
@@ -361,10 +361,11 @@ changes.
 
 ## 📦 Preparing a release
 
-The build and deploy workflow runs lint and tests on pushes and pull requests.
-For a pushed version tag, it creates a signed **draft** GitHub release only
-after validation succeeds. It does not publish the draft automatically. Before
-tagging:
+The build and deploy workflow runs build, lint, and tests on pushes and pull
+requests. Preparing a signed **draft** GitHub release is a separate manual
+workflow; pushing a tag does not create a release. The release workflow reruns
+all three checks on the tagged commit before creating the draft. It does not
+publish the draft automatically. Before tagging:
 
 1. Register the GPG signing public key in the Terraform Registry. Configure
    the GitHub Actions secrets `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE`; never commit
@@ -372,9 +373,10 @@ tagging:
 2. Verify the release documentation and experimental warnings, and ensure the
    intended commit has passed checks. The workflow builds Linux, macOS, Windows,
    and FreeBSD packages for AMD64 and ARM64.
-3. Push a new version tag. Review the draft release and its
-   signed checksums before publishing it. Do not replace assets of an already
-   published release.
+3. Push a new version tag, then run **Prepare release** from GitHub Actions
+   using that existing tag as input. Review the draft release and its signed
+   checksums before publishing it. Do not replace assets of an already published
+   release.
 4. Register the repository in the Terraform Registry, or let its webhook ingest
    later published releases. After ingestion, test `terraform init` in a fresh
    directory without development overrides.

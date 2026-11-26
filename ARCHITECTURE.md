@@ -142,17 +142,19 @@ the specification.
 
 Tests use mock HTTP servers; when Terraform is available, tests also exercise
 the provider protocol. The installed pre-commit hook checks staged code sizes,
-then runs lint and tests on the working tree. CI runs lint and tests in parallel;
-the default-branch ruleset requires the lint job. Live acceptance tests are not
-yet implemented and should use an isolated, disposable firewall with test-only
-credentials. See [DEVELOPMENT.md](DEVELOPMENT.md) for the size limits and
-checker scope.
+then runs lint and tests on the working tree. CI runs build, lint, and tests in
+parallel; the default-branch ruleset requires the lint job. Live acceptance
+tests are not yet implemented and should use an isolated, disposable firewall
+with test-only credentials. See [DEVELOPMENT.md](DEVELOPMENT.md) for the size
+limits and checker scope.
 
 ## 📦 Release flow
 
-On a pushed version tag, the release job runs after lint and tests pass.
-GoReleaser builds platform packages, signs the checksums, and creates a draft
-GitHub release. A maintainer reviews and publishes the draft. The provider must
+The manual release workflow resolves an existing version tag to a commit and
+reruns build, lint, and tests on that commit. After validation, it verifies the
+tag still identifies the same commit. GoReleaser builds platform packages,
+signs the checksums, and creates a draft GitHub release. A maintainer reviews
+and publishes the draft. The provider must
 be registered separately in the Terraform Registry; its webhook ingests
 subsequent published releases. Release signing keys and passphrases are kept in
 GitHub Actions secrets, not in the repository.
