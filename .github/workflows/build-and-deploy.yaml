@@ -36,6 +36,7 @@ jobs:
         run: go build ./...
 
   lint:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -75,6 +76,7 @@ jobs:
         run: pnpm run lint
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -141,7 +143,7 @@ jobs:
 
   coverage:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [build, lint, test]
+    needs: [lint, test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
