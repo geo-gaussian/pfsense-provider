@@ -29,6 +29,9 @@ func TestReadDataSource(t *testing.T) {
 					w.WriteHeader(http.StatusMethodNotAllowed)
 					return
 				}
+				if req.URL.RawQuery != tt.query {
+					t.Errorf("query = %q, want %q", req.URL.RawQuery, tt.query)
+				}
 				contentType := tt.contentType
 				if contentType == "" {
 					contentType = "application/json"

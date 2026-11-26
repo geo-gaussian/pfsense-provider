@@ -11,6 +11,7 @@ type readDataSourceCase struct {
 	name        string
 	dataSource  func() datasource.DataSource
 	path        string
+	query       string
 	configured  map[string]tftypes.Value
 	status      int
 	body        string
@@ -455,4 +456,4 @@ var readDataSourceCases = append([]readDataSourceCase{
 		body:       `{}`,
 		wantJSON:   `{}`,
 	},
-}, readStatusAndFailureCases...)
+}, append(readStatusAndFailureCases, dnsDataSourceCases...)...)

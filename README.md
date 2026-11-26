@@ -5,19 +5,20 @@
 [![Nexus API coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fgeo-gaussian.github.io%2Fterraform-provider-pfsense-nexus%2Fapi.json)](#-coverage)
 
 This experimental provider manages firewall aliases, NAT and filter rules,
-schedules, traffic shapers, limiters, packet-flow exporters, virtual IPs, and
-WireGuard settings, tunnels, and peers. It also reads selected firewall,
-network, service, VPN, and system configuration or status from a local pfSense
-firewall through the Nexus controller. WireGuard key generation is available
-as an ephemeral resource. It uses Netgate's OpenAPI specification and
-HashiCorp's Terraform Plugin Framework.
+schedules, traffic shapers, limiters, packet-flow exporters, virtual IPs,
+WireGuard settings, tunnels and peers, HAProxy DNS resolvers, and mDNS
+settings. It also reads selected firewall, network, service, VPN, and system
+configuration or status from a local pfSense firewall through the Nexus
+controller. WireGuard key generation is available as an ephemeral resource.
+It uses Netgate's OpenAPI specification and HashiCorp's Terraform Plugin
+Framework.
 
 **Status:** Login and alias listing have been tested on one real appliance.
-Firewall and WireGuard mutations, and read-only data sources other than alias
-listing, have only been tested against mock servers. WireGuard key generation
-and resource discovery are also mock-tested only. Do not use these resources on
-a production firewall. Verify API behaviour, compatibility, and recovery in
-an isolated environment first.
+Firewall, WireGuard and DNS service mutations, and read-only data sources other
+than alias listing, have only been tested against mock servers. WireGuard key
+generation and resource discovery are also mock-tested only. Do not use these
+resources on a production firewall. Verify API behaviour, compatibility, and
+recovery in an isolated environment first.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component and request lifecycle
 overview.
@@ -46,6 +47,24 @@ firewall configuration and initiate the appropriate reload manually before
 retrying: Terraform refresh may observe changed configuration without retrying
 the failed reload. A failed create with an uncertain API response may require
 importing the existing resource.
+
+## 🌐 DNS services
+
+The provider manages [mDNS settings](docs/resources/mdns.md) and
+[HAProxy DNS resolvers](docs/resources/haproxy_resolver.md), including import
+and list-resource discovery. Destroying the mDNS singleton disables the service
+and retains its other settings. HAProxy resolver changes apply the complete
+HAProxy configuration, including changes staged outside Terraform. If an
+HAProxy apply fails after a write, inspect the configuration and apply it
+manually before retrying; a refresh alone does not retry the apply.
+
+Read-only data sources cover the DNS Resolver and Forwarder, CoreDNS, Dynamic
+DNS, mDNS, DNS lookup, and HAProxy DNS resolver settings or status. See the
+[data-source catalogue](docs/data-sources/) for individual endpoints and
+sensitive outputs. Resolver and Forwarder settings and overrides, CoreDNS, and
+Dynamic DNS configurations do **not** have managed resources yet. The included
+API specification also leaves some write or identifier details undocumented;
+data-source support does not imply a complete managed lifecycle.
 
 ## 📋 Requirements
 

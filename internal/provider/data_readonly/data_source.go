@@ -162,10 +162,18 @@ func (d *dataSource) readArguments(configured types.Object) (map[string]string, 
 	configuredAttributes := configured.Attributes()
 	arguments := make(map[string]string, len(d.arguments))
 	state := make(map[string]attr.Value, len(d.arguments)+1)
-	for name := range d.arguments {
+	for name, attribute := range d.arguments {
 		value, ok := configuredAttributes[name].(types.String)
-		if !ok || value.IsNull() || value.IsUnknown() {
+		if !ok || value.IsUnknown() {
 			return nil, nil, fmt.Errorf("Argument %q must be a known string value.", name)
+		}
+		if value.IsNull() {
+			stringAttribute, ok := attribute.(schema.StringAttribute)
+			if !ok || !stringAttribute.Optional {
+				return nil, nil, fmt.Errorf("Argument %q must be a known string value.", name)
+			}
+			state[name] = value
+			continue
 		}
 		arguments[name] = value.ValueString()
 		state[name] = value

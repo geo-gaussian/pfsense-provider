@@ -130,20 +130,21 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 		"firewall_alias", "firewall_nat_npt", "firewall_nat_one_to_one", "firewall_nat_port_forward",
 		"firewall_rule", "firewall_schedule", "firewall_altq", "firewall_limiter", "firewall_pflow_exporter",
 		"firewall_virtual_ip", "wireguard_settings", "wireguard_tunnel", "wireguard_peer",
+		"haproxy_resolver", "mdns",
 	} {
 		if !strings.Contains(string(data), `resource "pfsense_`+name+`"`) {
 			t.Errorf("generated configuration omitted resource type %s", name)
 		}
 	}
-	if strings.Count(string(data), "import {") != 13 {
-		t.Fatal("generated configuration did not include thirteen import blocks")
+	if strings.Count(string(data), "import {") != 15 {
+		t.Fatal("generated configuration did not include fifteen import blocks")
 	}
 	if strings.Contains(string(data), strings.Repeat("x", 12)) ||
 		strings.Count(string(data), "null # sensitive") != 2 {
 		t.Fatal("generated configuration did not redact the mock WireGuard secrets")
 	}
 	planOutput := run("plan", "-input=false", "-no-color")
-	if !strings.Contains(planOutput, "Plan: 13 to import, 0 to add, 0 to change, 0 to destroy.") {
+	if !strings.Contains(planOutput, "Plan: 15 to import, 0 to add, 0 to change, 0 to destroy.") {
 		t.Fatal("generated configuration did not produce an import-only plan")
 	}
 	if unexpected.Load() {
@@ -205,6 +206,10 @@ func queryFixtureHandler(t *testing.T, unexpected *atomic.Bool, aliasDetails *at
 			value = map[string]any{"exporters": []any{map[string]any{"id": "exporter-1"}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/virtualip":
 			value = map[string]any{"virtualips": []any{map[string]any{"id": "vip-1"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/ports/haproxy/resolvers":
+			value = map[string]any{"resolvers": []any{map[string]any{"id": "resolver-1", "name": "example"}}}
+		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/services/mdns":
+			value = map[string]any{"enable": true}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/vpn/wg":
 			value = map[string]any{
 				"config": []any{map[string]any{"enable": true}},

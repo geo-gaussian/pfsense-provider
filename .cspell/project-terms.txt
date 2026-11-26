@@ -54,6 +54,9 @@ DHCPv
 IGMP
 MDNS
 dnsmasq
+dyndnses
+checkip
+checkipservice
 igmpproxy
 igmpentries
 mdns

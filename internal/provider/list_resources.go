@@ -136,6 +136,15 @@ func (l *configurationList) identifiers(ctx context.Context, name string) ([]str
 	case "firewall_virtual_ip":
 		response, err = l.client.FirewallGetVirtualIPsWithResponse(ctx)
 		path, key = []string{"virtualips"}, "id"
+	case "haproxy_resolver":
+		response, err = l.client.GetHaproxyResolversWithResponse(ctx)
+		path, key = []string{"resolvers"}, "id"
+	case "mdns":
+		response, err := l.client.GetMDNSConfigWithResponse(ctx)
+		if _, err := listObject(response, err); err != nil {
+			return nil, err
+		}
+		return []string{"mdns"}, nil
 	case "wireguard_settings", "wireguard_tunnel", "wireguard_peer":
 		return l.wireguardIdentifiers(ctx, name)
 	default:

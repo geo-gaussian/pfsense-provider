@@ -15,6 +15,8 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
 - `pfsense_wireguard_settings`: manage the global WireGuard settings singleton.
 - `pfsense_wireguard_tunnel` and `pfsense_wireguard_peer`: manage WireGuard
   tunnels and peers, including import.
+- `pfsense_mdns` and `pfsense_haproxy_resolver`: manage mDNS settings and
+  HAProxy DNS resolvers, including import.
 - `pfsense_wireguard_key_pair`: generate a transient WireGuard key pair using
   Terraform's ephemeral resource support (Terraform 1.10 or later).
 - List-resource discovery for the managed resource types (Terraform 1.14 or
@@ -26,11 +28,11 @@ source is `geo-gaussian/pfsense-nexus`; the local Terraform provider name is
   configuration and status, and system health and discovery.
 
 Login and alias listing have been exercised on one appliance. Firewall writes
-and reloads, WireGuard operations and key generation, resource discovery, and
-read-only data sources other than alias listing have only been tested against
-mock servers. Appliance compatibility remains unverified. Do not use write
-resources on a production firewall until they have been validated in an
-isolated environment.
+and reloads, DNS service writes, WireGuard operations and key generation,
+resource discovery, and read-only data sources other than alias listing have
+only been tested against mock servers. Appliance compatibility remains
+unverified. Do not use write resources on a production firewall until they have
+been validated in an isolated environment.
 
 ## 🧩 Components
 
@@ -38,7 +40,7 @@ isolated environment.
 flowchart LR
   TF[Terraform CLI] --> Framework[Terraform Plugin Framework]
   Framework --> Provider[Provider configuration]
-  Framework --> Resource[Managed firewall and WireGuard resources]
+  Framework --> Resource[Managed firewall, WireGuard and DNS resources]
   Framework --> Discovery[List-resource discovery]
   Framework --> Ephemeral[WireGuard key-pair ephemeral resource]
   Framework --> Data[Read-only data sources]
@@ -60,6 +62,8 @@ flowchart LR
 | [Firewall resources](internal/provider/firewall_resources) | Implements shared lifecycle, state handling, import, and reloads for other managed firewall resources. |
 | [Aliases data source](internal/provider/data_firewall_aliases/firewall_aliases_data_source.go) | Reads alias metadata and reports missing or invalid responses. |
 | [WireGuard resources](internal/provider/resource_wireguard/wireguard_resources.go) | Implements custom lifecycle and import behaviour for WireGuard settings, tunnels, and peers. |
+| [mDNS resource](internal/provider/resource_mdns/mdns.go) | Manages the mDNS singleton and disables it on deletion. |
+| [HAProxy resolver resource](internal/provider/resource_haproxy_resolver/resolver.go) | Manages HAProxy DNS resolvers and applies the HAProxy configuration after writes. |
 | [WireGuard ephemeral resource](internal/provider/ephemeral_wireguard/key_pair.go) | Generates a transient key pair through the Nexus API. |
 | [List resources](internal/provider/list_resources.go) | Discovers managed resources and exposes their identities and configuration to Terraform. |
 | [Read-only data sources](internal/provider/data_readonly) | Reads selected firewall, network, service, VPN, and system configuration or status; returns the API payload as JSON, with sensitive outputs marked or projected safely. |
@@ -127,15 +131,31 @@ operation, so WireGuard mutations use the documented operations without an
 additional apply call. The WireGuard endpoints and writes are mock-tested but
 have not been validated against a live appliance.
 
+## 🌐 DNS service lifecycle
+
+The mDNS singleton reads the current configuration before writing; deletion
+disables the service and verifies the result while retaining other settings.
+HAProxy resolvers are identified by their API-assigned IDs. Creates, updates
+and deletes apply the complete HAProxy configuration, then verify the resolver
+or its absence. An apply failure can leave staged changes behind; inspect and
+apply them manually before retrying. Neither lifecycle is atomic across
+concurrent clients or Terraform processes.
+
+Resolver and Forwarder settings and overrides, CoreDNS, and Dynamic DNS
+configurations do not have managed resources. Selected configuration and
+status reads are available as data sources; they do not imply a managed
+lifecycle.
+
 ## 🔍 Read-only data sources
 
 The alias data source exposes a typed list of alias metadata. Most other
 read-only data sources expose selected API payloads as computed JSON strings
 for callers to inspect with Terraform's `jsondecode()`. They include firewall,
-network, service, VPN, and system configuration or status, but exclude
-diagnostic actions and downloads. Outputs that may contain arbitrary or
-identifying configuration are marked sensitive. The WireGuard status source
-omits private keys, preshared keys, and configuration objects.
+network, service, VPN, and system configuration or status. A DNS lookup and
+mDNS browse are also available; mutating diagnostic actions and downloads are
+not exposed. Outputs that may contain arbitrary or identifying configuration
+are marked sensitive. The WireGuard status source omits private keys,
+preshared keys, and configuration objects.
 
 ## ⚙️ Generation and development
 

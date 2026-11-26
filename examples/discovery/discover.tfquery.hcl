@@ -62,3 +62,13 @@ list "pfsense_wireguard_peer" "peers" {
   provider = pfsense-nexus
   limit    = 10000
 }
+
+list "pfsense_haproxy_resolver" "resolvers" {
+  provider = pfsense-nexus
+  limit    = 10000
+}
+
+list "pfsense_mdns" "mdns" {
+  provider = pfsense-nexus
+  limit    = 10000
+}

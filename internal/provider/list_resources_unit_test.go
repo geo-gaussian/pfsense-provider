@@ -46,6 +46,10 @@ func discoveryResponse(name string) any {
 		return map[string]any{"exporters": []any{map[string]any{"id": "example"}}}
 	case "firewall_virtual_ip":
 		return map[string]any{"virtualips": []any{map[string]any{"id": "example"}}}
+	case "haproxy_resolver":
+		return map[string]any{"resolvers": []any{map[string]any{"id": "example", "name": "example"}}}
+	case "mdns":
+		return map[string]any{"enable": true}
 	default:
 		return map[string]any{
 			"config":  []any{map[string]any{"enable": true}},
@@ -92,6 +96,8 @@ func TestListSupportedConfiguration(t *testing.T) {
 		"firewall_alias", "firewall_nat_npt", "firewall_nat_one_to_one", "firewall_nat_port_forward",
 		"firewall_rule", "firewall_schedule", "firewall_altq", "firewall_limiter",
 		"firewall_pflow_exporter", "firewall_virtual_ip", "wireguard_settings", "wireguard_tunnel", "wireguard_peer",
+		"haproxy_resolver",
+		"mdns",
 	} {
 		t.Run(name, func(t *testing.T) {
 			var paths []string
@@ -130,6 +136,8 @@ func TestListSupportedConfiguration(t *testing.T) {
 				id := "example"
 				if name == "wireguard_settings" {
 					id = "wireguard"
+				} else if name == "mdns" {
+					id = "mdns"
 				} else if name == "firewall_rule" {
 					id = "lan/example"
 				}
