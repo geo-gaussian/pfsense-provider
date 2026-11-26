@@ -49,7 +49,7 @@ importing the existing resource.
 
 ## 📋 Requirements
 
-- Go 1.25 or newer to build
+- Go 1.26 or newer to build
 - Terraform 1.8 or newer
 - Terraform 1.10 or newer to use the WireGuard ephemeral key-pair resource
 - Node.js 22.18+ on the 22.x line, or 23.6+, and pnpm for
@@ -246,9 +246,9 @@ at commit `b4acd7ca21dbca739a530403a1f62a7440f7726f`, with whitespace
 changes. The upstream project is distributed under the Apache 2.0 licence; see
 the included [licence](docs/NETGATE-LICENSE).
 
-Run `make generate` to regenerate the Terraform alias schema and the Go HTTP
-client using pinned generator versions. The generated `*_gen.go` files are not
-hand-edited. The selected read-only Terraform data sources are custom
+Run `make generate` to regenerate the mapped firewall resource schemas and the
+Go HTTP client using pinned generator versions. The generated `*_gen.go` files
+are not hand-edited. The selected read-only Terraform data sources are custom
 implementations; `make generate` does not generate their schemas or behaviour.
 Terraform CRUD, data-source behaviour, session management, request
 serialisation, and reload handling remain custom code.
@@ -268,15 +268,16 @@ pnpm run test
 The lint and format commands require [uv](https://docs.astral.sh/uv/);
 they run a pinned YAPF version through `uvx`. Node runs the TypeScript
 tooling directly; lint also checks its types without emitting build files.
-The lint checks include a targeted inline-program safeguard, described in
-[DEVELOPMENT.md](DEVELOPMENT.md). Spec Kit-managed scripts under
-`.specify/scripts/` are exempt from the no-inline-program rule.
+The lint checks include code-size limits and a targeted inline-program
+safeguard, described in [DEVELOPMENT.md](DEVELOPMENT.md). Spec Kit-managed
+scripts under `.specify/scripts/` are exempt from the no-inline-program rule.
 
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
 through the actual provider protocol. They do not replace live acceptance tests.
-The Git hook and CI run the same lint and tests, with CI running lint and tests
-in parallel. CI also produces coverage reports.
+The installed Git hook checks staged sizes, then runs lint and tests on the
+working tree. CI runs lint and tests in parallel and produces coverage reports;
+the default-branch ruleset requires the lint job.
 
 ## 📊 Coverage
 
@@ -348,8 +349,9 @@ files. Spaces
 are allowed for alignment and content where needed. Markdown and YAML are not
 automatically formatted; the whitespace check catches some issues but does not
 enforce all indentation. Project-owned shell scripts use POSIX shell and
-`#!/bin/sh`; Spec Kit-managed scripts are temporarily exempt. POSIX shell
-compatibility is not currently checked by lint.
+`#!/bin/sh`; Spec Kit-managed scripts are temporarily exempt. The size checker
+parses project-owned shell scripts as POSIX, but does not check shebangs or
+guarantee portability.
 
 Run `pnpm run format` to reformat those files after generating or updating
 Spec Kit. Review the changes before committing. Formatting and skill changes to

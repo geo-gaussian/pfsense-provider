@@ -23,6 +23,52 @@ not a parser for every language or a guarantee that all embedded programs are
 detected. Review changes manually, including other string forms and subprocess
 argument lists.
 
+## 📏 Keeping code maintainable
+
+The constitution and [AGENTS.md](AGENTS.md) define these physical-line limits.
+Warnings do not block commits or merges; errors do.
+
+| Scope | Warning above | Error above |
+| --- | ---: | ---: |
+| Production file | 350 | 500 |
+| Production function | 40 | 80 |
+| Test file | 500 | 600 |
+| Test function, including helpers | 100 | 150 |
+
+Comments and blank lines count. Function lengths run from the declaration
+through the end of the definition, including nested closures; nested functions
+are also checked individually. A value equal to a limit does not exceed it.
+
+`pnpm run lint:size` checks Go, TypeScript, JavaScript, and POSIX shell files
+and functions, and jq file sizes. Go `_test.go` files and JavaScript or
+TypeScript `.test` and `.spec` files use the test limits. Shell and jq files
+use production limits. The shell check parses POSIX syntax; it is not a
+complete portability or shebang check.
+
+The checker skips generated Go files and TypeScript or JavaScript files marked
+with the supported generated-code header. It also skips Spec Kit-managed
+scripts and the repository's fixture directories. Lockfiles and API
+specifications are outside its source-file scope. These exclusions apply to
+size checks only: other lint and project rules still apply to fixtures.
+Any exception for hand-written code must identify the specific file or
+function, explain why it is needed, and receive reviewer approval. The checker
+does not provide a general suppression mechanism; an exception also requires a
+reviewed checker change.
+
+The five-line [`current-commit-sha.jq`](scripts/current-commit-sha.jq) filter
+has no functions; jq function sizes are not checked automatically. Review any
+added jq functions manually until jq parsing is supported. Spec Kit-managed
+scripts are excluded because they are maintained upstream.
+
+`pnpm run lint:size` checks tracked and non-ignored untracked files in the
+working tree. The installed pre-commit hook also runs
+`pnpm run lint:size:staged` against the Git index, so an unstaged edit cannot
+conceal an oversized staged file. The hook then runs the full lint and test
+commands on the working tree; unstaged changes can therefore also block a
+commit. Run `pnpm run setup-hooks` after cloning to install the hook. The CI
+lint job runs the working-tree checks, and the default-branch ruleset requires
+that job to pass before merging.
+
 ## 🔌 Adding a New Resource via `tfplugingen-openapi`
 
 1. Locate the target operations and methods in `docs/nexus.openapi.yaml`.
@@ -30,10 +76,10 @@ argument lists.
    the necessary operation IDs in `oapi-codegen.yaml`. Use the existing alias
    mapping as an example; methods and paths vary by endpoint.
 3. Run `make generate`, which uses the repository's pinned generator versions.
-   The current HashiCorp codegen mapping generates the alias resource; selected
-   read-only data sources and WireGuard resources use custom Terraform
-   Framework code. Review generated changes and preserve custom resource
-   lifecycle code.
+   The HashiCorp mapping generates schemas for the mapped firewall resources;
+   their lifecycle code, read-only data sources, and WireGuard resources use
+   custom Terraform Framework code. Review generated changes and preserve
+   custom resource lifecycle code and registration.
 4. Implement the lifecycle and import methods, register the resource in
    `internal/provider/provider.go`, and test its behaviour with mock servers.
    Trigger the appropriate reload or apply operation when required.

@@ -7,6 +7,7 @@ require (
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-go v0.31.0
 	github.com/oapi-codegen/runtime v1.9.0
+	mvdan.cc/sh/v3 v3.12.0
 )
 
 require (

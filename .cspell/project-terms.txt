@@ -96,3 +96,4 @@ uniqid
 Uniqid
 iface
 Bogon
+mvdan

@@ -16,7 +16,8 @@ import (
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 )
 
-func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
+func prepareTerraformQueryFixture(t *testing.T) (string, string) {
+	t.Helper()
 	terraform, err := exec.LookPath("terraform")
 	if err != nil {
 		t.Skip("Terraform CLI is not installed")
@@ -73,7 +74,11 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build provider: %v\n%s", err, output)
 	}
+	return terraform, dir
+}
 
+func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
+	terraform, dir := prepareTerraformQueryFixture(t)
 	var unexpected atomic.Bool
 	var aliasDetails atomic.Int32
 	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

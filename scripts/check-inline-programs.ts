@@ -85,6 +85,13 @@ export function findInlinePrograms(filename: string, text: string): string[] {
 		return issues;
 	}
 
+	return findShellPrograms(name, text);
+}
+
+function findShellPrograms(name: string, text: string): string[] {
+	const issues: string[] = [];
+	const record = (line: number, message: string) =>
+		issues.push(`${name}:${line}: ${message}`);
 	const workflow =
 		name.startsWith(".github/workflows/") && /\.ya?ml$/.test(name);
 	const shell =

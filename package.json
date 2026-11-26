@@ -7,7 +7,9 @@
 		"node": "^22.18.0 || >=23.6.0"
 	},
 	"scripts": {
-		"lint": "pnpm run lint:inline && pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:types && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
+		"lint": "pnpm run lint:size && pnpm run lint:inline && pnpm run lint:editorconfig && pnpm run lint:format && pnpm run lint:types && pnpm run lint:python && pnpm run lint:cspell && pnpm run lint:go",
+		"lint:size": "go run ./tools/sizecheck && node scripts/check-size.ts",
+		"lint:size:staged": "go run ./tools/sizecheck --staged && node scripts/check-size.ts --staged",
 		"lint:inline": "node scripts/check-inline-programs.ts",
 		"lint:editorconfig": "node scripts/check-editorconfig.ts",
 		"lint:format": "prettier --check '**/*.{js,ts,json,sh}' .githooks/pre-commit",

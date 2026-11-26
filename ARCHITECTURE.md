@@ -130,8 +130,9 @@ omits private keys, preshared keys, and configuration objects.
 
 [docs/nexus.openapi.yaml](docs/nexus.openapi.yaml) is the included Netgate API
 specification. `make generate` uses [generator_config.yaml](generator_config.yaml)
-to generate the alias resource schema and [oapi-codegen.yaml](oapi-codegen.yaml)
-to generate the Go API client methods selected for resources and data sources.
+to generate schemas for the mapped firewall resources and
+[oapi-codegen.yaml](oapi-codegen.yaml) to generate the Go API client methods
+selected for resources and data sources.
 The generated `*_gen.go` files are not hand-edited; CRUD, authentication,
 reload handling, and Terraform data-source behaviour are custom code. WireGuard
 mutations use the documented operations without an additional apply call,
@@ -140,9 +141,12 @@ operation. Review generated changes alongside custom integration when updating
 the specification.
 
 Tests use mock HTTP servers; when Terraform is available, tests also exercise
-the provider protocol. The pre-commit hook runs lint and race tests. CI runs
-lint and tests in parallel; live acceptance tests are not yet implemented and
-should use an isolated, disposable firewall with test-only credentials.
+the provider protocol. The installed pre-commit hook checks staged code sizes,
+then runs lint and tests on the working tree. CI runs lint and tests in parallel;
+the default-branch ruleset requires the lint job. Live acceptance tests are not
+yet implemented and should use an isolated, disposable firewall with test-only
+credentials. See [DEVELOPMENT.md](DEVELOPMENT.md) for the size limits and
+checker scope.
 
 ## 📦 Release flow
 
