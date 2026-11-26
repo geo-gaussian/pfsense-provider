@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 → 1.2.0
+Version change: 1.2.0 → 2.0.0
 Modified principles: none.
-Modified sections: Additional Engineering Constraints; Quality Workflow and Gates.
+Modified sections: Quality Workflow and Gates.
 Added sections: none.
 Removed sections: none.
 Follow-up TODO: none.
@@ -93,8 +93,10 @@ values.
 - Run `go test -race ./...` when the coverage command has not already run it.
 - Review tests for meaningful assertions, representative error cases, and
   absence of dependence on a live appliance.
-- File and function size errors MUST prevent commits and merges; warnings MUST
-  be reported without blocking them.
+- File and function size errors MUST prevent commits and merges. Individual
+  warnings MUST be reported, and three or more warnings across lint commands
+  MUST prevent commits and merges. Warning-producing lint tools MUST use a
+  recognised warning format or an adapter so their warnings are counted.
 - Any intentional exception MUST be documented in the change and approved
   through project review; exceptions MUST NOT silently lower coverage.
 
@@ -110,4 +112,4 @@ for clarifications that do not change obligations. Reviewers MUST check proposed
 changes against these principles and the current `AGENTS.md` and `DEVELOPMENT.md`
 guidance.
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-26 | **Last Amended**: 2026-11-26
+**Version**: 2.0.0 | **Ratified**: 2026-11-26 | **Last Amended**: 2026-11-26

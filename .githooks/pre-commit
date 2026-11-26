@@ -3,7 +3,6 @@
 set -eu
 
 echo "Running pre-commit checks..."
-pnpm run lint:lines:staged
-pnpm run lint:size:staged
+pnpm run lint:staged
 pnpm run lint
 pnpm run test

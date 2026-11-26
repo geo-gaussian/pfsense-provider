@@ -66,8 +66,10 @@ remains unverified.
 - Exclude generated code, fixtures, lockfiles, and API specifications.
   Exceptions for hand-written code MUST identify the exact file or function,
   explain why an exception is needed, and be approved in project review.
-- Size warnings MUST NOT block commits or merges; errors MUST block both.
-  See `DEVELOPMENT.md` for checker scope and its current jq function limitation.
+- Individual size warnings are non-blocking, but three or more warnings across
+  any lint commands MUST block commits and merges. Lint errors MUST block both.
+  Warning-producing lint tools MUST emit a recognised warning format; see
+  `DEVELOPMENT.md` for the budget, checker scope, and jq function limitation.
 
 ## 🔄 Standard Development Workflow
 

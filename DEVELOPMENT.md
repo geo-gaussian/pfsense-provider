@@ -44,7 +44,8 @@ working-tree check. Lines above the limit block commits and merges.
 Prettier retains its existing 80-column formatting target.
 
 The constitution and [AGENTS.md](AGENTS.md) define these physical-line limits.
-Warnings do not block commits or merges; errors do.
+Individual warnings are non-blocking; errors always block commits and merges.
+The aggregate warning budget described below also blocks them at three warnings.
 
 | Scope | Warning above | Error above |
 | --- | ---: | ---: |
@@ -78,13 +79,33 @@ has no functions; jq function sizes are not checked automatically. Review any
 added jq functions manually until jq parsing is supported. Spec Kit-managed
 scripts are excluded because they are maintained upstream.
 
+### 🚦 Lint warning budget
+
+`pnpm run lint` fails when its lint commands collectively emit three or more
+warnings, even if each individual command succeeds. It preserves their output
+and still fails on any command error. In GitHub Actions it also emits an error
+annotation when the budget is exceeded. The lint job is required for merging.
+
+The budget recognises GitHub `::warning` annotations and warning-labelled text
+such as `warning:`, `[warn]`, `file: warning:`, and `npm WARN`, on either output
+stream. It also recognises runtime warning types such as `DeprecationWarning`
+and line-and-column diagnostics. New lint tools must use a recognised format or
+provide an adapter and tests: unlabelled messages cannot reliably be identified
+as warnings. Warnings from workflow setup actions outside the lint command are
+not included.
+
+`pnpm run lint:staged` applies the same budget to staged line and size checks.
+The pre-commit hook runs it and then runs `pnpm run lint` on the working tree;
+the two counts are separate, so the same finding is not counted twice. Direct
+individual checks, including `pnpm run lint:size`, report findings without
+applying the aggregate budget.
+
 In GitHub Actions, size findings appear as warning or error annotations matching
-their threshold; warnings do not fail the check. Locally, findings are printed
-as plain text.
+their threshold. Locally, findings are printed as plain text.
 
 `pnpm run lint:size` checks tracked and non-ignored untracked files in the
 working tree. The installed pre-commit hook also runs
-`pnpm run lint:size:staged` against the Git index, so an unstaged edit cannot
+`pnpm run lint:staged` against the Git index, so an unstaged edit cannot
 conceal an oversized staged file. The hook then runs the full lint and test
 commands on the working tree; unstaged changes can therefore also block a
 commit. Run `pnpm run setup-hooks` after cloning to install the hook. The CI
