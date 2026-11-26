@@ -296,6 +296,9 @@ scripts under `.specify/scripts/` are exempt from the no-inline-program rule.
 The tests check formatting and use mock HTTP servers; when the Terraform CLI is
 available they also exercise create, update, import, refresh, and destroy
 through the actual provider protocol. They do not replace live acceptance tests.
+An opt-in live alias acceptance test exists, but is not yet run in CI or
+verified against an appliance. See [DEVELOPMENT.md](DEVELOPMENT.md) for setup
+and safety requirements.
 The installed Git hook checks staged lines and sizes, then runs lint and tests
 on the working tree. CI builds first, then runs lint and tests in parallel and
 produces coverage reports; the default-branch ruleset requires the lint job.
@@ -321,8 +324,8 @@ mock HTTP servers and spawn a separate, uninstrumented provider process; they
 are neither live acceptance tests nor a measurement of that process's
 coverage. Manually observed API operations are identified separately in the
 API report and do not imply live acceptance coverage. Live acceptance coverage
-remains unavailable until real appliance tests and child-process coverage
-collection are implemented. A future live job must build an instrumented
+remains unavailable until appliance tests run and child-process coverage
+collection is implemented. A future live job must build an instrumented
 provider with `go build -cover`, collect its data using `GOCOVERDIR`, convert
 it with `go tool covdata textfmt`, and upload that separate profile with an
 `acceptance` Codecov flag. It must not reuse the unit profile.
