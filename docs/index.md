@@ -2,7 +2,8 @@
 
 The experimental pfSense Nexus provider manages firewall aliases, NAT and
 filter rules, schedules, traffic shapers, limiters, packet-flow exporters,
-virtual IPs, and WireGuard settings, tunnels, and peers. It reads selected
+virtual IPs, WireGuard settings, tunnels, and peers, mDNS settings, and HAProxy
+DNS resolvers. It reads selected
 firewall, network, service, VPN, and system configuration or status through the
 Nexus controller's local firewall API. WireGuard key generation is available
 as an ephemeral resource. The alias data source returns a typed list; most
@@ -11,8 +12,8 @@ other read-only data sources return JSON for use with Terraform's
 [`ephemeral-resources/`](ephemeral-resources/), and
 [`data-sources/`](data-sources/) for details.
 
-!> Firewall and WireGuard mutations have only been tested against mock
-servers. Do not use these resources on a production firewall.
+!> Firewall, WireGuard and DNS service mutations have only been tested against
+mock servers. Do not use these resources on a production firewall.
 
 Terraform 1.8 or later is required; WireGuard ephemeral key generation requires
 Terraform 1.10 or later, and list-resource discovery requires 1.14 or later.
@@ -33,6 +34,18 @@ The provider manages [firewall aliases](resources/firewall_alias.md),
 Outbound NAT and global PFlow options are read-only because the API does not
 provide a complete delete or reset lifecycle. Firewall resource mutations
 initiate a filter reload but do not confirm its completion.
+
+## 🌐 DNS Services
+
+The provider manages [mDNS settings](resources/mdns.md) and
+[HAProxy DNS resolvers](resources/haproxy_resolver.md). Destroying the mDNS
+singleton disables the service and retains its other settings. HAProxy
+resolver changes apply the complete HAProxy configuration.
+
+DNS Resolver and Forwarder settings and overrides, CoreDNS, and Dynamic DNS
+configurations are read-only; they do not have managed resources. Consult the
+[data-source catalogue](data-sources/) for DNS lookup, mDNS browsing, and
+available configuration and status reads.
 
 ## 🧪 Example Usage
 
@@ -65,8 +78,9 @@ data "pfsense_firewall_aliases" "current" {}
 ## 🔍 Read-only Data Sources
 
 The read-only catalogue includes firewall NAT, rule, packet-flow, and virtual IP
-configuration, interface and route discovery, service settings and status, VPN
-status/configuration, DHCP leases, system health, and monitoring information.
+configuration, interface and route discovery, DNS lookup and service settings
+and status, VPN status/configuration, DHCP leases, system health, and
+monitoring information.
 These data sources do not apply configuration or reload the firewall.
 WireGuard status omits key material; full configuration and rendered tunnel
 configuration outputs are sensitive. All data sources other than alias

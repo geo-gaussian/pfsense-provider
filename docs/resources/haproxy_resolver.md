@@ -3,6 +3,9 @@
 Manages an HAProxy DNS resolver. Changes apply the complete HAProxy
 configuration, including changes staged outside Terraform.
 
+If applying fails after a write, inspect the HAProxy configuration and apply
+it manually before retrying. Terraform refresh does not retry the apply.
+
 !> This resource has only been tested against mock servers. Appliance
 behaviour and compatibility remain unverified.
 

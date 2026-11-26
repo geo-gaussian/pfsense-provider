@@ -12,7 +12,7 @@ data "pfsense_mdns_browse" "current" {
 
 ## 📋 Attribute Reference
 
-- `service` — Optional service type. Omit to browse all services.
+- `service` — Optional service type. Omit to browse without a service filter.
 - `json` — Complete sensitive API response. Use `jsondecode()` to access fields.
 
 The response may identify network hosts. Protect Terraform state and saved plans.
