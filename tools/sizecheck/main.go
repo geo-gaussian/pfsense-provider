@@ -25,7 +25,9 @@ type finding struct {
 }
 
 func isFixture(name string) bool {
-	for _, prefix := range []string{"tests/commands/", "tests/format/", "tests/terraform/", "tests/sizecheck/_fixtures/", ".specify/scripts/"} {
+	for _, prefix := range []string{
+		"tests/commands/", "tests/format/", "tests/terraform/", "tests/sizecheck/_fixtures/", ".specify/scripts/",
+	} {
 		if strings.HasPrefix(name, prefix) {
 			return true
 		}
@@ -109,7 +111,10 @@ func inspectShell(name string, source []byte) ([]finding, error) {
 		first, last := int(fn.Pos().Line()), int(fn.End().Line())
 		count := last - first + 1
 		if level, limit := threshold(count, size.functionWarning, size.functionError); level != "" {
-			findings = append(findings, finding{level, fmt.Sprintf("%s:%d", name, first), "function " + fn.Name.Value, count, limit})
+			findings = append(
+				findings,
+				finding{level, fmt.Sprintf("%s:%d", name, first), "function " + fn.Name.Value, count, limit},
+			)
 		}
 		return true
 	})
@@ -166,7 +171,13 @@ func formatFinding(item finding, githubActions bool) string {
 	}
 	propertyEscaper := strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A", ":", "%3A", ",", "%2C")
 	messageEscaper := strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A")
-	return fmt.Sprintf("::%s file=%s%s::%s", item.level, propertyEscaper.Replace(name), line, messageEscaper.Replace(message))
+	return fmt.Sprintf(
+		"::%s file=%s%s::%s",
+		item.level,
+		propertyEscaper.Replace(name),
+		line,
+		messageEscaper.Replace(message),
+	)
 }
 
 func run(staged bool) error {

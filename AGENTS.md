@@ -50,6 +50,13 @@ remains unverified.
 
 ## 📏 Maintainability Limits
 
+- Hand-written Go, TypeScript, JavaScript, POSIX shell, and jq source and test
+  lines MUST NOT exceed 120 Unicode characters, counting a tab as one
+  character. Generated code, fixtures, and Spec Kit-managed scripts are
+  excluded. `tools/coverage/evidence.go` is the approved exception so its
+  evidence entries remain readable as a table.
+- Line-length errors MUST block commits and merges. See `DEVELOPMENT.md` for
+  the checked extensions and staged-index behaviour.
 - Count physical lines, including blank lines and comments. Function spans
   include the declaration, end of the definition, and any nested closures.
 - For hand-written production code, warn above 350 lines per file or 40 lines

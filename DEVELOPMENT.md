@@ -25,6 +25,24 @@ argument lists.
 
 ## 📏 Keeping code maintainable
 
+Hand-written Go, JavaScript, TypeScript, POSIX shell, and jq source and tests
+must not exceed 120 Unicode characters per physical line. Tabs count as one
+character; CRLF line endings do not count towards the length. The check covers
+`.go`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.mts`, `.cts`, `.sh`,
+and `.jq` files, as well as files under `.githooks/`.
+
+Generated Go and marked JavaScript or TypeScript files, fixture directories,
+and Spec Kit-managed scripts are excluded. The hand-written
+[`evidence.go`](tools/coverage/evidence.go) is the approved exception: its
+operation mappings are retained as a readable, sorted table. Other source files
+have no line-length exceptions.
+
+`pnpm run lint:lines` checks the working tree; `pnpm run lint:lines:staged`
+checks the Git index. The installed pre-commit hook runs both, and CI runs the
+working-tree check. Lines above the limit block commits and merges.
+`.editorconfig` provides editor guidance; the checker enforces the rule.
+Prettier retains its existing 80-column formatting target.
+
 The constitution and [AGENTS.md](AGENTS.md) define these physical-line limits.
 Warnings do not block commits or merges; errors do.
 

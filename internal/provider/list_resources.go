@@ -27,15 +27,27 @@ type listResponse interface {
 	GetBody() []byte
 }
 
-func (l *configurationList) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (l *configurationList) Metadata(
+	ctx context.Context,
+	req resource.MetadataRequest,
+	resp *resource.MetadataResponse,
+) {
 	l.managed.Metadata(ctx, req, resp)
 }
 
-func (l *configurationList) ListResourceConfigSchema(_ context.Context, _ list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
+func (l *configurationList) ListResourceConfigSchema(
+	_ context.Context,
+	_ list.ListResourceSchemaRequest,
+	resp *list.ListResourceSchemaResponse,
+) {
 	resp.Schema = listschema.Schema{}
 }
 
-func (l *configurationList) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (l *configurationList) Configure(
+	ctx context.Context,
+	req resource.ConfigureRequest,
+	resp *resource.ConfigureResponse,
+) {
 	l.managed.Configure(ctx, req, resp)
 	if resp.Diagnostics.HasError() || req.ProviderData == nil {
 		return
@@ -67,7 +79,16 @@ func (l *configurationList) List(ctx context.Context, req list.ListRequest, stre
 		})
 		return
 	}
-	stream.Results = func(push func(list.ListResult) bool) {
+	stream.Results = l.listResults(ctx, req, ids, skipped)
+}
+
+func (l *configurationList) listResults(
+	ctx context.Context,
+	req list.ListRequest,
+	ids []string,
+	skipped int,
+) func(func(list.ListResult) bool) {
+	return func(push func(list.ListResult) bool) {
 		if skipped > 0 {
 			warning := list.ListResult{}
 			warning.Diagnostics.AddWarning("Read-only firewall rules omitted",
@@ -96,7 +117,10 @@ func (l *configurationList) List(ctx context.Context, req list.ListRequest, stre
 					result.Diagnostics.Append(read.Diagnostics...)
 					if !result.Diagnostics.HasError() {
 						if read.State.Raw.IsNull() {
-							result.Diagnostics.AddError("Unable to read discovered resource", "The resource disappeared during discovery.")
+							result.Diagnostics.AddError(
+								"Unable to read discovered resource",
+								"The resource disappeared during discovery.",
+							)
 						} else {
 							identity := &tfsdk.ResourceIdentity{
 								Schema: req.ResourceIdentitySchema,
@@ -108,7 +132,10 @@ func (l *configurationList) List(ctx context.Context, req list.ListRequest, stre
 								result.Diagnostics.Append(identity.Get(ctx, &actual)...)
 							}
 							if !result.Diagnostics.HasError() && actual.ID.ValueString() != id {
-								result.Diagnostics.AddError("Inconsistent resource identity", "The resource identity returned by the API does not match the discovered identity.")
+								result.Diagnostics.AddError(
+									"Inconsistent resource identity",
+									"The resource identity returned by the API does not match the discovered identity.",
+								)
 							}
 							if !result.Diagnostics.HasError() {
 								result.Resource.Raw = read.State.Raw

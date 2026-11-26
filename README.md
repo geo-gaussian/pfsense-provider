@@ -329,8 +329,9 @@ Percentages are truncated to two decimal places for display; colour thresholds
 use the unrounded percentage.
 
 When adding provider support, update the explicit operation evidence in
-`tools/coverage/main.go` with the matching method, path, provider call, and
-mock-test file. The report checks mappings against the specification and
+`tools/coverage/evidence.go` with the matching method, path, provider call, and
+mock-test file. Keep operation IDs in alphabetical order; a test checks this.
+The report checks mappings against the specification and
 checks that the provider call exists; maintainers must verify that the
 referenced tests actually exercise each operation. Generated client methods
 alone do not count as support.

@@ -160,7 +160,13 @@ func TestSessionFailures(t *testing.T) {
 		{name: "missing login token", status: http.StatusOK, body: `{}`, want: "authentication failed"},
 		{name: "login transport failure", cancel: true, want: "authenticate with Nexus"},
 		{name: "missing refresh token", refresh: true, status: http.StatusOK, body: `{}`, want: "session refresh failed"},
-		{name: "rejected refresh", refresh: true, status: http.StatusUnauthorized, body: `{}`, want: "session refresh failed"},
+		{
+			name:    "rejected refresh",
+			refresh: true,
+			status:  http.StatusUnauthorized,
+			body:    `{}`,
+			want:    "session refresh failed",
+		},
 		{name: "refresh transport failure", refresh: true, cancel: true, want: "refresh Nexus session"},
 	}
 	for _, tt := range tests {

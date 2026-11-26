@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"net/http"
-	"strings"
 
 	"github.com/geo-gaussian/terraform-provider-pfsense-nexus/internal/api"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -177,7 +176,10 @@ func (r *resourceModel) Configure(_ context.Context, req resource.ConfigureReque
 	}
 	client, ok := req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The firewall resource received an unexpected API client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The firewall resource received an unexpected API client.",
+		)
 		return
 	}
 	r.client = client
@@ -254,7 +256,10 @@ func (r *resourceModel) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 	if r.def.update == nil {
-		resp.Diagnostics.AddError("Unsupported firewall update", "This firewall API does not support in-place updates; Terraform must replace the resource.")
+		resp.Diagnostics.AddError(
+			"Unsupported firewall update",
+			"This firewall API does not support in-place updates; Terraform must replace the resource.",
+		)
 		return
 	}
 	prior, err := objectValues(req.State.Raw)
@@ -322,7 +327,10 @@ func (r *resourceModel) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 	if result == nil || (result.StatusCode() != http.StatusOK && result.StatusCode() != http.StatusNotFound) {
-		resp.Diagnostics.AddError("Unable to delete firewall configuration", fmt.Sprintf("The API returned HTTP %d.", statusCode(result)))
+		resp.Diagnostics.AddError(
+			"Unable to delete firewall configuration",
+			fmt.Sprintf("The API returned HTTP %d.", statusCode(result)),
+		)
 		return
 	}
 	if err := r.reload(ctx); err != nil {
@@ -330,56 +338,13 @@ func (r *resourceModel) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 	if _, err := r.readItem(ctx, state, false); err == nil {
-		resp.Diagnostics.AddError("Unable to verify deleted firewall configuration", "The configuration is still present after the delete request.")
+		resp.Diagnostics.AddError(
+			"Unable to verify deleted firewall configuration",
+			"The configuration is still present after the delete request.",
+		)
 	} else if !errors.Is(err, errItemNotFound) {
 		resp.Diagnostics.AddError("Unable to verify deleted firewall configuration", err.Error())
 	}
-}
-
-func (r *resourceModel) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	attributes := r.def.importAttributes
-	if len(attributes) == 0 {
-		attributes = []string{r.def.keyAttribute}
-	}
-	parts := []string{req.ID}
-	if len(attributes) > 1 {
-		parts = strings.Split(req.ID, "/")
-		if len(parts) != len(attributes) {
-			resp.Diagnostics.AddError(
-				"Invalid import identifier",
-				fmt.Sprintf("Expected %d slash-separated values for %q.", len(attributes), r.def.name),
-			)
-			return
-		}
-	}
-	for index, name := range attributes {
-		if strings.TrimSpace(parts[index]) == "" {
-			resp.Diagnostics.AddError("Invalid import identifier", fmt.Sprintf("The import value for %q cannot be empty.", name))
-			return
-		}
-	}
-	schemaValue := r.def.schema(ctx)
-	if resp.State.Schema == nil {
-		resp.State.Schema = schemaValue
-	}
-	objectType := schemaValue.Type().TerraformType(ctx).(tftypes.Object)
-	stateValues := make(map[string]tftypes.Value, len(objectType.AttributeTypes))
-	for name, attributeType := range objectType.AttributeTypes {
-		stateValues[name] = tftypes.NewValue(attributeType, nil)
-	}
-	for index, name := range attributes {
-		attributeType, ok := objectType.AttributeTypes[name]
-		if !ok {
-			resp.Diagnostics.AddError("Invalid import identifier", fmt.Sprintf("The firewall resource schema does not contain %q.", name))
-			return
-		}
-		if !attributeType.Is(tftypes.String) {
-			resp.Diagnostics.AddError("Invalid import identifier", fmt.Sprintf("The import attribute %q must be a string.", name))
-			return
-		}
-		stateValues[name] = tftypes.NewValue(attributeType, parts[index])
-	}
-	resp.State.Raw = tftypes.NewValue(objectType, stateValues)
 }
 
 func (r *resourceModel) configured(diags interface{ AddError(string, string) }) bool {
@@ -445,12 +410,20 @@ func (r *resourceModel) readItem(ctx context.Context, selector map[string]any, m
 		return matches[0], nil
 	}
 	if len(matches) > 1 {
-		return nil, fmt.Errorf("firewall configuration matches %d API entries; set its %q field explicitly to identify it", len(matches), r.def.keyAttribute)
+		return nil, fmt.Errorf(
+			"firewall configuration matches %d API entries; set its %q field explicitly to identify it",
+			len(matches),
+			r.def.keyAttribute,
+		)
 	}
 	return nil, fmt.Errorf("created firewall configuration was not present in the API response")
 }
 
-func (r *resourceModel) setState(ctx context.Context, state *tfsdk.State, item, fallback map[string]any) diag.Diagnostics {
+func (r *resourceModel) setState(
+	ctx context.Context,
+	state *tfsdk.State,
+	item, fallback map[string]any,
+) diag.Diagnostics {
 	for _, name := range r.def.sensitiveAttributes {
 		current, currentOK := item[name]
 		prior, priorOK := fallback[name]
@@ -464,7 +437,9 @@ func (r *resourceModel) setState(ctx context.Context, state *tfsdk.State, item, 
 		return diag.Diagnostics{diag.NewErrorDiagnostic("Unable to set firewall state", err.Error())}
 	}
 	if state.Schema == nil {
-		return diag.Diagnostics{diag.NewErrorDiagnostic("Unable to set firewall state", "The Terraform resource schema is unavailable.")}
+		return diag.Diagnostics{
+			diag.NewErrorDiagnostic("Unable to set firewall state", "The Terraform resource schema is unavailable."),
+		}
 	}
 	raw, err := tftypes.ValueFromJSON(body, state.Schema.Type().TerraformType(ctx))
 	if err != nil {

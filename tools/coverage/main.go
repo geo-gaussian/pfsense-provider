@@ -28,110 +28,6 @@ type evidence struct {
 	Live   string
 }
 
-// Generated methods alone do not constitute provider support.
-var implemented = map[string]evidence{
-	"Login":                        {"POST", "/login", "internal/client/client.go", "internal/client/client_test.go", "manually observed"},
-	"RefreshAccessToken":           {"POST", "/login/refresh", "internal/client/client.go", "internal/client/client_test.go", ""},
-	"FirewallGetAliases":           {"GET", "/aliases", "internal/provider/data_firewall_aliases/firewall_aliases_data_source.go", "internal/provider/data_firewall_aliases/firewall_aliases_data_source_test.go", "manually observed"},
-	"FirewallAddAlias":             {"PUT", "/aliases", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallGetAlias":             {"GET", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallUpdateAlias":          {"POST", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallDeleteAlias":          {"DELETE", "/aliases/{id}", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"DoFilterReload":               {"POST", "/system/filterreload/reload", "internal/provider/resource_firewall_alias/firewall_alias_resource.go", "internal/provider/resource_firewall_alias/firewall_alias_resource_test.go", ""},
-	"FirewallGetNATNpt":            {"GET", "/firewall/nat/npt", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNAT1To1Rules":      {"GET", "/firewall/nat/onetoone", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNATOut":            {"GET", "/firewall/nat/outbound", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetNAT":               {"GET", "/firewall/nat/port-forward", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallCreateNATNpt":         {"PUT", "/firewall/nat/npt", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNATNptRules":    {"DELETE", "/firewall/nat/npt/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallCreateNAT1To1Rule":    {"PUT", "/firewall/nat/onetoone", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNAT1To1Rules":   {"DELETE", "/firewall/nat/onetoone/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallCreateNAT":            {"PUT", "/firewall/nat/port-forward", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateNAT":            {"POST", "/firewall/nat/port-forward/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteNAT":            {"DELETE", "/firewall/nat/port-forward/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"GetFWInterfaces":              {"GET", "/firewall/rules/interface", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetFirewallRules":             {"GET", "/firewall/rules/interface/{interface}", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"AppendFirewallRule":           {"POST", "/firewall/rules/interface/{interface}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"UpdateFirewallRule":           {"PATCH", "/firewall/rules/interface/{interface}/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"DeleteFirewallRule":           {"DELETE", "/firewall/rules/interface/{interface}/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetSchedules":         {"GET", "/firewall/schedules", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddSchedule":          {"POST", "/firewall/schedules", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateSchedule":       {"PUT", "/firewall/schedules/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteSchedule":       {"DELETE", "/firewall/schedules/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetTrafficShaper":     {"GET", "/firewall/traffic-shaper", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallGetALTQ":              {"GET", "/firewall/traffic-shaper/altq", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddALTQ":              {"PUT", "/firewall/traffic-shaper/altq", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateALTQ":           {"POST", "/firewall/traffic-shaper/altq/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteALTQ":           {"DELETE", "/firewall/traffic-shaper/altq/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetLimiter":           {"GET", "/firewall/traffic-shaper/limiter", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddLimiter":           {"PUT", "/firewall/traffic-shaper/limiter", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateLimiter":        {"POST", "/firewall/traffic-shaper/limiter/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteLimiter":        {"DELETE", "/firewall/traffic-shaper/limiter/{name}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetPFlow":             {"GET", "/firewall/pflow", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallAddPFlowExporter":     {"POST", "/firewall/pflow/exporters", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdatePFlowExporter":  {"PUT", "/firewall/pflow/exporters/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeletePFlowExporter":  {"DELETE", "/firewall/pflow/exporters/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallGetVirtualIPs":        {"GET", "/firewall/virtualip", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"FirewallSetVirtualIP":         {"POST", "/firewall/virtualip", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallUpdateVirtualIP":      {"PUT", "/firewall/virtualip/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"FirewallDeleteVirtualIP":      {"DELETE", "/firewall/virtualip/{id}", "internal/provider/firewall_resources/resources.go", "internal/provider/firewall_resources/resource_bindings_test.go", ""},
-	"GetInterfaces":                {"GET", "/interfaces", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceAssignments":      {"GET", "/interfaces/assigned", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetHostInterfaces":            {"GET", "/interfaces/by-device", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceDescriptors":      {"GET", "/interfaces/descriptors", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetBridgeInterfaces":          {"GET", "/interfaces/bridge", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGIFs":                      {"GET", "/interfaces/gif", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGREs":                      {"GET", "/interfaces/gre", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceGroups":           {"GET", "/interfaces/groups", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetLAGGs":                     {"GET", "/interfaces/lagg", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetQinQs":                     {"GET", "/interfaces/qinq", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetVLANs":                     {"GET", "/interfaces/vlan", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetVXLANs":                    {"GET", "/interfaces/vxlan", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGateways":                  {"GET", "/system/gateways", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetStaticRoutes":              {"GET", "/system/routes/static", "internal/provider/data_readonly/firewall_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDNSForwarderConfig":        {"GET", "/services/dnsmasq", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIGMPProxies":               {"GET", "/services/igmpproxy", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetMDNSConfig":                {"GET", "/services/mdns", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDhcpV4RelayConfig":         {"GET", "/services/dhcp-relay/v4", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDhcpV6RelayConfig":         {"GET", "/services/dhcp-relay/v6", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetRouterAdvSettings":         {"GET", "/services/radv", "internal/provider/data_readonly/service_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDHCPLeases":                {"GET", "/services/dhcp/leases", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDnsResolverStatus":         {"GET", "/services/dnsresolver/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetNDPTable":                  {"GET", "/services/ndp", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetServicesStatus":            {"GET", "/services/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetUPnP":                      {"GET", "/services/upnp", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetUPnPStatus":                {"GET", "/services/upnp/status", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetServiceWatchdogServices":   {"GET", "/services/watchdog", "internal/provider/data_readonly/service_discovery_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetSystemSummary":             {"GET", "/system", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetCertOptions":               {"GET", "/system/certoptions", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetDirtySubsystems":           {"GET", "/system/config/dirty", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetFirmware":                  {"GET", "/system/firmware", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewayPriorities":         {"GET", "/system/gateways/group_priorities", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewayGroups":             {"GET", "/system/gateways/groups", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetGatewaysStatus":            {"GET", "/system/gateways/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfacesStatus":          {"GET", "/system/interfaces/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetMonitoringDatasets":        {"GET", "/system/monitoring/datasets", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetQueueStats":                {"GET", "/system/queue/stats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetRoutesDirtyState":          {"GET", "/system/routes", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetStatus":                    {"GET", "/system/status", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIfStats":                   {"GET", "/system/status/ifstats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfacesWidgets":         {"GET", "/system/widgets/interfaces", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetInterfaceStatisticsWidget": {"GET", "/system/widgets/interfacestats", "internal/provider/data_readonly/system_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetIPSecWidget":               {"GET", "/system/widgets/ipsec", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetOpenVPNStatus":             {"GET", "/vpn/openvpn/status", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"GetWireGuard":                 {"GET", "/vpn/wg", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetNewWireGuardKeys":          {"GET", "/vpn/wg/genkeys", "internal/provider/ephemeral_wireguard/key_pair.go", "internal/provider/ephemeral_wireguard/key_pair_test.go", ""},
-	"SetWireGuardPeer":             {"PUT", "/vpn/wg/peer", "internal/provider/resource_wireguard/peer.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"UpdateWireGuardPeer":          {"POST", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/peer.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"DeleteWireGuardPeer":          {"DELETE", "/vpn/wg/peer/{pubkey}", "internal/provider/resource_wireguard/peer.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"SetWireGuardSettings":         {"POST", "/vpn/wg/settings", "internal/provider/resource_wireguard/wireguard_resources.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetWireGuardStatus":           {"GET", "/vpn/wg/status", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-	"SetWireGuardTunnel":           {"PUT", "/vpn/wg/tunnel", "internal/provider/resource_wireguard/tunnel.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"UpdateWireGuardTunnel":        {"POST", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/tunnel.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"DeleteWireGuardTunnel":        {"DELETE", "/vpn/wg/tunnel/{name}", "internal/provider/resource_wireguard/tunnel.go", "internal/provider/resource_wireguard/wireguard_resources_test.go", ""},
-	"GetWireGuardTunnelConf":       {"GET", "/vpn/wg/tunnel/{name}/conf", "internal/provider/data_readonly/vpn_data_sources.go", "internal/provider/data_readonly/data_source_test.go", ""},
-}
-
 type operation struct {
 	Method    string
 	Path      string
@@ -184,7 +80,16 @@ func inventory(data []byte, mappings map[string]evidence) ([]operation, error) {
 	if len(spec.Paths) == 0 {
 		return nil, fmt.Errorf("specification has no paths")
 	}
-	methods := map[string]bool{"get": true, "put": true, "post": true, "delete": true, "options": true, "head": true, "patch": true, "trace": true}
+	methods := map[string]bool{
+		"get":     true,
+		"put":     true,
+		"post":    true,
+		"delete":  true,
+		"options": true,
+		"head":    true,
+		"patch":   true,
+		"trace":   true,
+	}
 	var result []operation
 	seen := map[string]bool{}
 	matched := map[string]bool{}
@@ -372,8 +277,31 @@ func run() error {
 			return err
 		}
 	}
+	if err := writeAPIReport(dir, ops, api); err != nil {
+		return err
+	}
+	fmt.Printf(
+		"Unit statements: %d/%d (%s); Nexus operations: %d/%d (%s); acceptance: unavailable\n",
+		covered,
+		total,
+		unit.Message,
+		len(implemented),
+		len(ops),
+		api.Message,
+	)
+	return nil
+}
+
+func writeAPIReport(dir string, ops []operation, api badge) error {
 	var report strings.Builder
-	fmt.Fprintf(&report, "# 📊 Nexus API operation coverage\n\nImplemented: %d/%d (%s). Mock-tested means an offline test exists; manually observed is not live acceptance coverage.\n\n| Method | Path | Operation ID | Implemented | Mock test | Live evidence |\n| --- | --- | --- | --- | --- | --- |\n", len(implemented), len(ops), api.Message)
+	fmt.Fprintf(
+		&report,
+		"# 📊 Nexus API operation coverage\n\nImplemented: %d/%d (%s). "+
+			"Mock-tested means an offline test exists; manually observed is not live acceptance coverage.\n\n"+
+			"| Method | Path | Operation ID | Implemented | Mock test | Live evidence |\n"+
+			"| --- | --- | --- | --- | --- | --- |\n",
+		len(implemented), len(ops), api.Message,
+	)
 	for _, op := range ops {
 		source, test, live := "-", "-", "-"
 		if op.Supported {
@@ -384,11 +312,7 @@ func run() error {
 		}
 		fmt.Fprintf(&report, "| %s | `%s` | %s | %s | %s | %s |\n", op.Method, op.Path, op.ID, source, test, live)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "api-report.md"), []byte(report.String()), 0o644); err != nil {
-		return err
-	}
-	fmt.Printf("Unit statements: %d/%d (%s); Nexus operations: %d/%d (%s); acceptance: unavailable\n", covered, total, unit.Message, len(implemented), len(ops), api.Message)
-	return nil
+	return os.WriteFile(filepath.Join(dir, "api-report.md"), []byte(report.String()), 0o644)
 }
 
 func main() {

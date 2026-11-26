@@ -40,7 +40,10 @@ func (r *tunnelResource) Metadata(_ context.Context, req resource.MetadataReques
 }
 
 func (r *tunnelResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	name := schema.StringAttribute{Required: true, PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()}}
+	name := schema.StringAttribute{
+		Required:      true,
+		PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+	}
 	resp.Schema = schema.Schema{
 		Description: "Manages a WireGuard tunnel.",
 		Attributes: map[string]schema.Attribute{
@@ -63,7 +66,10 @@ func (r *tunnelResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	if data.PrivateKey.IsNull() || data.PrivateKey.IsUnknown() || data.PrivateKey.ValueString() == "" {
-		resp.Diagnostics.AddError("Invalid WireGuard tunnel configuration", "privatekey must be set when creating a tunnel.")
+		resp.Diagnostics.AddError(
+			"Invalid WireGuard tunnel configuration",
+			"privatekey must be set when creating a tunnel.",
+		)
 		return
 	}
 	body, diags := data.toAPI(ctx)
@@ -125,7 +131,10 @@ func (r *tunnelResource) Update(ctx context.Context, req resource.UpdateRequest,
 		data.PrivateKey = prior.PrivateKey
 	}
 	if data.PrivateKey.IsNull() || data.PrivateKey.IsUnknown() || data.PrivateKey.ValueString() == "" {
-		resp.Diagnostics.AddError("Invalid WireGuard tunnel configuration", "privatekey must be set before updating this tunnel because the API requires it on writes.")
+		resp.Diagnostics.AddError(
+			"Invalid WireGuard tunnel configuration",
+			"privatekey must be set before updating this tunnel because the API requires it on writes.",
+		)
 		return
 	}
 	body, diags := data.toAPI(ctx)
@@ -185,7 +194,11 @@ func (r *tunnelResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	}
 }
 
-func (r *tunnelResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *tunnelResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
@@ -211,7 +224,10 @@ func (m *tunnelModel) toAPI(ctx context.Context) (api.WGTunnel, diag.Diagnostics
 		}
 		result := make([]api.WGIPAddress, 0, len(addresses))
 		for _, address := range addresses {
-			result = append(result, api.WGIPAddress{Address: address.Address.ValueString(), Descr: stringPointer(address.Descr)})
+			result = append(
+				result,
+				api.WGIPAddress{Address: address.Address.ValueString(), Descr: stringPointer(address.Descr)},
+			)
 		}
 		body.Addresses = &result
 	}
@@ -255,7 +271,12 @@ func (r *tunnelResource) getTunnel(ctx context.Context, name string) (*api.WGTun
 	return nil, true, nil
 }
 
-func (r *tunnelResource) readTunnelIntoState(ctx context.Context, name string, data *tunnelModel, diags *diag.Diagnostics) {
+func (r *tunnelResource) readTunnelIntoState(
+	ctx context.Context,
+	name string,
+	data *tunnelModel,
+	diags *diag.Diagnostics,
+) {
 	value, missing, err := r.getTunnel(ctx, name)
 	if err != nil || missing {
 		if err == nil {

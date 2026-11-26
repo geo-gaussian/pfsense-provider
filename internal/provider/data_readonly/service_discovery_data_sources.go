@@ -8,7 +8,10 @@ import (
 )
 
 func NewDHCPLeases() datasource.DataSource {
-	return newSensitiveDataSource("dhcp_leases", "Reads current DHCP leases, including client identifiers and network addresses.", nil,
+	return newSensitiveDataSource(
+		"dhcp_leases",
+		"Reads current DHCP leases, including client identifiers and network addresses.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetDHCPLeasesWithResponse(ctx)
 		},
@@ -24,7 +27,10 @@ func NewDNSResolverStatus() datasource.DataSource {
 }
 
 func NewNDPTable() datasource.DataSource {
-	return newSensitiveDataSource("ndp_table", "Reads the IPv6 neighbor discovery table, including local device addresses.", nil,
+	return newSensitiveDataSource(
+		"ndp_table",
+		"Reads the IPv6 neighbor discovery table, including local device addresses.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetNDPTableWithResponse(ctx)
 		},

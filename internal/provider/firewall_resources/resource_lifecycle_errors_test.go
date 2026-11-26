@@ -150,8 +150,14 @@ func TestResourceLifecycleCreateFailures(t *testing.T) {
 		noSchema bool
 	}{
 		{name: "action error", options: lifecycleOptions{createErr: errors.New("create failed")}},
-		{name: "invalid response", options: lifecycleOptions{createResult: stubResponse{status: http.StatusBadRequest, body: []byte(`{}`)}}},
-		{name: "missing created item", options: lifecycleOptions{readResult: stubResponse{status: http.StatusOK, body: []byte(`{"items":[]}`)}}},
+		{
+			name:    "invalid response",
+			options: lifecycleOptions{createResult: stubResponse{status: http.StatusBadRequest, body: []byte(`{}`)}},
+		},
+		{
+			name:    "missing created item",
+			options: lifecycleOptions{readResult: stubResponse{status: http.StatusOK, body: []byte(`{"items":[]}`)}},
+		},
 		{name: "reload error", options: lifecycleOptions{reloadStatus: http.StatusInternalServerError}},
 		{name: "post-reload read error", options: lifecycleOptions{readErrAt: 2}},
 		{name: "invalid plan", invalid: true},
@@ -245,7 +251,10 @@ func TestResourceLifecycleUpdateFailures(t *testing.T) {
 		{name: "invalid plan", invalid: "plan"},
 		{name: "missing identity", invalid: "identity"},
 		{name: "action error", options: lifecycleOptions{updateErr: errors.New("update failed")}},
-		{name: "invalid response", options: lifecycleOptions{updateResult: stubResponse{status: http.StatusBadRequest, body: []byte(`{}`)}}},
+		{
+			name:    "invalid response",
+			options: lifecycleOptions{updateResult: stubResponse{status: http.StatusBadRequest, body: []byte(`{}`)}},
+		},
 		{name: "verify read error", options: lifecycleOptions{readErrAt: 1}},
 		{name: "reload error", options: lifecycleOptions{reloadStatus: http.StatusInternalServerError}},
 		{name: "post-reload read error", options: lifecycleOptions{readErrAt: 2}},

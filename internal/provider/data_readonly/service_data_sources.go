@@ -8,7 +8,11 @@ import (
 )
 
 func NewDNSForwarder() datasource.DataSource {
-	return newSensitiveDataSource("dns_forwarder", "Reads DNS Forwarder settings. The JSON result is sensitive because custom options may contain arbitrary configuration.", nil,
+	return newSensitiveDataSource(
+		"dns_forwarder",
+		"Reads DNS Forwarder settings. The JSON result is sensitive because custom options may contain "+
+			"arbitrary configuration.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetDNSForwarderConfigWithResponse(ctx)
 		},

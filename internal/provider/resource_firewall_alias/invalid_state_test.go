@@ -44,7 +44,12 @@ func TestLifecycleRejectsInvalidInput(t *testing.T) {
 			remove := resource.DeleteResponse{State: testState}
 			r.Delete(ctx, resource.DeleteRequest{State: testState}, &remove)
 			if !create.Diagnostics.HasError() || !update.Diagnostics.HasError() || !remove.Diagnostics.HasError() {
-				t.Fatalf("invalid input accepted: create=%v update=%v delete=%v", create.Diagnostics, update.Diagnostics, remove.Diagnostics)
+				t.Fatalf(
+					"invalid input accepted: create=%v update=%v delete=%v",
+					create.Diagnostics,
+					update.Diagnostics,
+					remove.Diagnostics,
+				)
 			}
 			if invalidRaw {
 				read := resource.ReadResponse{State: testState}

@@ -42,7 +42,10 @@ func (r *resourceBase) Configure(_ context.Context, req resource.ConfigureReques
 	var ok bool
 	r.client, ok = req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The WireGuard resource received an unexpected API client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The WireGuard resource received an unexpected API client.",
+		)
 	}
 }
 
@@ -77,7 +80,8 @@ func (r *settingsResource) Metadata(_ context.Context, req resource.MetadataRequ
 
 func (r *settingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manages the global WireGuard settings. Removing this resource from configuration only relinquishes Terraform management; the API has no operation to delete global settings.",
+		Description: "Manages the global WireGuard settings. Removing this resource from configuration only " +
+			"relinquishes Terraform management; the API has no operation to delete global settings.",
 		Attributes: map[string]schema.Attribute{
 			"id":                     schema.StringAttribute{Computed: true},
 			"enable":                 schema.BoolAttribute{Optional: true, Computed: true},
@@ -166,7 +170,11 @@ func (r *settingsResource) Delete(context.Context, resource.DeleteRequest, *reso
 	return
 }
 
-func (r *settingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *settingsResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
@@ -208,7 +216,10 @@ func (r *settingsResource) getSettings(ctx context.Context) (*api.WGConfig, bool
 		return nil, false, fmt.Errorf("get WireGuard configuration: API omitted global settings")
 	}
 	if len(*result.JSON200.Config) != 1 {
-		return nil, false, fmt.Errorf("get WireGuard configuration: expected one settings object, got %d", len(*result.JSON200.Config))
+		return nil, false, fmt.Errorf(
+			"get WireGuard configuration: expected one settings object, got %d",
+			len(*result.JSON200.Config),
+		)
 	}
 	return &(*result.JSON200.Config)[0], false, nil
 }
@@ -287,7 +298,12 @@ func addressListValueWithFactory(
 	}
 	result, diags := newList(ctx, addressListType(), addresses)
 	if diags.HasError() {
-		return types.ListNull(addressListType()), fmt.Errorf("convert WireGuard IP addresses: %s", diags.Errors()[0].Detail())
+		return types.ListNull(
+				addressListType(),
+			), fmt.Errorf(
+				"convert WireGuard IP addresses: %s",
+				diags.Errors()[0].Detail(),
+			)
 	}
 	return result, nil
 }

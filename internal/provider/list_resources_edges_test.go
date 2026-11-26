@@ -28,8 +28,18 @@ func TestListRejectsIncompleteResponses(t *testing.T) {
 	}{
 		{name: "HTTP failure", status: http.StatusForbidden, body: map[string]any{}, wantErr: "HTTP 403"},
 		{name: "missing list", status: http.StatusOK, body: map[string]any{}, wantErr: "invalid"},
-		{name: "missing identifier", status: http.StatusOK, body: map[string]any{"rules": []any{map[string]any{}}}, wantErr: "identifier"},
-		{name: "duplicate identifiers", status: http.StatusOK, body: map[string]any{"rules": []any{map[string]any{"id": "same"}, map[string]any{"id": "same"}}}, wantErr: "duplicate"},
+		{
+			name:    "missing identifier",
+			status:  http.StatusOK,
+			body:    map[string]any{"rules": []any{map[string]any{}}},
+			wantErr: "identifier",
+		},
+		{
+			name:    "duplicate identifiers",
+			status:  http.StatusOK,
+			body:    map[string]any{"rules": []any{map[string]any{"id": "same"}, map[string]any{"id": "same"}}},
+			wantErr: "duplicate",
+		},
 	}
 
 	for _, tt := range tests {
@@ -102,7 +112,9 @@ func TestListRejectsInconsistentRuleIdentity(t *testing.T) {
 		case "/firewall/rules/interface":
 			body = map[string]any{"interfaces": []string{"lan"}}
 		case "/firewall/rules/interface/lan":
-			body = map[string]any{"entries": []any{map[string]any{"rule": map[string]any{"id": "rule-1", "interface": "wan"}}}}
+			body = map[string]any{
+				"entries": []any{map[string]any{"rule": map[string]any{"id": "rule-1", "interface": "wan"}}},
+			}
 		default:
 			http.Error(w, "unexpected request", http.StatusNotFound)
 			return
@@ -164,7 +176,10 @@ func TestImportIdentityAndLegacyID(t *testing.T) {
 	r.IdentitySchema(ctx, resource.IdentitySchemaRequest{}, &identityResp)
 	makeIdentity := func(controller string) *tfsdk.ResourceIdentity {
 		identity := &tfsdk.ResourceIdentity{Schema: identityResp.IdentitySchema}
-		if diags := identity.Set(ctx, resourceIdentity{Controller: types.StringValue(controller), ID: types.StringValue("example")}); diags.HasError() {
+		diags := identity.Set(ctx, resourceIdentity{
+			Controller: types.StringValue(controller), ID: types.StringValue("example"),
+		})
+		if diags.HasError() {
 			t.Fatal(diags)
 		}
 		return identity

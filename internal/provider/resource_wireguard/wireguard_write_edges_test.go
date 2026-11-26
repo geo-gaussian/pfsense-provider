@@ -143,7 +143,11 @@ func TestTunnelAndPeerUpdatesRetainMaskedSecrets(t *testing.T) {
 						return
 					}
 					if req.Method == http.MethodGet && req.URL.Path == "/vpn/wg" {
-						writeJSON(t, w, api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{{Name: "wg0", Publickey: "public"}}}})
+						writeJSON(
+							t,
+							w,
+							api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{{Name: "wg0", Publickey: "public"}}}},
+						)
 						return
 					}
 					t.Errorf("unexpected request %s %s", req.Method, req.URL.Path)
@@ -197,7 +201,11 @@ func TestTunnelAndPeerUpdatesRetainMaskedSecrets(t *testing.T) {
 				resp := resource.UpdateResponse{State: tfsdk.State{Schema: s}}
 				r.Update(ctx, resource.UpdateRequest{Plan: testPlan(t, s, &planData), State: state}, &resp)
 				if resp.Diagnostics.HasError() || submitted.Presharedkey == nil || *submitted.Presharedkey != "secret" {
-					t.Fatalf("preshared key was not retained: diagnostics=%v submitted=%#v", resp.Diagnostics, submitted.Presharedkey)
+					t.Fatalf(
+						"preshared key was not retained: diagnostics=%v submitted=%#v",
+						resp.Diagnostics,
+						submitted.Presharedkey,
+					)
 				}
 			},
 		},
@@ -217,12 +225,34 @@ func TestWireGuardDeleteVerificationBranches(t *testing.T) {
 		wantError   bool
 	}{
 		{name: "400 confirmed absent", deleteCode: http.StatusBadRequest, readCode: http.StatusNotFound},
-		{name: "400 still present", deleteCode: http.StatusBadRequest, readCode: http.StatusOK, stillExists: true, wantError: true},
-		{name: "400 verification failed", deleteCode: http.StatusBadRequest, readCode: http.StatusServiceUnavailable, wantError: true},
+		{
+			name:        "400 still present",
+			deleteCode:  http.StatusBadRequest,
+			readCode:    http.StatusOK,
+			stillExists: true,
+			wantError:   true,
+		},
+		{
+			name:       "400 verification failed",
+			deleteCode: http.StatusBadRequest,
+			readCode:   http.StatusServiceUnavailable,
+			wantError:  true,
+		},
 		{name: "404 confirmed absent", deleteCode: http.StatusNotFound, readCode: http.StatusNotFound},
 		{name: "success confirmed absent", deleteCode: http.StatusOK, readCode: http.StatusNotFound},
-		{name: "success still present", deleteCode: http.StatusOK, readCode: http.StatusOK, stillExists: true, wantError: true},
-		{name: "success verification failed", deleteCode: http.StatusOK, readCode: http.StatusServiceUnavailable, wantError: true},
+		{
+			name:        "success still present",
+			deleteCode:  http.StatusOK,
+			readCode:    http.StatusOK,
+			stillExists: true,
+			wantError:   true,
+		},
+		{
+			name:       "success verification failed",
+			deleteCode: http.StatusOK,
+			readCode:   http.StatusServiceUnavailable,
+			wantError:  true,
+		},
 		{name: "server rejected delete", deleteCode: http.StatusInternalServerError, wantError: true},
 	}
 	for _, resourceName := range []string{"tunnel", "peer"} {

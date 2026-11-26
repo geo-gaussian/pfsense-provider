@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -223,7 +224,10 @@ func TestSetReadStateReportsObjectConstructionErrors(t *testing.T) {
 }
 
 func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
-	const responseBody = `{"config":[{"enable":true}],"status":[{"private_key":"tunnel-private","public_key":"tunnel-public","listen_port":"51820","status":"up","transfer_rx":10,"transfer_tx":20,"config":{"privatekey":"nested-private"},"peers":[{"public_key":"peer-public","preshared_key":"peer-secret","endpoint":"peer.example:51820","allowed_ips":"10.0.0.0/24","latest_handshake":"now","transfer_rx":"30","transfer_tx":"40","config":{"presharedkey":"nested-secret"}}]}]}`
+	responseBody, err := os.ReadFile("../../../tests/fixtures/wireguard-status.json")
+	if err != nil {
+		t.Fatal(err)
+	}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		if req.Method != http.MethodGet || req.URL.Path != "/vpn/wg/status" {
 			t.Errorf("unexpected request: %s %s", req.Method, req.URL.Path)
@@ -231,7 +235,7 @@ func TestWireGuardStatusOmitsSecretMaterial(t *testing.T) {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprint(w, responseBody)
+		_, _ = w.Write(responseBody)
 	}))
 	defer server.Close()
 

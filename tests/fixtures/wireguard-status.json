@@ -1,0 +1,26 @@
+{
+	"config": [{ "enable": true }],
+	"status": [
+		{
+			"private_key": "tunnel-private",
+			"public_key": "tunnel-public",
+			"listen_port": "51820",
+			"status": "up",
+			"transfer_rx": 10,
+			"transfer_tx": 20,
+			"config": { "privatekey": "nested-private" },
+			"peers": [
+				{
+					"public_key": "peer-public",
+					"preshared_key": "peer-secret",
+					"endpoint": "peer.example:51820",
+					"allowed_ips": "10.0.0.0/24",
+					"latest_handshake": "now",
+					"transfer_rx": "30",
+					"transfer_tx": "40",
+					"config": { "presharedkey": "nested-secret" }
+				}
+			]
+		}
+	]
+}

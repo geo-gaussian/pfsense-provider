@@ -36,7 +36,10 @@ func (r *peerResource) Metadata(_ context.Context, req resource.MetadataRequest,
 }
 
 func (r *peerResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	publicKey := schema.StringAttribute{Required: true, PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()}}
+	publicKey := schema.StringAttribute{
+		Required:      true,
+		PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+	}
 	resp.Schema = schema.Schema{
 		Description: "Manages a WireGuard peer.",
 		Attributes: map[string]schema.Attribute{
@@ -175,7 +178,11 @@ func (r *peerResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	}
 }
 
-func (r *peerResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *peerResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	resource.ImportStatePassthroughID(ctx, path.Root("publickey"), req, resp)
 }
 
@@ -199,7 +206,10 @@ func (m *peerModel) toAPI(ctx context.Context) (api.WGPeer, diag.Diagnostics) {
 		}
 		result := make([]api.WGIPAddress, 0, len(addresses))
 		for _, address := range addresses {
-			result = append(result, api.WGIPAddress{Address: address.Address.ValueString(), Descr: stringPointer(address.Descr)})
+			result = append(
+				result,
+				api.WGIPAddress{Address: address.Address.ValueString(), Descr: stringPointer(address.Descr)},
+			)
 		}
 		body.Allowedips = &result
 	}
@@ -244,7 +254,12 @@ func (r *peerResource) getPeer(ctx context.Context, publicKey string) (*api.WGPe
 	return nil, true, nil
 }
 
-func (r *peerResource) readPeerIntoState(ctx context.Context, publicKey string, data *peerModel, diags *diag.Diagnostics) {
+func (r *peerResource) readPeerIntoState(
+	ctx context.Context,
+	publicKey string,
+	data *peerModel,
+	diags *diag.Diagnostics,
+) {
 	value, missing, err := r.getPeer(ctx, publicKey)
 	if err != nil || missing {
 		if err == nil {

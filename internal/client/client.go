@@ -31,9 +31,15 @@ func New(baseURL, username, password string, insecure bool) (*NexusClient, error
 	return newWithFactories(baseURL, username, password, insecure, cookiejar.New, api.NewClientWithResponses)
 }
 
-func newWithFactories(baseURL, username, password string, insecure bool, newJar func(*cookiejar.Options) (*cookiejar.Jar, error), newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) (*NexusClient, error) {
+func newWithFactories(
+	baseURL, username, password string,
+	insecure bool,
+	newJar func(*cookiejar.Options) (*cookiejar.Jar, error),
+	newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error),
+) (*NexusClient, error) {
 	u, err := url.Parse(baseURL)
-	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Path != "" && u.Path != "/") {
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" ||
+		(u.Path != "" && u.Path != "/") {
 		return nil, fmt.Errorf("controller URL must be an HTTPS origin without a path, credentials, query, or fragment")
 	}
 	if username == "" || password == "" {
@@ -44,7 +50,10 @@ func newWithFactories(baseURL, username, password string, insecure bool, newJar 
 		return nil, fmt.Errorf("create cookie jar: %w", err)
 	}
 	transport := http.DefaultTransport.(*http.Transport).Clone()
-	transport.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12, InsecureSkipVerify: insecure} // Explicit opt-out for test environments.
+	transport.TLSClientConfig = &tls.Config{
+		MinVersion:         tls.VersionTLS12,
+		InsecureSkipVerify: insecure,
+	} // Explicit opt-out for test environments.
 	c := &NexusClient{
 		http: &http.Client{
 			Transport: transport,
@@ -97,7 +106,8 @@ func (c *NexusClient) ensureSession(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("authenticate with Nexus: %w", err)
 		}
-		if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil || *resp.JSON200.Token == "" {
+		if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil ||
+			*resp.JSON200.Token == "" {
 			return fmt.Errorf("Nexus authentication failed (HTTP %d or missing access token)", resp.StatusCode())
 		}
 		c.token = *resp.JSON200.Token
@@ -107,14 +117,19 @@ func (c *NexusClient) ensureSession(ctx context.Context) error {
 	if time.Now().Before(c.renewAt) {
 		return nil
 	}
-	resp, err := c.auth.RefreshAccessTokenWithResponse(ctx, api.RefreshTokenParam{Username: &c.username}, func(_ context.Context, req *http.Request) error {
-		req.Header.Set("Authorization", "Bearer "+c.token)
-		return nil
-	})
+	resp, err := c.auth.RefreshAccessTokenWithResponse(
+		ctx,
+		api.RefreshTokenParam{Username: &c.username},
+		func(_ context.Context, req *http.Request) error {
+			req.Header.Set("Authorization", "Bearer "+c.token)
+			return nil
+		},
+	)
 	if err != nil {
 		return fmt.Errorf("refresh Nexus session: %w", err)
 	}
-	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil || *resp.JSON200.Token == "" {
+	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Token == nil ||
+		*resp.JSON200.Token == "" {
 		return fmt.Errorf("Nexus session refresh failed (HTTP %d or missing access token)", resp.StatusCode())
 	}
 	c.token = *resp.JSON200.Token

@@ -1,11 +1,62 @@
 package main
 
 import (
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
+
+func TestEvidenceKeysAreSorted(t *testing.T) {
+	file, err := parser.ParseFile(token.NewFileSet(), "evidence.go", nil, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, decl := range file.Decls {
+		gen, ok := decl.(*ast.GenDecl)
+		if !ok || gen.Tok != token.VAR {
+			continue
+		}
+		for _, item := range gen.Specs {
+			spec := item.(*ast.ValueSpec)
+			if len(spec.Names) != 1 || spec.Names[0].Name != "implemented" {
+				continue
+			}
+			if len(spec.Values) != 1 {
+				t.Fatal("implemented must have one map literal")
+			}
+			literal, ok := spec.Values[0].(*ast.CompositeLit)
+			if !ok || len(literal.Elts) == 0 {
+				t.Fatal("implemented must have a non-empty map literal")
+			}
+			previous := ""
+			for _, entry := range literal.Elts {
+				pair, ok := entry.(*ast.KeyValueExpr)
+				if !ok {
+					t.Fatal("evidence entry must have a key")
+				}
+				key, ok := pair.Key.(*ast.BasicLit)
+				if !ok || key.Kind != token.STRING {
+					t.Fatal("evidence key must be a string literal")
+				}
+				current, err := strconv.Unquote(key.Value)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if previous != "" && current <= previous {
+					t.Errorf("evidence key %q must follow %q alphabetically", current, previous)
+				}
+				previous = current
+			}
+			return
+		}
+	}
+	t.Fatal("implemented evidence map not found")
+}
 
 func TestCoverageBadgeBoundaries(t *testing.T) {
 	tests := []struct {
@@ -38,7 +89,10 @@ func TestCoverageBadgeBoundaries(t *testing.T) {
 }
 
 func TestInventoryIncludesOnlyDocumentedOperations(t *testing.T) {
-	spec := []byte("paths:\n  /a:\n    parameters: []\n    get:\n      operationId: A\n    post: {}\n  /b:\n    delete:\n      operationId: B\n")
+	spec := []byte(
+		"paths:\n  /a:\n    parameters: []\n    get:\n      operationId: A\n" +
+			"    post: {}\n  /b:\n    delete:\n      operationId: B\n",
+	)
 	mappings := map[string]evidence{"A": {Method: "GET", Path: "/a"}}
 	ops, err := inventory(spec, mappings)
 	if err != nil || len(ops) != 3 || !ops[0].Supported || ops[1].Supported {
@@ -55,7 +109,8 @@ func TestInventoryIncludesOnlyDocumentedOperations(t *testing.T) {
 	if _, err := inventory([]byte("paths:\n  /a:\n    $ref: '#/other'\n"), nil); err == nil {
 		t.Fatal("accepted unresolved path reference")
 	}
-	if _, err := inventory([]byte("paths:\n  /a:\n    get: {operationId: A}\n    post: {operationId: A}\n"), nil); err == nil {
+	duplicate := []byte("paths:\n  /a:\n    get: {operationId: A}\n    post: {operationId: A}\n")
+	if _, err := inventory(duplicate, nil); err == nil {
 		t.Fatal("accepted duplicate operation ID")
 	}
 }
@@ -77,7 +132,9 @@ func TestFilterProfile(t *testing.T) {
 		module + "generated.go:1.1,2.1 20 1\n" +
 		module + "tools/coverage/main.go:1.1,2.1 30 1\n"
 	result, covered, total, err := filterProfile([]byte(profile))
-	if err != nil || covered != 3 || total != 5 || strings.Contains(string(result), "generated.go") || strings.Contains(string(result), "tools/coverage") || strings.Contains(string(result), "3.1,4.1") {
+	if err != nil || covered != 3 || total != 5 || strings.Contains(string(result), "generated.go") ||
+		strings.Contains(string(result), "tools/coverage") ||
+		strings.Contains(string(result), "3.1,4.1") {
 		t.Fatalf("unexpected filtered profile: %q, %d/%d, %v", result, covered, total, err)
 	}
 	if _, _, _, err := filterProfile([]byte("mode: atomic\n" + module + "custom.go:1.1,2.1 invalid 1\n")); err == nil {

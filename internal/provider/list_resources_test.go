@@ -61,7 +61,15 @@ func prepareTerraformQueryFixture(t *testing.T) (string, string) {
 	if err := os.WriteFile(filepath.Join(dir, "discover.tfquery.hcl"), query, 0600); err != nil {
 		t.Fatal(err)
 	}
-	providerDir := filepath.Join(dir, "mirror", "registry.terraform.io", "geo-gaussian", "pfsense-nexus", "0.0.1", runtime.GOOS+"_"+runtime.GOARCH)
+	providerDir := filepath.Join(
+		dir,
+		"mirror",
+		"registry.terraform.io",
+		"geo-gaussian",
+		"pfsense-nexus",
+		"0.0.1",
+		runtime.GOOS+"_"+runtime.GOARCH,
+	)
 	if err := os.MkdirAll(providerDir, 0700); err != nil {
 		t.Fatal(err)
 	}
@@ -98,7 +106,9 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 			value = map[string]any{"rules": []any{map[string]any{"id": "npt-1", "source": address, "destination": address}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/onetoone":
 			address := map[string]any{"address": "example.test", "type": "network"}
-			value = map[string]any{"rules": []any{map[string]any{"id": "one-1", "source": address, "destination": address, "external": address}}}
+			value = map[string]any{
+				"rules": []any{map[string]any{"id": "one-1", "source": address, "destination": address, "external": address}},
+			}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/nat/port-forward":
 			value = map[string]any{"rules": []any{map[string]any{"rule": map[string]any{"id": "port-1"}}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/rules/interface":
@@ -111,7 +121,17 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/schedules":
 			value = map[string]any{"schedules": []any{map[string]any{"id": "schedule-1", "name": "weekdays"}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/altq":
-			value = map[string]any{"altq": []any{map[string]any{"name": "queue-1", "if_ident": "lan", "scheduler": "HFSC", "bandwidth": "100", "bandwidthtype": "Mb"}}}
+			value = map[string]any{
+				"altq": []any{
+					map[string]any{
+						"name":          "queue-1",
+						"if_ident":      "lan",
+						"scheduler":     "HFSC",
+						"bandwidth":     "100",
+						"bandwidthtype": "Mb",
+					},
+				},
+			}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/traffic-shaper/limiter":
 			value = map[string]any{"limiter": []any{map[string]any{"name": "limiter-1"}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/firewall/pflow":
@@ -120,9 +140,15 @@ func TestTerraformQueryGeneratesConfiguration(t *testing.T) {
 			value = map[string]any{"virtualips": []any{map[string]any{"id": "vip-1"}}}
 		case r.Method == http.MethodGet && r.URL.Path == "/api/device/pfsense/localhost/api/vpn/wg":
 			value = map[string]any{
-				"config":  []any{map[string]any{"enable": true}},
-				"tunnels": map[string]any{"item": []any{map[string]any{"name": "wg0", "publickey": "public-key-example", "privatekey": strings.Repeat("x", 12)}}},
-				"peers":   map[string]any{"item": []any{map[string]any{"publickey": "peer-key-example", "presharedkey": strings.Repeat("x", 12)}}},
+				"config": []any{map[string]any{"enable": true}},
+				"tunnels": map[string]any{
+					"item": []any{
+						map[string]any{"name": "wg0", "publickey": "public-key-example", "privatekey": strings.Repeat("x", 12)},
+					},
+				},
+				"peers": map[string]any{
+					"item": []any{map[string]any{"publickey": "peer-key-example", "presharedkey": strings.Repeat("x", 12)}},
+				},
 			}
 		default:
 			unexpected.Store(true)

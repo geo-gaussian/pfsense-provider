@@ -276,7 +276,13 @@ func callRead(r resource.Resource, ctx context.Context, state tfsdk.State, resp 
 	}
 }
 
-func callUpdate(r resource.Resource, ctx context.Context, plan tfsdk.Plan, state tfsdk.State, resp *resource.UpdateResponse) {
+func callUpdate(
+	r resource.Resource,
+	ctx context.Context,
+	plan tfsdk.Plan,
+	state tfsdk.State,
+	resp *resource.UpdateResponse,
+) {
 	switch value := r.(type) {
 	case *settingsResource:
 		value.Update(ctx, resource.UpdateRequest{Plan: plan, State: state}, resp)

@@ -15,6 +15,7 @@ JIT
 QEMU
 KVM
 gofmt
+Elts
 GOCOVERDIR
 covdata
 textfmt

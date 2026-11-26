@@ -56,7 +56,10 @@ func NewGatewayGroups() datasource.DataSource {
 }
 
 func NewGatewaysStatus() datasource.DataSource {
-	return newSensitiveDataSource("gateways_status", "Reads gateway connectivity and monitor status, including network addresses.", nil,
+	return newSensitiveDataSource(
+		"gateways_status",
+		"Reads gateway connectivity and monitor status, including network addresses.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetGatewaysStatusWithResponse(ctx)
 		},
@@ -96,7 +99,10 @@ func NewRoutesDirtyState() datasource.DataSource {
 }
 
 func NewSystemStatus() datasource.DataSource {
-	return newSensitiveDataSource("system_status", "Reads system and interface status details, which may include license and controller information.", nil,
+	return newSensitiveDataSource(
+		"system_status",
+		"Reads system and interface status details, which may include license and controller information.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetStatusWithResponse(ctx)
 		},
@@ -104,7 +110,10 @@ func NewSystemStatus() datasource.DataSource {
 }
 
 func NewInterfaceStats() datasource.DataSource {
-	return newSensitiveDataSource("interface_stats", "Reads network interface traffic statistics and host addresses.", nil,
+	return newSensitiveDataSource(
+		"interface_stats",
+		"Reads network interface traffic statistics and host addresses.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetIfStatsWithResponse(ctx)
 		},
@@ -112,7 +121,10 @@ func NewInterfaceStats() datasource.DataSource {
 }
 
 func NewInterfaceWidgets() datasource.DataSource {
-	return newSensitiveDataSource("interface_widgets", "Reads interface status and address details shown by the system dashboard.", nil,
+	return newSensitiveDataSource(
+		"interface_widgets",
+		"Reads interface status and address details shown by the system dashboard.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetInterfacesWidgetsWithResponse(ctx)
 		},
@@ -120,7 +132,10 @@ func NewInterfaceWidgets() datasource.DataSource {
 }
 
 func NewInterfaceStatisticsWidget() datasource.DataSource {
-	return newDataSource("interface_statistics_widget", "Reads packet, byte, error, and collision counts for configured interfaces.", nil,
+	return newDataSource(
+		"interface_statistics_widget",
+		"Reads packet, byte, error, and collision counts for configured interfaces.",
+		nil,
 		func(ctx context.Context, client *api.ClientWithResponses, _ map[string]string) (apiResponse, error) {
 			return client.GetInterfaceStatisticsWidgetWithResponse(ctx)
 		},

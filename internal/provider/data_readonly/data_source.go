@@ -34,7 +34,11 @@ type dataSource struct {
 var _ datasource.DataSource = &dataSource{}
 var _ datasource.DataSourceWithConfigure = &dataSource{}
 
-func newDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+func newDataSource(
+	typeName, description string,
+	arguments map[string]schema.Attribute,
+	read readFunc,
+) datasource.DataSource {
 	return newDataSourceWithJSONDescription(
 		typeName,
 		description,
@@ -45,12 +49,17 @@ func newDataSource(typeName, description string, arguments map[string]schema.Att
 	)
 }
 
-func newSensitiveDataSource(typeName, description string, arguments map[string]schema.Attribute, read readFunc) datasource.DataSource {
+func newSensitiveDataSource(
+	typeName, description string,
+	arguments map[string]schema.Attribute,
+	read readFunc,
+) datasource.DataSource {
 	return newDataSourceWithJSONDescription(
 		typeName,
 		description,
 		arguments,
-		"The complete API response as sensitive JSON. Use jsondecode() to access its fields. Protect Terraform state and saved plans.",
+		"The complete API response as sensitive JSON. Use jsondecode() to access its fields. "+
+			"Protect Terraform state and saved plans.",
 		true,
 		read,
 	)
@@ -99,7 +108,10 @@ func (d *dataSource) Configure(_ context.Context, req datasource.ConfigureReques
 	}
 	client, ok := req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The read-only data source received an unexpected API client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The read-only data source received an unexpected API client.",
+		)
 		return
 	}
 	d.client = client
@@ -123,7 +135,10 @@ func (d *dataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	for name := range d.arguments {
 		value, ok := configuredAttributes[name].(types.String)
 		if !ok || value.IsNull() || value.IsUnknown() {
-			resp.Diagnostics.AddError("Invalid data source argument", fmt.Sprintf("Argument %q must be a known string value.", name))
+			resp.Diagnostics.AddError(
+				"Invalid data source argument",
+				fmt.Sprintf("Argument %q must be a known string value.", name),
+			)
 			return
 		}
 		arguments[name] = value.ValueString()

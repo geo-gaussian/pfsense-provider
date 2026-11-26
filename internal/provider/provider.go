@@ -54,31 +54,55 @@ func (p *pfsenseProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 			"url":      schema.StringAttribute{Required: true, Description: "HTTPS origin of the Nexus controller."},
 			"username": schema.StringAttribute{Required: true},
 			"password": schema.StringAttribute{Required: true, Sensitive: true},
-			"insecure": schema.BoolAttribute{Optional: true, Description: "Disable TLS certificate verification. Use only in a test environment."},
+			"insecure": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Disable TLS certificate verification. Use only in a test environment.",
+			},
 		},
 	}
 }
 
-func (p *pfsenseProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+func (p *pfsenseProvider) Configure(
+	ctx context.Context,
+	req provider.ConfigureRequest,
+	resp *provider.ConfigureResponse,
+) {
 	p.configure(ctx, req, resp, api.NewClientWithResponses)
 }
 
-func (p *pfsenseProvider) configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse, newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error)) {
+func (p *pfsenseProvider) configure(
+	ctx context.Context,
+	req provider.ConfigureRequest,
+	resp *provider.ConfigureResponse,
+	newAPI func(string, ...api.ClientOption) (*api.ClientWithResponses, error),
+) {
 	var config providerModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() || config.Insecure.IsUnknown() {
-		resp.Diagnostics.AddError("Unknown provider configuration", "The controller URL, credentials, and TLS settings must be known before configuring the provider.")
+	if config.URL.IsUnknown() || config.Username.IsUnknown() || config.Password.IsUnknown() ||
+		config.Insecure.IsUnknown() {
+		resp.Diagnostics.AddError(
+			"Unknown provider configuration",
+			"The controller URL, credentials, and TLS settings must be known before configuring the provider.",
+		)
 		return
 	}
-	nexus, err := client.New(config.URL.ValueString(), config.Username.ValueString(), config.Password.ValueString(), config.Insecure.ValueBool())
+	nexus, err := client.New(
+		config.URL.ValueString(),
+		config.Username.ValueString(),
+		config.Password.ValueString(),
+		config.Insecure.ValueBool(),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid provider configuration", err.Error())
 		return
 	}
-	apiClient, err := newAPI(strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api", api.WithHTTPClient(nexus))
+	apiClient, err := newAPI(
+		strings.TrimRight(config.URL.ValueString(), "/")+"/api/device/pfsense/localhost/api",
+		api.WithHTTPClient(nexus),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("Unable to configure API client", err.Error())
 		return

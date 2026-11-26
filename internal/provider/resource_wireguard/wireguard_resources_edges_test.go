@@ -182,7 +182,12 @@ func TestSettingsWriteAndVerificationFailures(t *testing.T) {
 		{name: "create verification failed", postStatus: http.StatusOK, getStatus: http.StatusServiceUnavailable},
 		{name: "update write rejected", update: true, postStatus: http.StatusBadRequest},
 		{name: "update verification missing", update: true, postStatus: http.StatusOK, getStatus: http.StatusNotFound},
-		{name: "update verification failed", update: true, postStatus: http.StatusOK, getStatus: http.StatusServiceUnavailable},
+		{
+			name:       "update verification failed",
+			update:     true,
+			postStatus: http.StatusOK,
+			getStatus:  http.StatusServiceUnavailable,
+		},
 	}
 
 	for _, tt := range tests {
@@ -448,8 +453,14 @@ func TestWireGuardReadHelpersAndConversionEdges(t *testing.T) {
 		settings api.WireGuardSettings
 		status   int
 	}{
-		{name: "missing", status: http.StatusOK, settings: api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{}}}},
-		{name: "invalid", status: http.StatusOK, settings: api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{{Name: "wg0"}}}}},
+		{
+			name: "missing", status: http.StatusOK,
+			settings: api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{}}},
+		},
+		{
+			name: "invalid", status: http.StatusOK,
+			settings: api.WireGuardSettings{Tunnels: &api.WGTunnels{Item: &[]api.WGTunnel{{Name: "wg0"}}}},
+		},
 		{name: "api error", status: http.StatusServiceUnavailable},
 	} {
 		t.Run("tunnel verification "+tt.name, func(t *testing.T) {
@@ -475,9 +486,12 @@ func TestWireGuardReadHelpersAndConversionEdges(t *testing.T) {
 		status   int
 	}{
 		{name: "missing", status: http.StatusOK, settings: api.WireGuardSettings{Peers: &api.WGPeers{Item: &[]api.WGPeer{}}}},
-		{name: "invalid address list", status: http.StatusOK, settings: api.WireGuardSettings{Peers: &api.WGPeers{Item: &[]api.WGPeer{{
-			Publickey: "pub", Allowedips: &[]api.WGIPAddress{{}},
-		}}}}},
+		{
+			name: "invalid address list", status: http.StatusOK,
+			settings: api.WireGuardSettings{Peers: &api.WGPeers{Item: &[]api.WGPeer{{
+				Publickey: "pub", Allowedips: &[]api.WGIPAddress{{}},
+			}}}},
+		},
 		{name: "api error", status: http.StatusServiceUnavailable},
 	} {
 		t.Run("peer verification "+tt.name, func(t *testing.T) {

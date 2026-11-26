@@ -18,9 +18,10 @@ function commandIssues(line: string): string[] {
 	if (/^\s*#/.test(line)) return issues;
 
 	if (
-		/\b(?:python(?:3(?:\.\d+)?)?|node|ruby|perl|bash|sh)\s+(?:--[\w-]+(?:=\S+)?\s+)*-(?:c|e|p|-eval|-print)(?:\s|=|["']|$)/.test(
-			line,
-		) ||
+		new RegExp(
+			String.raw`\b(?:python(?:3(?:\.\d+)?)?|node|ruby|perl|bash|sh)\s+` +
+				String.raw`(?:--[\w-]+(?:=\S+)?\s+)*-(?:c|e|p|-eval|-print)(?:\s|=|["']|$)`,
+		).test(line) ||
 		/\b(?:python(?:3)?|node|ruby|perl|bash|sh)\s+[^#\n]*<<-?\s*['"]?[A-Za-z_]/.test(
 			line,
 		)

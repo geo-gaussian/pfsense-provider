@@ -31,7 +31,11 @@ type aliasModel struct {
 
 func New() datasource.DataSource { return &aliasesDataSource{} }
 
-func (d *aliasesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *aliasesDataSource) Metadata(
+	_ context.Context,
+	req datasource.MetadataRequest,
+	resp *datasource.MetadataResponse,
+) {
 	resp.TypeName = req.ProviderTypeName + "_firewall_aliases"
 }
 
@@ -53,14 +57,21 @@ func (d *aliasesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 	}
 }
 
-func (d *aliasesDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *aliasesDataSource) Configure(
+	_ context.Context,
+	req datasource.ConfigureRequest,
+	resp *datasource.ConfigureResponse,
+) {
 	if req.ProviderData == nil {
 		return
 	}
 	var ok bool
 	d.client, ok = req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The firewall aliases data source received an unexpected client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The firewall aliases data source received an unexpected client.",
+		)
 	}
 }
 
@@ -71,11 +82,17 @@ func (d *aliasesDataSource) Read(ctx context.Context, _ datasource.ReadRequest, 
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil {
-		resp.Diagnostics.AddError("Unable to read firewall aliases", fmt.Sprintf("API returned HTTP %d or an invalid JSON response.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to read firewall aliases",
+			fmt.Sprintf("API returned HTTP %d or an invalid JSON response.", result.StatusCode()),
+		)
 		return
 	}
 	if result.JSON200.Aliases == nil {
-		resp.Diagnostics.AddWarning("Alias list omitted", "The API response did not include an aliases list. The data source cannot determine whether any aliases exist.")
+		resp.Diagnostics.AddWarning(
+			"Alias list omitted",
+			"The API response did not include an aliases list. The data source cannot determine whether any aliases exist.",
+		)
 		resp.Diagnostics.Append(resp.State.Set(ctx, &aliasesModel{})...)
 		return
 	}

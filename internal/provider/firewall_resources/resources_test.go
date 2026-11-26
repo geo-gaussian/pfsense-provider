@@ -139,7 +139,10 @@ func TestVirtualIPRetainsMaskedPasswords(t *testing.T) {
 			gotPassword, _ = body["password"].(string)
 			_, _ = fmt.Fprint(w, `{"id":"vip-1"}`)
 		case req.URL.Path == "/firewall/virtualip" && req.Method == http.MethodGet:
-			_, _ = fmt.Fprint(w, `{"virtualips":[{"id":"vip-1","mode":"carp","interface":"wan","subnet":"198.51.100.10/32","descr":"VIP"}]}`)
+			_, _ = fmt.Fprint(
+				w,
+				`{"virtualips":[{"id":"vip-1","mode":"carp","interface":"wan","subnet":"198.51.100.10/32","descr":"VIP"}]}`,
+			)
 		case req.URL.Path == "/system/filterreload/reload" && req.Method == http.MethodPost:
 			_, _ = fmt.Fprint(w, `{"result":"started"}`)
 		default:

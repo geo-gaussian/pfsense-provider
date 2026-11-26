@@ -40,7 +40,10 @@ func (r *aliasResource) Schema(ctx context.Context, _ resource.SchemaRequest, re
 	resp.Schema = FirewallAliasResourceSchema(ctx)
 	name := resp.Schema.Attributes["name"].(schema.StringAttribute)
 	name.PlanModifiers = []planmodifier.String{stringplanmodifier.RequiresReplace()}
-	name.Validators = append(name.Validators, stringvalidator.RegexMatches(aliasName, "must contain only letters, digits, and underscores"))
+	name.Validators = append(
+		name.Validators,
+		stringvalidator.RegexMatches(aliasName, "must contain only letters, digits, and underscores"),
+	)
 	resp.Schema.Attributes["name"] = name
 }
 
@@ -51,7 +54,10 @@ func (r *aliasResource) Configure(_ context.Context, req resource.ConfigureReque
 	var ok bool
 	r.client, ok = req.ProviderData.(*api.ClientWithResponses)
 	if !ok {
-		resp.Diagnostics.AddError("Invalid provider configuration", "The firewall alias resource received an unexpected client.")
+		resp.Diagnostics.AddError(
+			"Invalid provider configuration",
+			"The firewall alias resource received an unexpected client.",
+		)
 	}
 }
 
@@ -84,7 +90,14 @@ func (m *FirewallAliasModel) request(ctx context.Context) (api.FWAliasReq, error
 		}
 		targets := make([]api.FWTarget, 0, len(values))
 		for _, v := range values {
-			targets = append(targets, api.FWTarget{Name: v.Name.ValueString(), Descr: stringPointer(v.Descr), Updatefreq: stringPointer(v.Updatefreq)})
+			targets = append(
+				targets,
+				api.FWTarget{
+					Name:       v.Name.ValueString(),
+					Descr:      stringPointer(v.Descr),
+					Updatefreq: stringPointer(v.Updatefreq),
+				},
+			)
 		}
 		result.Targets = &targets
 	}
@@ -111,7 +124,12 @@ func (m *FirewallAliasModel) fromAPI(ctx context.Context, value *api.FWAlias) er
 	return m.fromAPIWithFactories(ctx, value, NewTargetsValue, types.ListValue)
 }
 
-func (m *FirewallAliasModel) fromAPIWithFactories(ctx context.Context, value *api.FWAlias, newTarget func(map[string]attr.Type, map[string]attr.Value) (TargetsValue, diag.Diagnostics), newList func(attr.Type, []attr.Value) (basetypes.ListValue, diag.Diagnostics)) error {
+func (m *FirewallAliasModel) fromAPIWithFactories(
+	ctx context.Context,
+	value *api.FWAlias,
+	newTarget func(map[string]attr.Type, map[string]attr.Value) (TargetsValue, diag.Diagnostics),
+	newList func(attr.Type, []attr.Value) (basetypes.ListValue, diag.Diagnostics),
+) error {
 	if value.Truncated != nil && *value.Truncated {
 		return fmt.Errorf("API returned a truncated alias; refusing to store incomplete state")
 	}
@@ -217,7 +235,10 @@ func (r *aliasResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil || result.JSON200.Msg == "" {
-		resp.Diagnostics.AddError("Unable to create alias", fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to create alias",
+			fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()),
+		)
 		return
 	}
 	recovery := data.recoveryState(ctx)
@@ -228,7 +249,10 @@ func (r *aliasResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 	value, missing, err := r.get(ctx, body.Name)
 	if err != nil || missing {
-		resp.Diagnostics.AddError("Unable to verify created alias", fmt.Sprintf("The API did not return the created alias: %v", err))
+		resp.Diagnostics.AddError(
+			"Unable to verify created alias",
+			fmt.Sprintf("The API did not return the created alias: %v", err),
+		)
 		return
 	}
 	if err := data.fromAPI(ctx, value); err != nil {
@@ -285,7 +309,10 @@ func (r *aliasResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 	if result.StatusCode() != http.StatusOK || result.JSON200 == nil || result.JSON200.Msg == "" {
-		resp.Diagnostics.AddError("Unable to update alias", fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()))
+		resp.Diagnostics.AddError(
+			"Unable to update alias",
+			fmt.Sprintf("API returned HTTP %d or an invalid result.", result.StatusCode()),
+		)
 		return
 	}
 	resp.State = req.State
@@ -295,7 +322,10 @@ func (r *aliasResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 	value, missing, err := r.get(ctx, body.Name)
 	if err != nil || missing {
-		resp.Diagnostics.AddError("Unable to verify updated alias", fmt.Sprintf("The API did not return the updated alias: %v", err))
+		resp.Diagnostics.AddError(
+			"Unable to verify updated alias",
+			fmt.Sprintf("The API did not return the updated alias: %v", err),
+		)
 		return
 	}
 	if err := data.fromAPI(ctx, value); err != nil {
@@ -323,7 +353,10 @@ func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if result.StatusCode() == http.StatusBadRequest {
 		_, missing, err := r.get(ctx, data.Name.ValueString())
 		if err != nil || !missing {
-			resp.Diagnostics.AddError("Unable to delete alias", fmt.Sprintf("API returned HTTP 400 and absence could not be verified: %v", err))
+			resp.Diagnostics.AddError(
+				"Unable to delete alias",
+				fmt.Sprintf("API returned HTTP 400 and absence could not be verified: %v", err),
+			)
 			return
 		}
 	} else if result.StatusCode() != http.StatusOK && result.StatusCode() != http.StatusNotFound {
@@ -348,6 +381,10 @@ func (r *aliasResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	}
 }
 
-func (r *aliasResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *aliasResource) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
