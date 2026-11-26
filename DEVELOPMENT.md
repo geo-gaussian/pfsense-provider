@@ -60,6 +60,10 @@ has no functions; jq function sizes are not checked automatically. Review any
 added jq functions manually until jq parsing is supported. Spec Kit-managed
 scripts are excluded because they are maintained upstream.
 
+In GitHub Actions, size findings appear as warning or error annotations matching
+their threshold; warnings do not fail the check. Locally, findings are printed
+as plain text.
+
 `pnpm run lint:size` checks tracked and non-ignored untracked files in the
 working tree. The installed pre-commit hook also runs
 `pnpm run lint:size:staged` against the Git index, so an unstaged edit cannot

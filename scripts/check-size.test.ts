@@ -5,7 +5,11 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { checkTypeScriptFiles, inspectTypeScript } from "./check-size.ts";
+import {
+	checkTypeScriptFiles,
+	formatFinding,
+	inspectTypeScript,
+} from "./check-size.ts";
 
 const source = fs.readFileSync(
 	fileURLToPath(
@@ -87,6 +91,37 @@ test("ignores generated TypeScript and reports invalid source", async () => {
 	assert.deepEqual(await inspectTypeScript("generated.ts", generated), []);
 	await assert.rejects(
 		inspectTypeScript("invalid.ts", fixture("invalid-ts.txt")),
+	);
+});
+
+test("formats findings with the correct GitHub annotation severity", () => {
+	const file = {
+		level: "warning" as const,
+		location: "path/example.ts",
+		subject: "file",
+		lines: 351,
+		limit: 350,
+	};
+	assert.equal(
+		formatFinding(file, false),
+		"path/example.ts: warning: file has 351 lines (limit 350)",
+	);
+	assert.equal(
+		formatFinding(file, true),
+		"::warning file=path/example.ts::file has 351 lines (limit 350)",
+	);
+	assert.equal(
+		formatFinding(
+			{
+				level: "error",
+				location: "path/a%,:\n.ts:12",
+				subject: "function a%\n",
+				lines: 81,
+				limit: 80,
+			},
+			true,
+		),
+		"::error file=path/a%25%2C%3A%0A.ts,line=12::function a%25%0A has 81 lines (limit 80)",
 	);
 });
 

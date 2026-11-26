@@ -154,6 +154,21 @@ func checkFiles(names []string, staged bool) ([]finding, error) {
 	return all, nil
 }
 
+func formatFinding(item finding, githubActions bool) string {
+	message := fmt.Sprintf("%s has %d lines (limit %d)", item.subject, item.lines, item.limit)
+	if !githubActions {
+		return fmt.Sprintf("%s: %s: %s", item.location, item.level, message)
+	}
+	name, line := item.location, ""
+	if item.subject != "file" {
+		index := strings.LastIndex(name, ":")
+		name, line = name[:index], ",line="+name[index+1:]
+	}
+	propertyEscaper := strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A", ":", "%3A", ",", "%2C")
+	messageEscaper := strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A")
+	return fmt.Sprintf("::%s file=%s%s::%s", item.level, propertyEscaper.Replace(name), line, messageEscaper.Replace(message))
+}
+
 func run(staged bool) error {
 	args := []string{"ls-files", "-co", "--exclude-standard", "-z"}
 	if staged {
@@ -170,7 +185,7 @@ func run(staged bool) error {
 	}
 	failed := false
 	for _, item := range findings {
-		fmt.Printf("%s: %s: %s has %d lines (limit %d)\n", item.location, item.level, item.subject, item.lines, item.limit)
+		fmt.Println(formatFinding(item, os.Getenv("GITHUB_ACTIONS") == "true"))
 		failed = failed || item.level == "error"
 	}
 	if failed {

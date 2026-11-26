@@ -153,3 +153,19 @@ func TestInspectShellFunctionLimits(t *testing.T) {
 		t.Fatalf("long shell file: findings=%+v err=%v", findings, err)
 	}
 }
+
+func TestFormatFinding(t *testing.T) {
+	for _, tt := range []struct {
+		item   finding
+		github bool
+		want   string
+	}{
+		{finding{"warning", "path/example.go", "file", 351, 350}, false, "path/example.go: warning: file has 351 lines (limit 350)"},
+		{finding{"warning", "path/example.go", "file", 351, 350}, true, "::warning file=path/example.go::file has 351 lines (limit 350)"},
+		{finding{"error", "path/a%,:\n.go:12", "function a%\n", 81, 80}, true, "::error file=path/a%25%2C%3A%0A.go,line=12::function a%25%0A has 81 lines (limit 80)"},
+	} {
+		if got := formatFinding(tt.item, tt.github); got != tt.want {
+			t.Errorf("formatFinding(%+v, %t) = %q, want %q", tt.item, tt.github, got, tt.want)
+		}
+	}
+}

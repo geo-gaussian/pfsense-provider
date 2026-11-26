@@ -153,6 +153,23 @@ export async function checkTypeScriptFiles(
 	return findings;
 }
 
+export function formatFinding(item: Finding, githubActions: boolean): string {
+	const message = `${item.subject} has ${item.lines} lines (limit ${item.limit})`;
+	if (!githubActions) return `${item.location}: ${item.level}: ${message}`;
+	const index = item.subject === "file" ? -1 : item.location.lastIndexOf(":");
+	const name = index === -1 ? item.location : item.location.slice(0, index);
+	const line = index === -1 ? "" : `,line=${item.location.slice(index + 1)}`;
+	const escapeData = (value: string) =>
+		value
+			.replaceAll("%", "%25")
+			.replaceAll("\r", "%0D")
+			.replaceAll("\n", "%0A");
+	const escapedName = escapeData(name)
+		.replaceAll(":", "%3A")
+		.replaceAll(",", "%2C");
+	return `::${item.level} file=${escapedName}${line}::${escapeData(message)}`;
+}
+
 async function main(): Promise<void> {
 	const staged = process.argv.slice(2).includes("--staged");
 	if (process.argv.slice(2).some((arg) => arg !== "--staged")) {
@@ -160,9 +177,7 @@ async function main(): Promise<void> {
 	}
 	const findings = await checkTypeScriptFiles(root, staged);
 	for (const item of findings) {
-		console.log(
-			`${item.location}: ${item.level}: ${item.subject} has ${item.lines} lines (limit ${item.limit})`,
-		);
+		console.log(formatFinding(item, process.env.GITHUB_ACTIONS === "true"));
 	}
 	if (findings.some((item) => item.level === "error")) process.exitCode = 1;
 	else console.log("TypeScript and JavaScript size checks passed.");
